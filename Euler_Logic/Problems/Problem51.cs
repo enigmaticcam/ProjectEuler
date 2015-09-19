@@ -7,34 +7,55 @@ using System.Threading.Tasks;
 namespace Euler_Logic.Problems {
     public class Problem51 : IProblem {
         private Dictionary<decimal, bool> _primes = new Dictionary<decimal, bool>();
-        private HashSet<decimal> _primesAlreadyTried = new HashSet<decimal>();
+        private decimal _lowestPrime;
 
         public string ProblemName {
             get { return "51: Prime Digit Replacements"; }
         }
 
         public string GetAnswer() {
-            return "";
+            return FindBestFamily(8).ToString();
         }
 
-        private decimal FindBestFamily() {
+        private decimal FindBestFamily(int maxPrimeFamily) {
             decimal num = 11;
             do {
                 if (IsPrime(num)) {
                     string text = num.ToString();
-                    double max = Math.Pow(2, text.Length - 1);
+                    double max = Math.Pow(2, text.Length) - 1;
                     for (int bits = 1; bits <= max; bits++) {
-
+                        if (FindFamily(text, bits) == maxPrimeFamily) {
+                            return _lowestPrime;
+                        }
                     }
                 }
-
-                num++;
+                num += 2;
             } while (true);
-            return 0;
         }
 
-        private void FindFamily(decimal num, int bits) {
-
+        private int FindFamily(string num, int bits) {
+            for (int index = 0; index < num.Length; index++) {
+                if (((int)Math.Pow(2, index) & bits) == (int)Math.Pow(2, index)) {
+                    num = num.Remove(index, 1).Insert(index, "*");
+                }
+            }
+            int count = 0;
+            bool firstTime = true;
+            for (int digit = 0; digit <= 9; digit++) {
+                decimal replaced = Convert.ToDecimal(num.Replace("*", digit.ToString()));
+                if (digit == 0 && (bits & 1) == 1) {
+                    // do nothing
+                } else {
+                    if (firstTime) {
+                        _lowestPrime = replaced;
+                        firstTime = false;
+                    }
+                    if (IsPrime(replaced)) {
+                        count++;
+                    }
+                }
+            }
+            return count;
         }
 
         private bool IsPrime(decimal num) {
