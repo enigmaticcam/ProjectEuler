@@ -14,10 +14,9 @@ namespace Euler_Logic.Problems {
         }
 
         public string GetAnswer() {
-            LoadTestGrid();
+            LoadProblemGrid();
             Initialize();
-            FindBestPathDownward();
-            FindBestPathUpward();
+            FindBestPath();
             return FindBest().ToString();
         }
 
@@ -32,54 +31,50 @@ namespace Euler_Logic.Problems {
             }
         }
 
-        private void FindBestPathDownward() {
-            for (int x = 0; x <= _grid.GetUpperBound(0); x++) {
-                for (int y = 0; y <= _grid[0].GetUpperBound(0); y++) {
-                    decimal fromUp = decimal.MaxValue;
-                    decimal fromLeft = decimal.MaxValue;
-                    if (x > 0 && y != 0 && y != _grid[0].GetUpperBound(0)) {
-                        fromUp = _best[0][x - 1][y];
-                    }
-                    if (y > 0) {
-                        fromLeft = _best[0][x][y - 1];
-                    }
-                    if (fromUp < fromLeft && fromUp != decimal.MaxValue) {
-                        _best[0][x][y] = fromUp + _grid[x][y];
-                    } else if (fromLeft != decimal.MaxValue) {
-                        _best[0][x][y] = fromLeft + _grid[x][y];
-                    } else {
-                        _best[0][x][y] = _grid[x][y];
-                    }
+        private void FindBestPath() {
+            for (int y = 0; y <= _grid[0].GetUpperBound(0); y++) {
+                for (int x = 0; x <= _grid.GetUpperBound(0); x++) {
+                    FindBestBathFromUp(x, y);
+                }
+                for (int x = _grid.GetUpperBound(0); x >= 0; x--) {
+                    FindBestBathFromDown(x, y);
                 }
             }
         }
 
-        private void FindBestPathUpward() {
-            for (int x = _grid.GetUpperBound(0); x >= 0; x--) {
-                for (int y = 0; y <= _grid[0].GetUpperBound(0); y++) {
-                    decimal fromBottom = decimal.MaxValue;
-                    decimal fromLeft = decimal.MaxValue;
-                    _best[1][x][y] = _best[0][x][y];
-                    if (x < _grid.GetUpperBound(0) && y != 0 && y != _grid[0].GetUpperBound(0)) {
-                        fromBottom = _best[1][x + 1][y] + _grid[x][y];
-                    }
-                    if (y > 0) {
-                        fromLeft = _best[1][x][y - 1] + _grid[x][y];
-                    }
-                    if (fromBottom <= _best[1][x][y] && fromBottom <= fromLeft && fromBottom != decimal.MaxValue) {
-                        _best[1][x][y] = fromBottom;
-                    } else if (fromLeft <= _best[1][x][y] && fromLeft <= fromBottom && fromLeft != decimal.MaxValue) {
-                        _best[1][x][y] = fromLeft;
-                    }
-                }
+        private void FindBestBathFromUp(int x, int y) {
+            decimal fromUp = decimal.MaxValue;
+            decimal fromLeft = decimal.MaxValue;
+            if (x > 0 && y != 0 && y != _grid[0].GetUpperBound(0)) {
+                fromUp = _best[0][x - 1][y];
+            }
+            if (y > 0) {
+                fromLeft = _best[0][x][y - 1];
+            }
+            if (fromUp < fromLeft && fromUp != decimal.MaxValue) {
+                _best[0][x][y] = fromUp + _grid[x][y];
+            } else if (fromLeft != decimal.MaxValue) {
+                _best[0][x][y] = fromLeft + _grid[x][y];
+            } else {
+                _best[0][x][y] = _grid[x][y];
+            }
+        }
+
+        private void FindBestBathFromDown(int x, int y) {
+            decimal fromDown = decimal.MaxValue;
+            if (x < _grid.GetUpperBound(0)) {
+                fromDown = _best[0][x + 1][y] + _grid[x][y];
+            }
+            if (fromDown < _best[0][x][y]) {
+                _best[0][x][y] = fromDown;
             }
         }
 
         private decimal FindBest() {
             decimal best = decimal.MaxValue;
             for (int x = 0; x <= _best[1].GetUpperBound(0); x++) {
-                if (_best[1][x][_best[1][x].GetUpperBound(0)] < best) {
-                    best = _best[1][x][_best[1][x].GetUpperBound(0)];
+                if (_best[0][x][_best[1][x].GetUpperBound(0)] < best) {
+                    best = _best[0][x][_best[1][x].GetUpperBound(0)];
                 }
             }
             return best;
@@ -92,15 +87,6 @@ namespace Euler_Logic.Problems {
             _grid[2] = "630,803,746,422,111".Split(',').Select(decimal.Parse).ToList().ToArray();
             _grid[3] = "537,699,497,121,956".Split(',').Select(decimal.Parse).ToList().ToArray();
             _grid[4] = "805,732,524,37,331".Split(',').Select(decimal.Parse).ToList().ToArray();
-        }
-
-        private void xyz() {
-            _grid = new decimal[5][];
-            _grid[0] = "21,10,61,2,10".Split(',').Select(decimal.Parse).ToList().ToArray();
-            _grid[1] = "42,8,51,7,35".Split(',').Select(decimal.Parse).ToList().ToArray();
-            _grid[2] = "63,11,45,9,38".Split(',').Select(decimal.Parse).ToList().ToArray();
-            _grid[3] = "81,5,11,1,22".Split(',').Select(decimal.Parse).ToList().ToArray();
-            _grid[4] = "99,10,2,10,90".Split(',').Select(decimal.Parse).ToList().ToArray();
         }
 
         private void LoadProblemGrid() {
