@@ -4,76 +4,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Euler_Logic.Problems {
-    public class Problem82 : IProblem {
+namespace Euler_Logic.Problems._81_90 {
+    public class Problem83 : IProblem {
         private decimal[][] _grid;
         private decimal[][] _best;
+        private HashSet<HashSet<int>> _visited = new HashSet<HashSet<int>>();
 
         public string ProblemName {
             get { return "82: Path sum: three ways"; }
         }
 
-        public string GetAnswer() {
+        public string LoadTestGrid() {
             LoadProblemGrid();
             Initialize();
-            FindBestPath();
-            return FindBest().ToString();
+            FindBestPath(0, 0);
+            return "";
         }
 
         private void Initialize() {
             _best = new decimal[_grid.GetUpperBound(0) + 1][];
             for (int x = 0; x <= _grid.GetUpperBound(0); x++) {
+                _visited.Add(new HashSet<int>());
                 _best[x] = new decimal[_grid[x].GetUpperBound(0) + 1];
-            }
-        }
-
-        private void FindBestPath() {
-            for (int y = 0; y <= _grid[0].GetUpperBound(0); y++) {
-                for (int x = 0; x <= _grid.GetUpperBound(0); x++) {
-                    FindBestBathFromUp(x, y);
-                }
-                for (int x = _grid.GetUpperBound(0); x >= 0; x--) {
-                    FindBestBathFromDown(x, y);
+                for (int y = 0; y <= _grid[x].GetUpperBound(0); y++) {
+                    _best[x][y] = decimal.MaxValue;
                 }
             }
+            _best[0][0] = 0;
         }
 
-        private void FindBestBathFromUp(int x, int y) {
-            decimal fromUp = decimal.MaxValue;
-            decimal fromLeft = decimal.MaxValue;
-            if (x > 0 && y != 0 && y != _grid[0].GetUpperBound(0)) {
-                fromUp = _best[x - 1][y];
-            }
-            if (y > 0) {
-                fromLeft = _best[x][y - 1];
-            }
-            if (fromUp < fromLeft && fromUp != decimal.MaxValue) {
-                _best[x][y] = fromUp + _grid[x][y];
-            } else if (fromLeft != decimal.MaxValue) {
-                _best[x][y] = fromLeft + _grid[x][y];
-            } else {
-                _best[x][y] = _grid[x][y];
-            }
-        }
-
-        private void FindBestBathFromDown(int x, int y) {
-            decimal fromDown = decimal.MaxValue;
-            if (x < _grid.GetUpperBound(0)) {
-                fromDown = _best[x + 1][y] + _grid[x][y];
-            }
-            if (fromDown < _best[x][y]) {
-                _best[x][y] = fromDown;
-            }
-        }
-
-        private decimal FindBest() {
-            decimal best = decimal.MaxValue;
-            for (int x = 0; x <= _best[1].GetUpperBound(0); x++) {
-                if (_best[x][_best[x].GetUpperBound(0)] < best) {
-                    best = _best[x][_best[x].GetUpperBound(0)];
-                }
-            }
-            return best;
+        private void FindBestPath(int x, int y) {
+            decimal toRight = decimal.MaxValue;
+            decimal toLeft = decimal.MaxValue;
+            decimal toUp = decimal.MaxValue;
+            decimal toDown = decimal.MaxValue;
         }
 
         private void LoadTestGrid() {
