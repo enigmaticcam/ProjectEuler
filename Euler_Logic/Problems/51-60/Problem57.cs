@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem57 : IProblem {
-        private ulong _lastDenominator = 2;
+        private List<int> _denominator = new List<int>();
+        private List<int> _numerator = new List<int>();
 
         public string ProblemName {
             get { return "57: Square root convergents"; }
@@ -19,16 +20,17 @@ namespace Euler_Logic.Problems {
         private int GetTotalCount(int max) {
             int count = 1;
             int total = 0;
-            ulong denominator = 2;
-            ulong numerator = 3;
-            ulong temp = 0;
+            _denominator.Add(2);
+            _numerator.Add(3);
             do {
-                numerator += denominator;
-                temp = numerator;
-                numerator = denominator;
-                denominator = temp;
-                numerator += denominator;
-                if (numerator.ToString().Length > denominator.ToString().Length) {
+                AddDigits(_denominator, _numerator);
+                List<int> temp = new List<int>();
+                AddDigits(_numerator, temp);
+                _numerator = new List<int>();
+                AddDigits(_denominator, _numerator);
+                _denominator = temp;
+                AddDigits(_denominator, _numerator);
+                if (_numerator.Count > _denominator.Count) {
                     total++;
                 }
                 count++;
@@ -36,29 +38,29 @@ namespace Euler_Logic.Problems {
             return total;
         }
 
-        private int Stripulong(string num) {
-            if (num.Contains("E+")) {
-                return num.IndexOf(".") + Convert.ToInt32(num.Substring(num.IndexOf("E+") + 2, num.Length - num.IndexOf("E+") - 2));
-            } else if (num.Contains(".")) {
-                return num.Substring(0, num.IndexOf(".")).Length;
-            } else {
-                return num.Length;
+        private void AddDigits(List<int> from, List<int> to) {
+            int carryOver = 0;
+            int digit = 0;
+            while (digit < from.Count || carryOver > 0) {
+                if (to.Count <= digit) {
+                    to.Add(0);
+                }
+                int sum = 0;
+                if (digit < from.Count) {
+                    sum = from[digit] + to[digit] + carryOver;
+                } else {
+                    sum = to[digit] + carryOver;
+                }
+                string sumText = sum.ToString();
+                if (sumText.Length > 1) {
+                    to[digit] = Convert.ToInt32(sumText.Substring(1, 1));
+                    carryOver = Convert.ToInt32(sumText.Substring(0, 1));
+                } else {
+                    to[digit] = sum;
+                    carryOver = 0;
+                }
+                digit++;
             }
         }
-
-        //private ulong CanBeReduced(ulong denominator, ulong numerator) {
-        //    for (ulong factor = Math.Sqrt(denominator); factor >= 2; factor--) {
-        //        if (denominator % factor == 0 && numerator % factor == 0) {
-        //            return factor;
-        //        }
-        //    }
-        //    return 0;
-        //}
-
-        private ulong NextExpansion(ulong num) {
-            return 1 / (2 + num);
-        }
-
-
     }
 }
