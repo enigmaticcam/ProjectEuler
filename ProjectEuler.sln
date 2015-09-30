@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euler_Logic", "Euler_Logic\Euler_Logic.csproj", "{A6F44BD5-463B-44BF-8F1F-9B0CC0BABBCD}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euler_Test", "Euler_Test\Euler_Test.csproj", "{8904AC9D-87EF-4163-98BB-521C59694AAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Euler_Win", "Euler_Win\Euler_Win.csproj", "{A9326D97-5EC5-408B-BF8D-76C78326DE9E}"
 EndProject
@@ -19,10 +17,6 @@ Global
 		{A6F44BD5-463B-44BF-8F1F-9B0CC0BABBCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6F44BD5-463B-44BF-8F1F-9B0CC0BABBCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6F44BD5-463B-44BF-8F1F-9B0CC0BABBCD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8904AC9D-87EF-4163-98BB-521C59694AAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8904AC9D-87EF-4163-98BB-521C59694AAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8904AC9D-87EF-4163-98BB-521C59694AAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8904AC9D-87EF-4163-98BB-521C59694AAF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9326D97-5EC5-408B-BF8D-76C78326DE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9326D97-5EC5-408B-BF8D-76C78326DE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9326D97-5EC5-408B-BF8D-76C78326DE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU

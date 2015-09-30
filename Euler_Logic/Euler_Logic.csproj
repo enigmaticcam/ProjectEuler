@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Problems\51-60\Problem53.cs" />
     <Compile Include="Problems\51-60\Problem57.cs" />
+    <Compile Include="Problems\51-60\Problem59.cs" />
     <Compile Include="Problems\51-60\Problem60.cs" />
     <Compile Include="Problems\51-60\Problem56.cs" />
     <Compile Include="Problems\81-90\Problem82.cs" />
