@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Euler_Logic.Helpers;
 
 namespace Euler_Logic.Problems {
     public class Problem66 : IProblem {
@@ -14,7 +15,7 @@ namespace Euler_Logic.Problems {
         }
 
         public string GetAnswer() {
-            return FindLargestValue(1000).ToString();
+            return FindLargestValue(7).ToString();
         }
 
         private double FindLargestValue(double max) {
@@ -69,64 +70,6 @@ namespace Euler_Logic.Problems {
             } else {
                 return true;
             }
-        }
-
-        private List<int> Multiply(List<int> product1, List<int> product2) {
-            // Multiple digit by digit
-            List<List<int>> adds = new List<List<int>>();
-            for (int i = 0; i < product1.Count; i++) {
-                List<int> add = new List<int>();
-                for (int k = 0; k < i; k++) {
-                    add.Add(0);
-                }
-                int remainder = 0;
-                for (int j = 0; j < product2.Count; j++) {
-                    int prod = product1[i] * product2[j] + remainder;
-                    if (prod > 9) {
-                        string prodAsString = prod.ToString();
-                        prod = Convert.ToInt32(prodAsString.Substring(1, 1));
-                        remainder = Convert.ToInt32(prodAsString.Substring(0, 1));
-                    }
-                    add.Add(prod);
-                }
-                if (remainder > 0) {
-                    add.Add(remainder);
-                }
-                adds.Add(add);
-            }
-
-            List<int> finalReturn = new List<int>();
-            foreach (int num in adds[0]) {
-                finalReturn.Add(num);
-            }
-            for (int i = 1; i < adds.Count; i++) {
-                int digitCount = Math.Max(adds[i].Count, finalReturn.Count);
-                int remainder = 0;
-                for (int j = 0; j < digitCount; j++) {
-                    int sum = 0;
-                    if (adds[i].Count - 1 < j) {
-                        sum = finalReturn[j] + remainder;
-                    } else if (finalReturn.Count - 1 < j) {
-                        sum = adds[i][j] + remainder;
-                        finalReturn.Add(0);
-                    } else {
-                        sum = adds[i][j] + finalReturn[j] + remainder;
-                    }
-                    if (sum > 9) {
-                        string sumAsString = sum.ToString();
-                        finalReturn[j] = Convert.ToInt32(sumAsString.Substring(1, 1));
-                        remainder = Convert.ToInt32(sumAsString.Substring(0, 1));
-                    } else {
-                        finalReturn[j] = sum;
-                        remainder = 0;
-                    }
-                }
-                if (remainder > 0) {
-                    finalReturn.Add(remainder);
-                }
-            }
-
-            return finalReturn;
         }
     }
 }
