@@ -1,60 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem78 : IProblem {
-        private UInt64[][][] _data;
+        private List<BigInteger> _primes = new List<BigInteger>();
+        private List<Dictionary<BigInteger, BigInteger>> _primeCounts = new List<Dictionary<BigInteger, BigInteger>>();
 
         public string ProblemName {
             get { return "78: Coin Partitions"; }
         }
 
         public string GetAnswer() {
-            UInt64 max = 1;
+            _primeCounts.Add(new Dictionary<BigInteger, BigInteger>());
+            return CountPiles().ToString();
+        }
+
+       private BigInteger CountPiles() {
+            BigInteger num = 1;
             do {
-                max++;
-                BuildSummations(max);
-                if (_data[max][max][max] < 0) {
-                    throw new Exception("uh oh");
+                for (int primeIndex = 0; primeIndex < _primes.Count; primeIndex++) {
+                    BuildSums(num, primeIndex, num);
                 }
-            } while (_data[max][max][max] % 1000000 != 0);
-            return max.ToString();
+                _primes.Add(num);
+                _primeCounts.Add(new Dictionary<BigInteger, BigInteger>());
+                BuildSums(1, _primes.Count - 1, num);
+                BigInteger count = GetCount(_primes.Count - 1, num);
+                if (count != 0 && count % 1000000 == 0) {
+                    return num;
+                }
+                num++;
+            } while (true);
         }
 
-        private void BuildSummations(UInt64 max) {
-            _data = GetArray(max);
-            for (UInt64 fill = 1; fill <= max; fill++) {
-                for (UInt64 count = 0; count <= max; count++) {
-                    for (UInt64 weight = 1; weight <= max; weight++) {
-                        if (count == 0) {
-                            _data[fill][count][weight] = _data[fill - 1][max][weight];
-                        } else {
-                            if (fill * count <= weight) {
-                                _data[fill][count][weight] = _data[fill][count - 1][weight] + _data[fill - 1][max][weight - (fill * count)];
-                                if (weight - (fill * count) == 0) {
-                                    _data[fill][count][weight]++;
-                                }
-                            } else {
-                                _data[fill][count][weight] = _data[fill][count - 1][weight];
-                            }
-                        }
+       private void BuildSums(BigInteger weight, int primeIndex, BigInteger num) {
+           for (BigInteger weightIndex = weight; weightIndex <= num; weightIndex++) {
+               BigInteger tempWeight = 0;
+                while (tempWeight <= weightIndex) {
+                    BigInteger count = GetCount(primeIndex, weightIndex);
+                    if (tempWeight == weightIndex) {
+                        SetCount(primeIndex, weightIndex, count + 1);
+                    } else {
+                        SetCount(primeIndex, weightIndex, count + GetCount(primeIndex - 1, weightIndex - tempWeight));
                     }
+                    tempWeight += _primes[primeIndex];
                 }
             }
         }
 
-        private UInt64[][][] GetArray(UInt64 max) {
-            UInt64[][][] data = new UInt64[max + 1][][];
-            for (UInt64 a = 0; a <= max; a++) {
-                data[a] = new UInt64[max + 1][];
-                for (UInt64 b = 0; b <= max; b++) {
-                    data[a][b] = new UInt64[max + 1];
-                }
+       private BigInteger GetCount(int primeIndex, BigInteger weight) {
+            primeIndex += 1;
+            if (!_primeCounts[primeIndex].ContainsKey(weight)) {
+                _primeCounts[primeIndex].Add(weight, 0);
             }
-            return data;
+            return _primeCounts[primeIndex][weight];
+        }
+
+       private void SetCount(int primeIndex, BigInteger weight, BigInteger value) {
+            primeIndex += 1;
+            if (!_primeCounts[primeIndex].ContainsKey(weight)) {
+                _primeCounts[primeIndex].Add(weight, value);
+            } else {
+                _primeCounts[primeIndex][weight] = value;
+            }
         }
     }
 }
