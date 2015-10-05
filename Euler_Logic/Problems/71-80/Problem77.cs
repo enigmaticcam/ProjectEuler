@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 namespace Euler_Logic.Problems {
     public class Problem77 : IProblem {
         private List<decimal> _primes = new List<decimal>();
-        private Dictionary<decimal, Dictionary<decimal, int>> _primeCounts = new Dictionary<decimal, Dictionary<decimal, int>>();
+        private List<Dictionary<decimal, int>> _primeCounts = new List<Dictionary<decimal, int>>();
 
         public string ProblemName {
             get { return "77: Prime summations"; }
         }
 
         public string GetAnswer() {
-            return PrimeSummations(7).ToString();
+            _primeCounts.Add(new Dictionary<decimal, int>());
+            return PrimeSummations(5000).ToString();
         }
 
         private int PrimeSummations(decimal count) {
@@ -25,48 +26,45 @@ namespace Euler_Logic.Problems {
                 }
                 if (IsPrime(num)) {
                     _primes.Add(num);
-                    SetCount(num, num, 1);
-                    if (num != 2) {
-                        BuildSums(0, _primes.Count - 1, num);
-                    }
+                    _primeCounts.Add(new Dictionary<decimal, int>());
+                    BuildSums(2, _primes.Count - 1, num);
+                }
+                if (GetCount(_primes.Count - 1, num) >= count) {
+                    return (int)num;
                 }
                 num++;
             } while (true);
         }
 
         private void BuildSums(decimal weight, int primeIndex, decimal num) {
-            if (primeIndex > 0) {
-                for (decimal weightIndex = weight; weightIndex <= num; weightIndex++) {
-                    for (int prime = 0; prime <= primeIndex; prime++) {
-                        decimal tempWeight = 0;
-                        while (tempWeight <= weightIndex) {
-                            int count = GetCount(_primes.ElementAt(primeIndex), weightIndex);
-                            SetCount(_primes.ElementAt(primeIndex), weightIndex, count + GetCount(_primes.ElementAt(primeIndex - 1), weightIndex - tempWeight));
-                            tempWeight += _primes[primeIndex];
-                        }
+            for (decimal weightIndex = weight; weightIndex <= num; weightIndex++) {
+                decimal tempWeight = 0;
+                while (tempWeight <= weightIndex) {
+                    int count = GetCount(primeIndex, weightIndex);
+                    if (tempWeight == weightIndex) {
+                        SetCount(primeIndex, weightIndex, count + 1);
+                    } else {
+                        SetCount(primeIndex, weightIndex, count + GetCount(primeIndex - 1, weightIndex - tempWeight));
                     }
+                    tempWeight += _primes[primeIndex];
                 }
             }
         }
 
-        private int GetCount(decimal prime, decimal weight) {
-            if (!_primeCounts.ContainsKey(prime)) {
-                _primeCounts.Add(prime, new Dictionary<decimal, int>());
+        private int GetCount(int primeIndex, decimal weight) {
+            primeIndex += 1;
+            if (!_primeCounts[primeIndex].ContainsKey(weight)) {
+                _primeCounts[primeIndex].Add(weight, 0);
             }
-            if (!_primeCounts[prime].ContainsKey(weight)) {
-                _primeCounts[prime].Add(weight, 0);
-            }
-            return _primeCounts[prime][weight];
+            return _primeCounts[primeIndex][weight];
         }
 
-        private void SetCount(decimal prime, decimal weight, int value) {
-            if (!_primeCounts.ContainsKey(prime)) {
-                _primeCounts.Add(prime, new Dictionary<decimal, int>());
-            }
-            if (!_primeCounts[prime].ContainsKey(weight)) {
-                _primeCounts[prime].Add(weight, value);
+        private void SetCount(int primeIndex, decimal weight, int value) {
+            primeIndex += 1;
+            if (!_primeCounts[primeIndex].ContainsKey(weight)) {
+                _primeCounts[primeIndex].Add(weight, value);
             } else {
-                _primeCounts[prime][weight] = value;
+                _primeCounts[primeIndex][weight] = value;
             }
         }
 
