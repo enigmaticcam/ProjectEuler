@@ -1,29 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Euler_Logic.Helpers;
 
 namespace Euler_Logic.Problems {
     public class Problem66 : IProblem {
-        private decimal _denominator;
-        private decimal _numerator;
+        private BigInteger _denominator;
+        private BigInteger _numerator;
 
         public string ProblemName {
             get { return "66: Diophantine equation"; }
         }
 
         public string GetAnswer() {
-            return FindLargestValue(7).ToString();
+            return FindLargestValue(1000).ToString();
         }
 
         private double FindLargestValue(double max) {
             double bestValue = 0;
-            double bestScore = 0;
+            BigInteger bestScore = 0;
             for (double num = 2; num <= max; num++) {
                 if (!IsSquare(num)) {
-                    double minimum = FindMinimumValue(num);
+                    BigInteger minimum = FindMinimumValue(num);
                     if (minimum > bestScore) {
                         bestScore = minimum;
                         bestValue = num;
@@ -33,33 +34,33 @@ namespace Euler_Logic.Problems {
             return bestValue;
         }
 
-        private double FindMinimumValue(double num) {
+        private BigInteger FindMinimumValue(double num) {
             double m = 0;
             double d = 1;
             double a = (int)Math.Sqrt(num);
-            List<double> aAll = new List<double>();
-            aAll.Add(a);
+            List<BigInteger> aAll = new List<BigInteger>();
+            aAll.Add((BigInteger)a);
             do {
                 m = (d * a) - m;
                 d = (num - (m * m)) / d;
                 a = (int)(((int)(Math.Sqrt(num)) + m) / d);
-                aAll.Add(a);
+                aAll.Add((BigInteger)a);
                 GetFraction(aAll, num);
-                if ((_numerator * _numerator) - ((decimal)num * (_denominator * _denominator)) == 1) {
-                    return (double)_numerator;
+                if ((_numerator * _numerator) - ((BigInteger)num * (_denominator * _denominator)) == 1) {
+                    return _numerator;
                 }
             } while (true);
         }
 
-        private void GetFraction(List<double> a, double num) {
-            _denominator = (decimal)a[a.Count - 1];
+        private void GetFraction(List<BigInteger> a, double num) {
+            _denominator = a[a.Count - 1];
             _numerator = 1;
-            _numerator += _denominator * (decimal)a[a.Count - 2];
+            _numerator += _denominator * a[a.Count - 2];
             for (int index = a.Count - 2; index > 0; index--) {
-                decimal temp = _numerator;
+                BigInteger temp = _numerator;
                 _numerator = _denominator;
                 _denominator = temp;
-                _numerator += _denominator * (decimal)a[index - 1];
+                _numerator += _denominator * a[index - 1];
             }
         }
 

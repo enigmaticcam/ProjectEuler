@@ -180,5 +180,12 @@ namespace Euler_Logic.Helpers {
         public BigNumber(List<int> number) {
             _digits = new List<int>(number);
         }
+
+        public BigNumber(string number) {
+            _digits = new List<int>();
+            for (int index = number.Length - 1; index >= 0; index--) {
+                _digits.Add(Convert.ToInt32(number.Substring(index, 1)));
+            }
+        }
     }
 }
