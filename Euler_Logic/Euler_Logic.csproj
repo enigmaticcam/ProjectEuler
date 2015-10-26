@@ -49,6 +49,7 @@
     <Compile Include="Problems\61-70\Problem64.cs" />
     <Compile Include="Problems\61-70\Problem66.cs" />
     <Compile Include="Problems\61-70\Problem68.cs" />
+    <Compile Include="Problems\61-70\Problem69.cs" />
     <Compile Include="Problems\71-80\Problem71.cs" />
     <Compile Include="Problems\71-80\Problem77.cs" />
     <Compile Include="Problems\71-80\Problem79.cs" />
@@ -125,6 +126,8 @@
     <Compile Include="Problems\1-10\Problem8.cs" />
     <Compile Include="Problems\1-10\Problem9.cs" />
     <Compile Include="Problems\91-100\Problem92.cs" />
+    <Compile Include="Problems\71-80\Problem72.cs" />
+    <Compile Include="Problems\71-80\Problem73.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
