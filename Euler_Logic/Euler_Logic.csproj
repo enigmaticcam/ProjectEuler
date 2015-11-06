@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\BigNumber.cs" />
+    <Compile Include="Problems\071-080\Problem80.cs" />
     <Compile Include="Problems\081-090\Problem87.cs" />
     <Compile Include="Problems\101-110\Problem102.cs" />
     <Compile Include="Problems\111-120\Problem112.cs" />
