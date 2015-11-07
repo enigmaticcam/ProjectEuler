@@ -6,64 +6,71 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem145 : IProblem {
-        private Dictionary<int, ulong> _howManyByDigit = new Dictionary<int, ulong>();
-        private Dictionary<int, ulong> _howManyByDigitWithRemainder = new Dictionary<int, ulong>();
+        private int[] _digits;
+        private ulong _count;
 
         public string ProblemName {
             get { return "145: How many reversible numbers are there below one-billion?"; }
         }
 
         public string GetAnswer() {
-            HowManySingleDigit();
-            HowManyDoubleDigit();
-            HowManyAllDigits(3);
-            return "";
+            GetCountForAllDigits(9);
+            return _count.ToString();
         }
 
-        private void HowManyAllDigits(int maxDigit) {
-            ulong count = 0;
-            for (ulong a = 1; a <= 9; a++) {
-                for (ulong b = 1; b <= 9; b++) {
-                    if ((a + b) % 2 != 0) {
-                        if ((a + b) > 9) {
-                            count += _howManyByDigitWithRemainder[1];
-                        } else {
-                            count += _howManyByDigit[1];
+        private void GetCountForAllDigits(int max) {
+            for (int digit = 2; digit <= max; digit++) {
+                _digits = new int[digit];
+                GetCount(0, 0, true);
+            }
+        }
+
+        private void GetCount(int digit, int remainder, bool isFirst) {
+            if (digit <= _digits.GetUpperBound(0) / 2) {
+                int start = 0;
+                if (isFirst) {
+                    start = 1;
+                }
+                for (int a = start; a <= 9; a++) {
+                    if (digit != (_digits.GetUpperBound(0) + 1) / 2) {
+                        for (int b = start; b <= 9; b++) {
+                            _digits[digit] = a;
+                            _digits[_digits.GetUpperBound(0) - digit] = b;
+                            int sum = a + b + remainder;
+                            int newRemainder = 0;
+                            if (sum > 9) {
+                                newRemainder = 1;
+                            }
+                            if (sum % 2 == 1) {
+                                GetCount(digit + 1, newRemainder, false);
+                            }
+                        }
+                    } else {
+                        _digits[digit] = a;
+                        int sum = a + a + remainder;
+                        int newRemainder = 0;
+                        if (sum > 9) {
+                            newRemainder = 1;
+                        }
+                        if (sum % 2 == 1) {
+                            GetCount(digit + 1, newRemainder, false);
                         }
                     }
                 }
-            }
-        }
-
-        private void HowManySingleDigit() {
-            _howManyByDigit.Add(1, 0);
-            _howManyByDigitWithRemainder.Add(1, 0);
-        }
-
-        private void HowManyDoubleDigit() {
-            ulong count = 0;
-            ulong countWithRemainder = 0;
-            for (ulong a = 1; a <= 9; a++) {
-                for (ulong b = 1; b <= 9; b++) {
-                    if ((a + b) % 2 != 0) {
-                        count++;
-                    }
-                    if ((a + b + 1) % 2 != 0) {
-                        countWithRemainder++;
+            } else {
+                int sum = _digits[digit] + _digits[_digits.GetUpperBound(0) - digit] + remainder;
+                int newRemainder = 0;
+                if (sum > 9) {
+                    newRemainder = 1;
+                }
+                if (sum % 2 == 1) {
+                    if (digit < _digits.GetUpperBound(0)) {
+                        GetCount(digit + 1, newRemainder, false);
+                    } else {
+                        _count++;
                     }
                 }
             }
-            _howManyByDigit.Add(2, count);
-            _howManyByDigitWithRemainder.Add(2, countWithRemainder);
-        }
-
-        private bool HasAllOdds(string number) {
-            for (int index = 0; index < number.Length; index++) {
-                if (Convert.ToInt32(number.Substring(index, 1)) % 2 == 0) {
-                    return false;
-                }
-            }
-            return true;
         }
            
     }
