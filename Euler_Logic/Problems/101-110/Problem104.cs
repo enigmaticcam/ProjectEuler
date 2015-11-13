@@ -7,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem104 : IProblem {
-        private BigInteger _rootOfFivePower = 0;
-        private BigInteger _powerOfTwo = 0;
-        private BigInteger _index = 0;
-        private BigInteger _rootOfFiveNumber = 0;
+        double _phi = (1 + Math.Sqrt(5)) / 2;
 
         public string ProblemName {
             get { return "104: Pandigital Fibonacci ends"; }
@@ -29,8 +26,7 @@ namespace Euler_Logic.Problems {
                 lastTenDigits = lastTenDigitsPrev + lastTenDigits;
                 lastTenDigitsPrev = lastTenDigits - lastTenDigitsPrev;
                 lastTenDigits = lastTenDigits % 1000000000;
-                NextPower(index);
-                if (IsPandigital(lastTenDigits.ToString()) && IsPandigital(GetFirstNineDigits())) {
+                if (IsPandigital(lastTenDigits.ToString()) && IsPandigital(GetFirstNineDigits(index))) {
                     return index;
                 }                
             } while (true);
@@ -45,27 +41,12 @@ namespace Euler_Logic.Problems {
             return true;
         }
 
-        private string GetFirstNineDigits() {
-            BigInteger number = _rootOfFivePower / (_powerOfTwo * (BigInteger)223606797749978);
-            if (number < (BigInteger)1000000000) {
-                return number.ToString();
-            } else {
-                return number.ToString().Substring(0, 9);
-            }
+        private string GetFirstNineDigits(double index) {
+            double log = (index * Math.Log10(_phi)) - Math.Log10(Math.Sqrt(5));
+            double number = Math.Pow(10, log - (ulong)log + 8);
+            return ((ulong)number).ToString();
         }
 
-        private void NextPower(int maxIndex) {
-            if (_rootOfFivePower == 0) {
-                _rootOfFivePower = 100000000000000 + 223606797749978;
-                _powerOfTwo = 2;
-                _index = 1;
-                _rootOfFiveNumber = _rootOfFivePower;
-            }
-            while (_index < maxIndex) {
-                _index++;
-                _rootOfFivePower *= _rootOfFiveNumber;
-                _powerOfTwo *= 2;
-            }
-        }
+        
     }
 }
