@@ -6,102 +6,86 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem75 : IProblem {
-        private HashSet<double> _squares = new HashSet<double>();
-        private List<double> _squaresList;
-        private Dictionary<double, int> _numbers = new Dictionary<double, int>();
-        private HashSet<double> _primes = new HashSet<double>();
 
         public string ProblemName {
             get { return "75: Singular Integer Right Triangles"; }
         }
 
         public string GetAnswer() {
-            double max = 1500000;
-            SievePrimes(max);
-            GenerateSquares(max);
-            NewTest(max);
-            return GetFinalCount(max).ToString();
+            return CalcAllTriangles(1500000).ToString();
         }
 
-        private void GenerateSquares(double max) {
-            for (double num = 2; num <= max; num++) {
-                _squares.Add(num * num);
-            }
-            _squaresList = _squares.ToList();
-        }
-
-        private void NewTest(double max) {
-            _primes.Remove(2);
-            _primes.Remove(3);
-            foreach (double hypotenuse in _primes) {
-                if (!CheckIfHypotenuseIsGood(hypotenuse, max)) {
-                    break;
-                }
-            }
-        }
-
-        private bool CheckIfHypotenuseIsGood(double hypotenuse, double max) {
-            double hypSquared = hypotenuse * hypotenuse;
-            int squareIndex = 0;
-            bool isFirst = true;
-            do {
-                if (_squares.Contains(hypSquared - _squaresList[squareIndex])) {
-                    double a = Math.Sqrt(_squaresList[squareIndex]);
-                    double b = Math.Sqrt(hypSquared - _squaresList[squareIndex]);
-                    if (isFirst && a + b + hypotenuse > max) {
-                        return false;
-                    } else {
-                        isFirst = false;
-                    }
-                    SeiveTrianglePerimeter(a, b, hypotenuse, max);
-                    break;
-                }
-                squareIndex++;
-            } while (_squaresList[squareIndex] < hypSquared / 2);
-            return true;
-        }
-
-        private void SeiveTrianglePerimeter(double a, double b, double hypotenuse, double max) {
-            double compositeFactor = 1;
-            double length = 0;
-            do {
-                length = (a * compositeFactor) + (b * compositeFactor) + (hypotenuse * compositeFactor);
-                if (_numbers.ContainsKey(length)) {
-                    _numbers[length]++;
-                } else {
-                    _numbers.Add(length, 1);
-                }
-                compositeFactor++;
-            } while (length < max);
-        }
-
-        private int GetFinalCount(double max) {
+        public int CalcAllTriangles(int maxPerimeter) {
             int count = 0;
-            List<double> keys = _numbers.Keys.ToList();
-            keys.Sort();
-            foreach (double length in keys) {
-                if (length > max) {
-                    break;
-                }
-                if (_numbers[length] == 1) {
+            for (int s = 12; s <= maxPerimeter; s += 2) {
+                if (IsGood(s)) {
                     count++;
                 }
             }
             return count;
         }
 
-        private void SievePrimes(double max) {
-            HashSet<double> numbers = new HashSet<double>();
-            for (double num = 2; num <= max; num++) {
-                if (!numbers.Contains(num)) {
-                    _primes.Add(num);
-                    double composite = num;
-                    do {
-                        numbers.Add(composite);
-                        composite += num;
-                    } while (composite <= max);
+        private bool IsGood(int s) {
+            // https://projecteuler.net/overview=009
+            int count = 0;
+            int half = s / 2;
+            for (int m = 2; m <= Math.Sqrt(s); m++) {
+                if (s % (2 * m) == 0) {
+                    int odd = s / (2 * m);
+                    int k = m + 1;
+                    if (k % 2 == 0) {
+                        k++;
+                    }
+                    while (k <= odd && k < 2 * m) {
+                        if (odd % k == 0 && IsGCDOne(m, k)) {
+                            //int n = k - m;
+                            //int d = s / (2 * m * k);
+                            //int a = ((m * m) - (n * n)) * d;
+                            //int b = 2 * m * n * d;
+                            //int c = ((m * m) + (n * n)) * d;
+                            //int total = a + b + c;
+                            count++;
+                            if (count > 1) {
+                                return false;
+                            }
+                        }
+                        k += 2;
+                    }
                 }
             }
+            if (count == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private bool IsGCDOne(int a, int b) {
+            int max = 0;
+            if (a > b) {
+                if (a % b == 0) {
+                    return false;
+                }
+                max = (int)Math.Sqrt(b);
+            } else {
+                if (b % a == 0) {
+                    return false;
+                }
+                max = (int)Math.Sqrt(a);
+                a = a + b;
+                b = a - b;
+                a = a - b;
+            }
+            for (int divisor = 2; divisor <= max; divisor++) {
+                if (b % divisor == 0) {
+                    if (a % divisor == 0) {
+                        return false;
+                    } else if (a % (b / divisor) == 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
         
     }
