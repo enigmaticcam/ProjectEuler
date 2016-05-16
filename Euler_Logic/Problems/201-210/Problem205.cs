@@ -6,52 +6,53 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem205 : IProblem {
-        private Dictionary<decimal, decimal> _counts = new Dictionary<decimal, decimal>();
-        private decimal _diceRollCount;
 
         public string ProblemName {
             get { return "205: Dice Game"; }
         }
 
         public string GetAnswer() {
-            decimal a = GetProbability(4, 9);
-            decimal b = GetProbability(6, 6);
-
-            return GetProbability(6, 2).ToString();
+            Dictionary<decimal, decimal> pete = new Dictionary<decimal, decimal>();
+            Dictionary<decimal, decimal> colin = new Dictionary<decimal, decimal>();
+            UpdateCountsRecursive(pete, 4, 8, 0);
+            UpdateCountsRecursive(colin, 6, 5, 0);
+            return CalcDifference(pete, colin).ToString();
         }
 
-        private decimal GetProbability(decimal diceSize, decimal diceCount) {
-            _counts = new Dictionary<decimal, decimal>();
-            _diceRollCount = 0;
-            UpdateCountsRecursive(diceSize, diceCount - 1, 0);
-            return CalcProbability();
+        private decimal CalcDifference(Dictionary<decimal, decimal> setA, Dictionary<decimal, decimal> setB) {
+            decimal winCount = 0;
+            decimal loseCount = 0;
+            decimal drawCount = 0;
+            foreach (decimal numA in setA.Keys) {
+                foreach (decimal numB in setB.Keys) {
+                    if (numA > numB) {
+                        winCount += (setB[numB] * setA[numA]);
+                    } else if (numA == numB) {
+                        drawCount += (setB[numB] * setA[numA]);
+                    } else {
+                        loseCount += (setB[numB] * setA[numA]);
+                    }
+                }
+            }
+            return winCount / (winCount + loseCount + drawCount);
         }
 
-        private void UpdateCountsRecursive(decimal diceSize, decimal diceRemaining, decimal sum) {
+        private void UpdateCountsRecursive(Dictionary<decimal, decimal> rollCounts, decimal diceSize, decimal diceRemaining, decimal sum) {
             for (int die = 1; die <= diceSize; die++) {
                 if (diceRemaining > 0) {
-                    UpdateCountsRecursive(diceSize, diceRemaining - 1, sum + die);
+                    UpdateCountsRecursive(rollCounts, diceSize, diceRemaining - 1, sum + die);
                 } else {
-                    AddToCount(sum + die);
+                    AddToCount(sum + die, rollCounts);
                 }
             }
         }
 
-        private void AddToCount(decimal number) {
-            _diceRollCount++;
-            if (_counts.ContainsKey(number)) {
-                _counts[number] += 1;
+        private void AddToCount(decimal number, Dictionary<decimal, decimal> rollCounts) {
+            if (rollCounts.ContainsKey(number)) {
+                rollCounts[number] += 1;
             } else {
-                _counts.Add(number, 1);
+                rollCounts.Add(number, 1);
             }
-        }
-
-        private decimal CalcProbability() {
-            decimal probability = 0;
-            foreach (decimal num in _counts.Keys) {
-                probability += (_counts[num] / _diceRollCount) * num;
-            }
-            return probability;
         }
     }
 }
