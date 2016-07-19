@@ -19,7 +19,8 @@ namespace Euler_Logic.Problems {
 
         public int Solve(int maxPower) {
             int count = 0;
-            for (int num = 1; num <= Math.Pow(2, maxPower); num++) {
+            int max = (int)Math.Pow(2, maxPower);
+            for (int num = 1; num <= max; num++) {
                 int bits = num | (num * 2);
                 if ((bits ^ (num * 3)) == 0) {
                     count++;
