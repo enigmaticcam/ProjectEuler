@@ -9,33 +9,39 @@ namespace Euler_Logic.Problems {
         private int _colors;
         private int _colorCount;
         private int _pullCount;
-        private double _factorial;
+        private double _sum;
+        private double _count;
         private Dictionary<double, Dictionary<double, double>> _combinations = new Dictionary<double, Dictionary<double, double>>();
         private Dictionary<double, double> _factorials = new Dictionary<double, double>();
+        private List<int> _colorCounts = new List<int>();
 
         public string ProblemName {
             get { return "493: Under The Rainbow"; }
         }
 
         public string GetAnswer() {
-            SetTestParameters();
-            Solve(2, 4);
-            return _count.ToString();
-            return "done";
+            SetProblemParameters();
+            BuildColorCounts();
+            Solve(_colors * _colorCount, _colors, _pullCount);
+            return (_sum / _count).ToString();
         }
 
         private void SetTestParameters() {
-            _colors = 2;
+            _colors = 3;
             _colorCount = 3;
             _pullCount = 2;
-            _factorial = Factorial(_pullCount);
         }
 
         private void SetProblemParameters() {
             _colors = 7;
             _colorCount = 10;
             _pullCount = 20;
-            _factorial = Factorial(_pullCount);
+        }
+
+        private void BuildColorCounts() {
+            for (int count = 0; count < _colors; count++) {
+                _colorCounts.Add(0);
+            }
         }
 
         private double Factorial(double max) {
@@ -54,126 +60,46 @@ namespace Euler_Logic.Problems {
                 _combinations.Add(n, new Dictionary<double, double>());
             }
             if (!_combinations[n].ContainsKey(r)) {
-                _combinations[n].Add(r, Factorial(n) / (Factorial(r) * Factorial(n - r)));
+                if (n == r) {
+                    _combinations[n].Add(r, 1);
+                } else {
+                    _combinations[n].Add(r, Factorial(n) / (Factorial(r) * Factorial(n - r)));
+                }
             }
             return _combinations[n][r];
         }
 
-        private double _count;
-        private void Solve() {
-            
+        private void Solve(int totalRemainingBalls, int colorsLeft, int ballsLeftToPull) {
+            int max = _colorCount;
+            if (colorsLeft == 1) {
+                max = ballsLeftToPull;
+            }
+            for (int ball = max; ball >= 0; ball--) {
+                if (ballsLeftToPull - ball > (colorsLeft - 1) * _colorCount) {
+                    break;
+                }
+                _colorCounts[colorsLeft - 1] += ball;
+                ballsLeftToPull -= ball;
+                colorsLeft -= 1;
+                if (ballsLeftToPull == 0 || colorsLeft == 0) {
+                    double sub = 1;
+                    double colorCount = 0;
+                    for (int color = 0; color < _colorCounts.Count; color++) {
+                        if (_colorCounts[color] > 0) {
+                            sub *= DistinctCombinationsOfSetInSet(_colorCount, _colorCounts[color]);
+                            colorCount += 1;
+                        }
+                    }
+                    sub = Factorial(_pullCount) * sub;
+                    _sum += colorCount * sub;
+                    _count += sub;
+                } else {
+                    Solve(totalRemainingBalls - ball, colorsLeft, ballsLeftToPull);
+                }
+                colorsLeft += 1;
+                _colorCounts[colorsLeft - 1] -= ball;
+                ballsLeftToPull += ball;
+            }
         }
-
-
-        //private Dictionary<string, HashItem> _hash = new Dictionary<string, HashItem>();
-        //private List<int> _balls = new List<int>();
-        //private List<bool> _selectedBalls = new List<bool>();
-        //private Dictionary<int, int> _colorCounts = new Dictionary<int, int>();
-        //private int _colors;
-        //private int _colorCount;
-        //private int _pullCount;
-
-        //public string ProblemName {
-        //    get { return "493: Under The Rainbow"; }
-        //}
-
-        //public string GetAnswer() {
-        //    SetTestParameters();
-        //    BuildBalls();
-        //    //return Solve(0, _pullCount).GetAverage().ToString();
-        //    return Solve(0, _pullCount).Count.ToString();
-        //}
-
-        //private void SetTestParameters() {
-        //    _colors = 2;
-        //    _colorCount = 3;
-        //    _pullCount =4;
-        //}
-
-        //private void SetProblemParameters() {
-        //    _colors = 7;
-        //    _colorCount = 10;
-        //    _pullCount = 20;
-        //}
-
-        //public void BuildBalls() {
-        //    for (int colors = 1; colors <= _colors; colors++) {
-        //        for (int colorCount = 1; colorCount <= _colorCount; colorCount++) {
-        //            _balls.Add((int)Math.Pow(2, colors - 1));
-        //            _selectedBalls.Add(false);
-        //        }
-        //        _colorCounts.Add((int)Math.Pow(2, colors - 1), 0);
-        //    }
-        //}
-
-        //public HashItem Solve(int colorBits, int ballsRemaining) {
-        //    HashItem score = new HashItem();
-        //    for (int ball = 0; ball < _selectedBalls.Count; ball++) {
-        //        if (!_selectedBalls[ball]) {
-        //            bool remove = false;
-        //            if ((colorBits & _balls[ball]) == 0) {
-        //                remove = true;
-        //            }
-        //            colorBits = (colorBits | _balls[ball]);
-        //            _colorCounts[_balls[ball]]++;
-        //            string hashKey = GetColorCountKey();
-        //            if (ballsRemaining == 1) {
-        //                score.Count++;
-        //                score.Sum += (double)CountBitsInInteger(colorBits);
-        //            } else if (_hash.ContainsKey(hashKey)) {
-        //                HashItem next = _hash[hashKey];
-        //                score.Merge(next);
-        //            } else {
-        //                _selectedBalls[ball] = true;
-        //                HashItem next = Solve(colorBits, ballsRemaining - 1);
-        //                score.Merge(next);
-        //                _selectedBalls[ball] = false;
-        //                _hash.Add(hashKey, new HashItem(next));
-        //            }
-        //            if (remove) {
-        //                colorBits = (colorBits ^ _balls[ball]);
-        //            }
-        //            _colorCounts[_balls[ball]]--;
-        //        }
-        //    }
-        //    return score;
-        //}
-
-        //private int CountBitsInInteger(int i) {
-        //    i = i - ((i >> 1) & 0x55555555);
-        //    i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
-        //    return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
-        //}
-
-        //private string GetColorCountKey() {
-        //    StringBuilder key = new StringBuilder();
-        //    foreach (int color in _colorCounts.Keys) {
-        //        key.Append(_colorCounts[color] + ";");
-        //    }
-        //    return key.ToString();
-        //}
-
-        //public class HashItem {
-        //    public double Count { get; set; }
-        //    public double Sum { get; set; }
-
-        //    public void Merge(HashItem item) {
-        //        this.Count += item.Count;
-        //        this.Sum += item.Sum;
-        //    }
-
-        //    public double GetAverage() {
-        //        return this.Sum / this.Count;
-        //    }
-
-        //    public HashItem() {
-
-        //    }
-
-        //    public HashItem(HashItem copyFrom) {
-        //        this.Count = copyFrom.Count;
-        //        this.Sum = copyFrom.Sum;
-        //    }
-        //}
     }
 }
