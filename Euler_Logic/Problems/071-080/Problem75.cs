@@ -28,7 +28,6 @@ namespace Euler_Logic.Problems {
         private bool IsGood(int s) {
             // https://projecteuler.net/overview=009
             int count = 0;
-            int half = s / 2;
             for (int m = 2; m <= Math.Sqrt(s); m++) {
                 if (s % (2 * m) == 0) {
                     int odd = s / (2 * m);
@@ -38,12 +37,12 @@ namespace Euler_Logic.Problems {
                     }
                     while (k <= odd && k < 2 * m) {
                         if (odd % k == 0 && IsGCDOne(m, k)) {
-                            //int n = k - m;
-                            //int d = s / (2 * m * k);
-                            //int a = ((m * m) - (n * n)) * d;
-                            //int b = 2 * m * n * d;
-                            //int c = ((m * m) + (n * n)) * d;
-                            //int total = a + b + c;
+                            int n = k - m;
+                            int d = s / (2 * m * k);
+                            int a = ((m * m) - (n * n)) * d;
+                            int b = 2 * m * n * d;
+                            int c = ((m * m) + (n * n)) * d;
+                            int total = a + b + c;
                             count++;
                             if (count > 1) {
                                 return false;
