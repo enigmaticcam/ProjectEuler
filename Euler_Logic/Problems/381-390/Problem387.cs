@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 namespace Euler_Logic.Problems {
     public class Problem387 : IProblem {
         private HashSet<string> _hashadNumbers = new HashSet<string>();
-        private bool[] _notPrimes;
+        private HashSet<ulong> _strongTruncatable = new HashSet<ulong>();
 
         public string ProblemName {
             get { return "387: Harshad Numbers"; }
         }
 
         public string GetAnswer() {
-            ulong max = 10000;
-            SievePrimes(max - 1);
-            GenerateHashadNumbers("", max.ToString().Length);
-            return Solve(max - 1).ToString();
+            GenerateHashadNumbers("", 14);
+            GenerateStrongTruncatablePrimes();
+            return Sum().ToString();
         }
 
         public void GenerateHashadNumbers(string num, int maxLength) {
@@ -28,14 +27,30 @@ namespace Euler_Logic.Problems {
             for (int nextDigit = start; nextDigit <= 9; nextDigit++) {
                 string newNum = num + nextDigit.ToString();
                 if (IsHashad(newNum)) {
-                    if (newNum.Length > 1) {
-                        _hashadNumbers.Add(newNum);
-                    }
-                    if (newNum.Length < maxLength) {
+                    if (newNum.Length < maxLength - 1) {
                         GenerateHashadNumbers(newNum, maxLength);
                     }
                 }
             }
+        }
+
+        private void GenerateStrongTruncatablePrimes() {
+            foreach (string num in _hashadNumbers) {
+                for (int digit = 1; digit <= 9; digit++) {
+                    ulong newNum = Convert.ToUInt64(num + digit.ToString());
+                    if (IsPrime(newNum)) {
+                        _strongTruncatable.Add(newNum);
+                    }
+                }
+            }
+        }
+
+        private ulong Sum() {
+            ulong sum = 0;
+            foreach (ulong num in _strongTruncatable) {
+                sum += num;
+            }
+            return sum;
         }
 
         private bool IsHashad(string num) {
@@ -43,32 +58,31 @@ namespace Euler_Logic.Problems {
             for (int index = 0; index < num.Length; index++) {
                 sum += Convert.ToUInt64(num.Substring(index, 1));
             }
-            if (Convert.ToUInt64(num) % sum == 0 && !_notPrimes[sum]) {
+            if (Convert.ToUInt64(num) % sum == 0) {
+                if (IsPrime(Convert.ToUInt64(num) / sum) && num.Length > 1) {
+                    _hashadNumbers.Add(num);
+                }
                 return true;
             } else {
                 return false;
             }
         }
 
-        private void SievePrimes(ulong max) {
-            _notPrimes = new bool[max + 2];
-            for (ulong num = 2; num <= max; num++) {
-                if (!_notPrimes[num]) {
-                    for (ulong composite = num * 2; composite <= max + 1; composite += num) {
-                        _notPrimes[composite] = true;
+        private bool IsPrime(ulong num) {
+            if (num == 1) {
+                return false;
+            } else if (num == 2) {
+                return true;
+            } else if (num % 2 == 0) {
+                return false;
+            } else {
+                for (ulong composite = 3; composite <= (ulong)Math.Sqrt(num); composite += 2) {
+                    if (num % composite == 0) {
+                        return false;
                     }
                 }
             }
-        }
-
-        private ulong Solve(ulong max) {
-            ulong sum = 0;
-            for (ulong num = 11; num <= max; num += 2) {
-                if (!_notPrimes[num] && _hashadNumbers.Contains(num.ToString().Substring(0, num.ToString().Length - 1))) {
-                    sum += num;
-                }
-            }
-            return sum;
+            return true;
         }
     }
 }
