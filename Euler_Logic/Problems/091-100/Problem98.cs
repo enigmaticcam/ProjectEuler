@@ -8,57 +8,118 @@ namespace Euler_Logic.Problems {
     public class Problem98 : IProblem {
         private List<string> _words = new List<string>();
         private HashSet<string> _letters = new HashSet<string>();
-        private Dictionary<int, List<int[]>> _substitutions = new Dictionary<int, List<int[]>>();
+        private HashSet<string> _firstLetters = new HashSet<string>();
+        private List<WordPair> _wordPairs = new List<WordPair>();
+        private int[] _digits = new int[10];
+        private int _highest = 0;
+        private List<int> _allDigits = new List<int>();
+        private List<int> _firstDigits = new List<int>();
 
         public string ProblemName {
             get { return "98: Anagramic squares"; }
         }
 
         public string GetAnswer() {
+            BuildDigits();
             LoadWords();
+            BuildWordPairs();
             Solve();
-            return "done";
+            return _highest.ToString();
         }
 
-        private void Solve() {
+        private void BuildDigits() {
+            _allDigits.Add(0);
+            _allDigits.Add(1);
+            _allDigits.Add(2);
+            _allDigits.Add(3);
+            _allDigits.Add(4);
+            _allDigits.Add(5);
+            _allDigits.Add(6);
+            _allDigits.Add(7);
+            _allDigits.Add(8);
+            _allDigits.Add(9);
+            _firstDigits.Add(0);
+            _firstDigits.Add(1);
+            _firstDigits.Add(4);
+            _firstDigits.Add(5);
+            _firstDigits.Add(6);
+            _firstDigits.Add(9);
+        }
+
+        private void BuildWordPairs() {
             for (int index1 = 0; index1 < _words.Count - 1; index1++) {
                 string wordA = _words[index1];
                 for (int index2 = index1 + 1; index2 < _words.Count; index2++) {
                     string wordB = _words[index2];
                     if (IsAnagram(wordA, wordB) && !IsPalindrome(wordA, wordB)) {
-                        IsWordPair(wordA, wordB);
+                        _wordPairs.Add(new WordPair(wordA, wordB));
                     }
                 }   
             }
+            _wordPairs = _wordPairs.OrderByDescending(x => x.WordA.Length).ToList();
         }
 
-        private void IsWordPair(string wordA, string wordB) {
-            FindUniqueLetters(wordA);
-            if (!_substitutions.ContainsKey(_letters.Count)) {
-                GenerateSubstitutions(new int[_letters.Count], _letters.Count, 0);
-            }
-        }
-
-        private void GenerateSubstitutions(int[] digits, int length, int index) {
-            for (int digit = 0; digit <= 9; digit++) {
-                digits[index] = digit;
-                if (index == length - 1) {
-                    int[] toAdd = new int[length];
-                    Array.Copy(digits, toAdd, length);
-                    if (!_substitutions.ContainsKey(length)) {
-                        _substitutions.Add(length, new List<int[]>());
-                    }
-                    _substitutions[length].Add(toAdd);
-                } else {
-                    GenerateSubstitutions(digits, length, index + 1);
+        private void Solve() {
+            foreach (WordPair pair in _wordPairs) {
+                IsWordPair(pair.WordA, pair.WordB);
+                if (_highest > 0) {
+                    break;
                 }
             }
         }
 
-        private void FindUniqueLetters(string word) {
+        private void IsWordPair(string wordA, string wordB) {
+            FindUniqueLetters(wordA, wordB);
+            GenerateSubstitutions(_letters.Count - 1, 0, 0, wordA, wordB);
+        }
+
+        private void GenerateSubstitutions(int length, int index, int bits, string wordA, string wordB) {
+            List<int> digits = _allDigits;
+            if (_firstLetters.Contains(_letters.ElementAt(index))) {
+                digits = _firstDigits;
+            }
+            for (int num = 0; num < digits.Count; num++) {
+                _digits[index] = digits[num];
+                int bit = (int)Math.Pow(2, digits[num]);
+                if ((bit & bits) == 0) {
+                    bits += bit;
+                    if (length == index) {
+                        ExecuteSubstitution(wordA, wordB);
+                    } else {
+                        GenerateSubstitutions(length, index + 1, bits, wordA, wordB);
+                    }
+                    bits -= bit;
+                }
+            }
+        }
+
+        private void ExecuteSubstitution(string wordA, string wordB) {
+            for (int index = 0; index < _letters.Count; index++) {
+                wordA = wordA.Replace(_letters.ElementAt(index), _digits[index].ToString());
+                wordB = wordB.Replace(_letters.ElementAt(index), _digits[index].ToString());
+            }
+            if (wordA.Substring(0, 1) != "0" && wordB.Substring(0, 1) != "0") {
+                int numberA = Convert.ToInt32(wordA);
+                int numberB = Convert.ToInt32(wordB);
+                int rootA = (int)Math.Sqrt(numberA);
+                int rootB = (int)Math.Sqrt(numberB);
+                if (rootA * rootA == numberA && rootB * rootB == numberB) {
+                    int max = Math.Max(numberA, numberB);
+                    if (max > _highest) {
+                        _highest = max;
+                    }
+                }
+            }
+        }
+
+        private void FindUniqueLetters(string wordA, string wordB) {
             _letters.Clear();
-            for (int index = 0; index < word.Length; index++) {
-                _letters.Add(word.Substring(index, 1));
+            _firstLetters.Clear();
+            _firstLetters.Add(wordA.Substring(wordA.Length - 1, 1));
+            _firstLetters.Add(wordB.Substring(wordB.Length - 1, 1));
+            for (int index = 0; index < wordA.Length; index++) {
+                string digit = wordA.Substring(index, 1);
+                _letters.Add(digit);
             }
         }
 
@@ -82,6 +143,16 @@ namespace Euler_Logic.Problems {
                 }
             }
             return true;
+        }
+
+        private class WordPair {
+            public string WordA { get; set; }
+            public string WordB { get; set; }
+
+            public WordPair(string wordA, string wordB) {
+                this.WordA = wordA;
+                this.WordB = wordB;
+            }
         }
 
         private void LoadWords() {
