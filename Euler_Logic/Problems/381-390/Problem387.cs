@@ -76,7 +76,8 @@ namespace Euler_Logic.Problems {
             } else if (num % 2 == 0) {
                 return false;
             } else {
-                for (ulong composite = 3; composite <= (ulong)Math.Sqrt(num); composite += 2) {
+                ulong max = (ulong)Math.Sqrt(num);
+                for (ulong composite = 3; composite <= max; composite += 2) {
                     if (num % composite == 0) {
                         return false;
                     }
