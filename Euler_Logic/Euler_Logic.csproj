@@ -45,6 +45,7 @@
     <Compile Include="Problems\081-090\Problem84.cs" />
     <Compile Include="Problems\081-090\Problem86.cs" />
     <Compile Include="Problems\081-090\Problem87.cs" />
+    <Compile Include="Problems\081-090\Problem88.cs" />
     <Compile Include="Problems\081-090\Problem90.cs" />
     <Compile Include="Problems\091-100\Problem91.cs" />
     <Compile Include="Problems\091-100\Problem93.cs" />
