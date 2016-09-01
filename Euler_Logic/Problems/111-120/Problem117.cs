@@ -26,13 +26,14 @@ namespace Euler_Logic.Problems {
 
         private ulong Solve(ulong maxLength) {
             _data = new ulong[maxLength + 1];
-            for (int blockIndex = 0; blockIndex < _blocks.Count; blockIndex++) {
-                for (ulong length = _blocks[blockIndex]; length <= maxLength; length++) {
-                    for (ulong position = 0; position < length - _blocks[blockIndex]; position++) {
-                        _data[length] += 1 + _data[length - _blocks[blockIndex] - position];
-                        _data[length] += _data[position];
+            for (ulong length = 1; length <= maxLength; length++) {
+                for (int blockIndex = 0; blockIndex < _blocks.Count; blockIndex++) {
+                    if (_blocks[blockIndex] <= length) {
+                        for (ulong position = 0; position < length - _blocks[blockIndex]; position++) {
+                            _data[length] += 1 + _data[length - _blocks[blockIndex] - position];
+                        }
+                        _data[length] += 1;
                     }
-                    _data[length] += 1;
                 }
             }
             return _data[maxLength] + 1;
