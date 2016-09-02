@@ -123,6 +123,7 @@ namespace Euler_Win {
             _problems.Add(new Problem115());
             _problems.Add(new Problem116());
             _problems.Add(new Problem117());
+            _problems.Add(new Problem118());
             _problems.Add(new Problem124());
             _problems.Add(new Problem125());
             _problems.Add(new Problem145());
