@@ -11,15 +11,13 @@ namespace Euler_Logic.Problems {
         }
 
         public string GetAnswer() {
-            return GetCount(360).ToString();
-            return FindLeastValue(11).ToString();
+            return FindLeastValue(300).ToString();
         }
 
         private decimal FindLeastValue(decimal maxCount) {
             decimal number = 2;
             do {
-                //decimal count = GetCount(number);
-                decimal count = CountTest(number);
+                decimal count = GetCount(number);
                 if (count > maxCount) {
                     return number;
                 }
@@ -31,12 +29,8 @@ namespace Euler_Logic.Problems {
         private decimal GetCount(decimal denominator) {
             decimal count = 0;
             for (decimal num = denominator + 1; num <= denominator * 2; num++) {
-                decimal multiple = LowestMultiple(num, denominator);
-                decimal reduced = (multiple / denominator) - 1;
-                if (multiple % reduced == 0) {
+                if ((denominator * num) % (num - denominator) == 0) {
                     count++;
-                    //_results.Add(denominator + ":" + (num - denominator).ToString());
-                    _results.Add(denominator + ":" + num);
                 }
             }
             return count;
