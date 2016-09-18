@@ -28,7 +28,8 @@ namespace Euler_Logic.Problems {
         private List<string> _results = new List<string>();
         private decimal GetCount(decimal denominator) {
             decimal count = 0;
-            for (decimal num = denominator + 1; num <= denominator * 2; num++) {
+            decimal max = denominator + (denominator / 2);
+            for (decimal num = denominator + 1; num <= max; num++) {
                 if ((denominator * num) % (num - denominator) == 0) {
                     count++;
                 }
