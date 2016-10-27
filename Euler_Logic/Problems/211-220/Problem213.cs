@@ -14,8 +14,8 @@ namespace Euler_Logic.Problems {
         }
 
         public string GetAnswer() {
-            int size = 4;
-            int bellCount = 1;
+            int size = 30;
+            int bellCount = 50;
             Initialize(size);
             BuildGrid(size, bellCount);
             return Solve(size).ToString();
