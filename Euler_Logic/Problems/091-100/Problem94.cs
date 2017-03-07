@@ -18,20 +18,21 @@ namespace Euler_Logic.Problems {
             return _sum.ToString();
         }
 
-        private void Solve(double max) {
-            double num = 3;
-            do {
-                TryTriangle(num, num, num + 1, max);
-                TryTriangle(num, num, num - 1, max);
-                num += 2;
-            } while (num * 2 + num - 1 <= max);
-        }
+        //private void Solve(double max) {
+        //    double num = 3;
+        //    do {
+        //        TryTriangle(num, num, num + 1, max);
+        //        TryTriangle(num, num, num - 1, max);
+        //        num += 2;
+        //    } while (num * 2 + num - 1 <= max);
+        //}
 
         //private void TryTriangle(double a, double b, double c, double max) {
         //    double p = (a + b + c) / 2;
-        //    double area = Math.Sqrt(p * (p - a) * (p - b) * (p - c));
+        //    double test = p * (p - a) * (p - b) * (p - c);
+        //    double area = (ulong)Math.Sqrt(test);
 
-        //    if ((ulong)area == area) {
+        //    if (area * area == test) {
         //        ulong sum = (ulong)(a + b + c);
         //        if (sum <= max) {
         //            _sum += sum;
@@ -39,17 +40,11 @@ namespace Euler_Logic.Problems {
         //    }
         //}
 
-        private void TryTriangle(double a, double b, double c, double max) {
-            double p = (a + b + c) / 2;
-            double test = p * (p - a) * (p - b) * (p - c);
-            double area = (ulong)Math.Sqrt(test);
+        private void Solve(ulong max) {
+            ulong p = 16;
+            do {
 
-            if (area * area == test) {
-                ulong sum = (ulong)(a + b + c);
-                if (sum <= max) {
-                    _sum += sum;
-                }
-            }
+            } while (p <= max);
         }
     }
 }

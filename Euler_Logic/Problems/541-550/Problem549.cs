@@ -13,7 +13,7 @@ namespace Euler_Logic.Problems {
         }
 
         public string GetAnswer() {
-            uint max = 100000000;
+            uint max = 10000000;
             SievePrimes(max);
             return Solve(max).ToString();
         }
