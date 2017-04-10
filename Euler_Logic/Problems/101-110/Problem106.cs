@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem106 : IProblem {
+    public class Problem106 : ProblemBase {
         private List<SubsetCompare> _subsetsToCompare = new List<SubsetCompare>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "106: Special subset sums: meta-testing"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildSubsetsToCompare(7);
             return Solve().ToString();
         }

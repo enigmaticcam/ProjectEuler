@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem64 : IProblem {
+    public class Problem64 : ProblemBase {
         private HashSet<string> _seenBefore = new HashSet<string>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "64: Odd period square roots"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return CountOddPeriods(10000).ToString();
         }
 

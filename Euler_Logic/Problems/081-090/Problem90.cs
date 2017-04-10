@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem90 : IProblem {
+    public class Problem90 : ProblemBase {
         private List<HashSet<int>> _combos = new List<HashSet<int>>();
         private List<int[]> _squares = new List<int[]>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "90: Cube digit pairs"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildSquares();
             BuildCombos(new int[6], 0, -1);
             return Solve().ToString();

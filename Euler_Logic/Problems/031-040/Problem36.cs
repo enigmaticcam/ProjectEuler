@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem36 : IProblem {
-        public string ProblemName {
+    public class Problem36 : ProblemBase {
+        public override string ProblemName {
             get { return "36: Double-base palindromes"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return GetPalindromicNums().ToString();
         }
 

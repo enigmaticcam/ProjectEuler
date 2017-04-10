@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem179 : IProblem {
+    public class Problem179 : ProblemBase {
         private int[] _divisorCount;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "179: Consecutive positive divisors"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return SieveDivisors((int)Math.Pow(10, 7)).ToString();
         }
 

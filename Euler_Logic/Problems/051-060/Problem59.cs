@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem59 : IProblem {
+    public class Problem59 : ProblemBase {
         private List<int> _message = new List<int>();
         private List<int> _key = new List<int>();
         private List<int> _result = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "59: XOR decryption"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadMessage();
             LoadKey();
             return SumOfASCII().ToString();

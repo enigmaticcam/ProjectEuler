@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem115 : IProblem {
+    public class Problem115 : ProblemBase {
         private List<int> _data = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "115: Counting block combinations II"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             Initialize();
             return Solve().ToString();
         }

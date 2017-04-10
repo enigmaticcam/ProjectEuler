@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem315 : IProblem {
+    public class Problem315 : ProblemBase {
         private List<ulong> _primes = new List<ulong>();
         private bool[] _notPrimes;
         private Dictionary<ulong, ulong> _bits = new Dictionary<ulong, ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "315: Digital root clocks"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             SievePrimes(10000000, 20000000);
             //Test();
             BuildBits();

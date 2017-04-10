@@ -27,6 +27,8 @@
             this.cmdGo = new System.Windows.Forms.Button();
             this.txtAnswer = new System.Windows.Forms.TextBox();
             this.lblTime = new System.Windows.Forms.Label();
+            this.txtFileInput = new System.Windows.Forms.TextBox();
+            this.cmdFileInput = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lstProblems
@@ -35,6 +37,7 @@
             this.lstProblems.Name = "lstProblems";
             this.lstProblems.Size = new System.Drawing.Size(301, 355);
             this.lstProblems.TabIndex = 0;
+            this.lstProblems.SelectedIndexChanged += new System.EventHandler(this.lstProblems_SelectedIndexChanged);
             this.lstProblems.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstProblems_MouseDoubleClick);
             // 
             // cmdGo
@@ -58,16 +61,37 @@
             // lblTime
             // 
             this.lblTime.AutoSize = true;
-            this.lblTime.Location = new System.Drawing.Point(91, 409);
+            this.lblTime.Location = new System.Drawing.Point(91, 438);
             this.lblTime.Name = "lblTime";
             this.lblTime.Size = new System.Drawing.Size(0, 13);
             this.lblTime.TabIndex = 3;
+            // 
+            // txtFileInput
+            // 
+            this.txtFileInput.Enabled = false;
+            this.txtFileInput.Location = new System.Drawing.Point(94, 405);
+            this.txtFileInput.Name = "txtFileInput";
+            this.txtFileInput.Size = new System.Drawing.Size(220, 20);
+            this.txtFileInput.TabIndex = 4;
+            // 
+            // cmdFileInput
+            // 
+            this.cmdFileInput.Enabled = false;
+            this.cmdFileInput.Location = new System.Drawing.Point(13, 402);
+            this.cmdFileInput.Name = "cmdFileInput";
+            this.cmdFileInput.Size = new System.Drawing.Size(75, 23);
+            this.cmdFileInput.TabIndex = 5;
+            this.cmdFileInput.Text = "File Input:";
+            this.cmdFileInput.UseVisualStyleBackColor = true;
+            this.cmdFileInput.Click += new System.EventHandler(this.cmdFileInput_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 431);
+            this.ClientSize = new System.Drawing.Size(328, 460);
+            this.Controls.Add(this.cmdFileInput);
+            this.Controls.Add(this.txtFileInput);
             this.Controls.Add(this.lblTime);
             this.Controls.Add(this.txtAnswer);
             this.Controls.Add(this.cmdGo);
@@ -86,5 +110,7 @@
         private System.Windows.Forms.Button cmdGo;
         private System.Windows.Forms.TextBox txtAnswer;
         private System.Windows.Forms.Label lblTime;
+        private System.Windows.Forms.TextBox txtFileInput;
+        private System.Windows.Forms.Button cmdFileInput;
     }
 }

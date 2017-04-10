@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem213 : IProblem {
+    public class Problem213 : ProblemBase {
         private decimal[,] _grid;
         private decimal[,] _adjacent;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "213: Flea Circus"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int size = 30;
             int bellCount = 50;
             Initialize(size);
@@ -95,11 +95,11 @@ namespace Euler_Logic.Problems {
         //private PossibleMoves[,] _moves;
         //private int[,] _fleaCounts;
 
-        //public string ProblemName {
+        //public override string ProblemName {
         //    get { return "213: Flea Circus"; }
         //}
 
-        //public string GetAnswer() {
+        //public override string GetAnswer() {
         //    int gridSize = 4;
         //    int bellCount = 2;
         //    return Solve(gridSize, bellCount).ToString();

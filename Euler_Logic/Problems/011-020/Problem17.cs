@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem17 : IProblem {
+    public class Problem17 : ProblemBase {
         private Dictionary<int, int> _numToTextCount = new Dictionary<int, int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "17: Number letter counts"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildOneToTen();
             BuildElevenToNineteen();
             BuildTwentyToNinetyNine();

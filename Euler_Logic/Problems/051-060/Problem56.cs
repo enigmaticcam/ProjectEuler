@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem56 : IProblem {
-        public string ProblemName {
+    public class Problem56 : ProblemBase {
+        public override string ProblemName {
             get { return "56: Powerful digit sum"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return BestDigitSum().ToString();
         }
 

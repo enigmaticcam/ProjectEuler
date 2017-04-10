@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem174 : IProblem {
+    public class Problem174 : ProblemBase {
         private Dictionary<ulong, int> _counts = new Dictionary<ulong, int>();
         private Dictionary<int, int> _countOfCounts = new Dictionary<int, int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "174: Counting the number of 'hollow' square laminae that can form one, two, three, ... distinct arrangements"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildCounts(1000000);
             CountCounts();
             return Solve(10).ToString();

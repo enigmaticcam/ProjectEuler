@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem80 : IProblem {
+    public class Problem80 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "80: Square root digital expansion"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindTotalSum().ToString();
         }
 

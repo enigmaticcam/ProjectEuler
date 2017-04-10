@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem122 : IProblem {
+    public class Problem122 : ProblemBase {
         private int[] _sums;
         private List<int> _current;
         private int _nextNumber;
@@ -13,11 +13,11 @@ namespace Euler_Logic.Problems {
         private int _lastMax;
         private int _sum = 0;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "122: Efficient exponentiation"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int max = 10;
             Initialize(max);
             return Solve(max).ToString();

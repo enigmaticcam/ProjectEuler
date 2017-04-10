@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem145 : IProblem {
+    public class Problem145 : ProblemBase {
         private int[] _digits;
         private ulong _count;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "145: How many reversible numbers are there below one-billion?"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GetCountForAllDigits(9);
             return _count.ToString();
         }

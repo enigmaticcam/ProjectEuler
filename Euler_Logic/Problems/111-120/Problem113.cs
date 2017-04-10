@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem113 : IProblem {
+    public class Problem113 : ProblemBase {
         private int[,] _counts;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "113: Non-bouncy numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             Solve(6);
             return "done";
         }

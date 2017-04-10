@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem85 : IProblem {
+    public class Problem85 : ProblemBase {
         private Dictionary<ulong, ulong> _colCountsPerRow = new Dictionary<ulong, ulong>();
         private ulong _maxColCount = 1;
         private HashSet<ulong> _seenBefore = new HashSet<ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "85: Counting rectangles"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _colCountsPerRow.Add(1, 1);
             return FindSquare().ToString();
         }

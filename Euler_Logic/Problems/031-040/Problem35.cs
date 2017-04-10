@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem35 : IProblem {
+    public class Problem35 : ProblemBase {
         private HashSet<string> _primes = new HashSet<string>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "35: Circular primes"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return CircularPrimeCount().ToString();
         }
 

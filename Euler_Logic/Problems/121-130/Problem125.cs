@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem125 : IProblem {
+    public class Problem125 : ProblemBase {
         private HashSet<decimal> _palindromes = new HashSet<decimal>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "125: Palindromic sums"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GeneratePalindromes(100000000);
             return GetPalindromeSum().ToString();
         }

@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem37 : IProblem {
+    public class Problem37 : ProblemBase {
         private Dictionary<decimal, bool> _primes = new Dictionary<decimal, bool>();
         private HashSet<string> _finished = new HashSet<string>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "37: Truncatable primes"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return GetPrimeCount().ToString();
         }
 

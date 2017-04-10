@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem89 : IProblem {
+    public class Problem89 : ProblemBase {
         private List<string> _romans = new List<string>();
         private Dictionary<string, int> _romanToNum = new Dictionary<string, int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "89: Roman Numerals"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadAll();
             InitializeRef();
             return FindSumOfSaved().ToString();

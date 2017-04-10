@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem39 : IProblem {
+    public class Problem39 : ProblemBase {
         private Dictionary<double, int> _counts = new Dictionary<double, int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "39: Integer right triangles"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GetBestRightTriangle();
             return BestValue().ToString();
         }

@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem83 : IProblem {
+    public class Problem83 : ProblemBase {
         private double[][] _grid;
         private Node[][] _nodeRef;
         private List<Node> _nodes = new List<Node>();
         private HashSet<Node> _unvisited = new HashSet<Node>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "83: Path sum: four ways"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadProblemGrid();
             Initialize();
             return FindBestPath().ToString();

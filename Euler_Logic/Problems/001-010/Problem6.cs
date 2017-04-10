@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem6 : IProblem {
-        public string ProblemName {
+    public class Problem6 : ProblemBase {
+        public override string ProblemName {
             get { return "6: Sum square difference"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindSumSquareDiff(100).ToString();
         }
 

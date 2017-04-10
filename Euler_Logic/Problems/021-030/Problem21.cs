@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem21 : IProblem {
+    public class Problem21 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "21: Amicable numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return CountAmicables().ToString();
         }
 

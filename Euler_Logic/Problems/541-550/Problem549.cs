@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem549 : IProblem {
+    public class Problem549 : ProblemBase {
         private bool[] _notPrimes;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "549: Divisibility of factorials"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             uint max = 10000000;
             SievePrimes(max);
             return Solve(max).ToString();

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem71 : IProblem {
-        public string ProblemName {
+    public class Problem71 : ProblemBase {
+        public override string ProblemName {
             get { return "71: Ordered Fractions"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return GetFraction(1000000).ToString();
         }
 

@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem102 : IProblem {
+    public class Problem102 : ProblemBase {
         private Point _origin;
         private Triangle _triangleWithOrigin;
         private List<Triangle> _triangles = new List<Triangle>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "102: Triangle Containment"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _origin = new Point(0, 0);
             _triangleWithOrigin = new Triangle(null, null, _origin);
 

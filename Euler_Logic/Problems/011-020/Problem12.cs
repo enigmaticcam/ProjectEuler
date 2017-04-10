@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem12 : IProblem {
-        public string ProblemName {
+    public class Problem12 : ProblemBase {
+        public override string ProblemName {
             get { return "12: Highly divisible triangular number"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindMostFactors(500).ToString();
         }
 

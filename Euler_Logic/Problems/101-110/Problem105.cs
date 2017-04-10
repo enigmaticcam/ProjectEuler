@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem105 : IProblem {
+    public class Problem105 : ProblemBase {
         private List<List<int>> _testSets = new List<List<int>>();
         private Dictionary<int, List<SubsetCompare>> _compares = new Dictionary<int, List<SubsetCompare>>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "105: Special subset sums: testing"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildTestSets();
             BuildCompares();
             return Solve().ToString();

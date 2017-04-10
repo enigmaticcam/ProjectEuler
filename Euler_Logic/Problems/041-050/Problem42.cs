@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem42 : IProblem {
+    public class Problem42 : ProblemBase {
         private Dictionary<string, int> _alphabet = new Dictionary<string, int>();
         private HashSet<decimal> _triangleNums = new HashSet<decimal>();
         private List<string> _texts = new List<string>();
         private decimal _highestTriangleNum = 0;
         private decimal _highestTriangleIndex = 0;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "42: Coded triangle numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildAlphabet();
             LoadTexts();
             return CountTrianglesInTexts().ToString();

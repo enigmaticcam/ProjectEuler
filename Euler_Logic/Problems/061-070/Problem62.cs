@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem62 : IProblem {
+    public class Problem62 : ProblemBase {
         private Dictionary<string, List<decimal>> _cubes;
         private decimal _lastCubeRoot;
         private int _lastDigitCount;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "62: Cubic permutations"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _lastCubeRoot = 1;
             GenerateCubes();
             do {

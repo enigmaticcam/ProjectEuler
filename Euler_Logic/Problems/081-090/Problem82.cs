@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem82 : IProblem {
+    public class Problem82 : ProblemBase {
         private decimal[][] _grid;
         private decimal[][] _best;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "82: Path sum: three ways"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadProblemGrid();
             Initialize();
             FindBestPath();

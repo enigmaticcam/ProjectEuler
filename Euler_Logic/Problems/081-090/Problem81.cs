@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem81 : IProblem {
+    public class Problem81 : ProblemBase {
         private decimal[][] _grid;
         private decimal[][] _best;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "81: Path sum: two ways"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadProblemGrid();
             Initialize();
             return FindMaxPathSum(_best.GetUpperBound(0), _best[_best.GetUpperBound(0)].GetUpperBound(0)).ToString();

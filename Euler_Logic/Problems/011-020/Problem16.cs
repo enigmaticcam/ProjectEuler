@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem16 : IProblem {
+    public class Problem16 : ProblemBase {
         private List<int> _digits = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "16: Power digit sum"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildDigits(1000);
             return PerformSum().ToString();
         }

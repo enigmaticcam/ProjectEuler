@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem34 : IProblem {
+    public class Problem34 : ProblemBase {
         private Dictionary<string, decimal> _factorials;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "34: Digit factorials"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GenerateFactorials();
             return GetDigitFactSum().ToString();
         }

@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem57 : IProblem {
+    public class Problem57 : ProblemBase {
         private List<int> _denominator = new List<int>();
         private List<int> _numerator = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "57: Square root convergents"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return GetTotalCount(1000).ToString();
         }
 

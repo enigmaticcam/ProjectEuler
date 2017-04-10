@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem52 : IProblem {
-        public string ProblemName {
+    public class Problem52 : ProblemBase {
+        public override string ProblemName {
             get { return "52: Permuted multiples"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindSmallest().ToString();
         }
 

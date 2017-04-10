@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem98 : IProblem {
+    public class Problem98 : ProblemBase {
         private List<string> _words = new List<string>();
         private HashSet<string> _letters = new HashSet<string>();
         private HashSet<string> _firstLetters = new HashSet<string>();
@@ -15,11 +15,11 @@ namespace Euler_Logic.Problems {
         private List<int> _allDigits = new List<int>();
         private List<int> _firstDigits = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "98: Anagramic squares"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildDigits();
             LoadWords();
             BuildWordPairs();

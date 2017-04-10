@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem8 : IProblem {
+    public class Problem8 : ProblemBase {
         private StringBuilder _series = new StringBuilder();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "8: Largest product in a series"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildSeries();
             return FindProduct(13).ToString();
         }

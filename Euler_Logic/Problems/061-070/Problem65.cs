@@ -6,14 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem65 : IProblem {
+    public class Problem65 : ProblemBase {
         private List<IPattern> _patterns = new List<IPattern>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "65: Convergents of e"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadPatterns();
             return FindDigitSum(100).ToString();
         }

@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem103 : IProblem {
+    public class Problem103 : ProblemBase {
         private List<SubsetCompare> _subsetsToCompare;
         private List<int> _currentList;
         private List<List<int>> _start = new List<List<int>>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "103: Special subset sums: optimum"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int digits = 7;
             BuildStarts();
             BuildSubsetsToCompare(digits);

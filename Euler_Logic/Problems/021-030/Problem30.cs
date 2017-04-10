@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem30 : IProblem {
-        public string ProblemName {
+    public class Problem30 : ProblemBase {
+        public override string ProblemName {
             get { return "30: Digit fifth powers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return GetDigitPowers(5).ToString();
         }
 

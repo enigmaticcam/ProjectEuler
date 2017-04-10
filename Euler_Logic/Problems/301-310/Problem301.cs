@@ -7,13 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem301 : IProblem {
+    public class Problem301 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "301: Nim"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve(30).ToString();
         }
 

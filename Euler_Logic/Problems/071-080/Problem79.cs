@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem79 : IProblem {
+    public class Problem79 : ProblemBase {
         private List<string> _codes = new List<string>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "79: Passcode derivation"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadCodes();
             return DeducePasscode();
         }

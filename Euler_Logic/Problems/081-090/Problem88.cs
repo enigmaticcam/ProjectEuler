@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem88 : IProblem {
+    public class Problem88 : ProblemBase {
         private int[] _factors;
         private bool[] _notPrimes;
         private int[] _sums;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "88: Product-sum numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int max = 12000;
             _factors = new int[max * 2];
             _sums = new int[max * 2 + 1];

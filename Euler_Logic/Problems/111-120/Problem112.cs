@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem112 : IProblem {
+    public class Problem112 : ProblemBase {
         private enum enumBouncyStatus {
             Undefined,
             Ascending,
@@ -15,11 +15,11 @@ namespace Euler_Logic.Problems {
 
         private Dictionary<string, enumBouncyStatus> _bouncyReference = new Dictionary<string, enumBouncyStatus>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "112: Bouncy numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildBouncyReference();
             return FindNumWherePercentageIs(99).ToString();
         }

@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem306 : IProblem {
+    public class Problem306 : ProblemBase {
         private Dictionary<int, bool> _games = new Dictionary<int, bool>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "306: Paper-strip Game"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int max = 1000000;
             int winCount = 0;
 

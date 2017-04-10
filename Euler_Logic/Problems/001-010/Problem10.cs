@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem10 : IProblem {
+    public class Problem10 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "10: Summation of primes"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return SievePrimes(2000000).ToString();
         }
 

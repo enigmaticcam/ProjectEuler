@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem45 : IProblem {
+    public class Problem45 : ProblemBase {
         private decimal _triangleNum;
         private decimal _triangleIndex;
         private HashSet<decimal> _triangles = new HashSet<decimal>();
@@ -16,11 +16,11 @@ namespace Euler_Logic.Problems {
         private decimal _hexagonIndex;
         private HashSet<decimal> _hexagons = new HashSet<decimal>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "45: Triangular, pentagonal, and hexagonal"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindSame(3).ToString();
         }
 

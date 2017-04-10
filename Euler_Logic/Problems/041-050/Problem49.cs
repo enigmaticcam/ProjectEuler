@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem49 : IProblem {
-        public string ProblemName {
+    public class Problem49 : ProblemBase {
+        public override string ProblemName {
             get { return "49: Prime Permutations"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             List<int> primes = GetPrimes();
             Dictionary<string, List<int>> permutations = GetPermutations(primes);
             foreach (string key in permutations.Keys) {

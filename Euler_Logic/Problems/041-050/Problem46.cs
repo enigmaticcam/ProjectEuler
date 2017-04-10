@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem46 : IProblem {
+    public class Problem46 : ProblemBase {
         private decimal _primeNum;
         private HashSet<decimal> _primes = new HashSet<decimal>();
         private Dictionary<decimal, bool> _isPrime = new Dictionary<decimal, bool>();
@@ -13,11 +13,11 @@ namespace Euler_Logic.Problems {
         private decimal _squareNum;
         private HashSet<decimal> _squares = new HashSet<decimal>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "46: Goldbach's other conjecture"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _primeNum = 3;
             _primes.Add(2);
             return FindCombposite().ToString();

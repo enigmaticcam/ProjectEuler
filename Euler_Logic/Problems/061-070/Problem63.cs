@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem63 : IProblem {
+    public class Problem63 : ProblemBase {
         private bool _endOfCounting = false;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "63: Powerful digit counts"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int count = 0;
             int digits = 1;
             do {

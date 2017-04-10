@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem55 : IProblem {
-        public string ProblemName {
+    public class Problem55 : ProblemBase {
+        public override string ProblemName {
             get { return "55: Lynchrel Numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int lynchrel = 0;
             for (decimal i = 1; i < 10000; i++) {
                 if (IsLynchrel(i)) {

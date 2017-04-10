@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem25 : IProblem {
+    public class Problem25 : ProblemBase {
         private List<int> _digits = new List<int>();
         private List<int> _previous = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "25: 1000-digit Fibonacci number"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindFibDigit(1000).ToString();
         }
 

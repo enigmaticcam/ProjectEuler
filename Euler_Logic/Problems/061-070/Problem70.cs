@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem70 : IProblem {
+    public class Problem70 : ProblemBase {
         private HashSet<int> _primes = new HashSet<int>();
         private Number[] _numbers;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "70: Totient permutation"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int max = 10000000;
             SievePrimes(max);
             Instantiate(max);

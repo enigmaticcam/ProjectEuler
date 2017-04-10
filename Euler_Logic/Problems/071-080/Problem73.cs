@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem73 : IProblem {
+    public class Problem73 : ProblemBase {
         private int _numeratorBegin;
         private int _numeratorEnd;
         private int _denominatorBegin;
         private int _denominatorEnd;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "73: Counting fractions in a range"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _numeratorBegin = 1;
             _denominatorBegin = 3;
             _numeratorEnd = 1;

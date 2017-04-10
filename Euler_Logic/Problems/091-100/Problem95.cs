@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem95 : IProblem {
+    public class Problem95 : ProblemBase {
         private int[] _nums;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "95: Amicable chains"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildNums();
             return Solve().ToString();
         }

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem5 : IProblem {
-        public string ProblemName {
+    public class Problem5 : ProblemBase {
+        public override string ProblemName {
             get { return "5: Smallest multiple"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindSmallestMultiple(20).ToString();
         }
 

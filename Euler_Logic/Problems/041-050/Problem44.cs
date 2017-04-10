@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem44 : IProblem {
+    public class Problem44 : ProblemBase {
         private HashSet<int> _pentagonals = new HashSet<int>();
         private int _n;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "44: Pentagon Numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             do {
                 int next = GetNextPentagonal();
                 foreach (int pentagonal in _pentagonals) {

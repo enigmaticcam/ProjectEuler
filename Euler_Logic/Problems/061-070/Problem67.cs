@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem67 : IProblem {
+    public class Problem67 : ProblemBase {
         private ulong[][] _nums;
         List<List<ulong>> _paths = new List<List<ulong>>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "67: Maximum path sum II"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildNumbers();
             BuildPaths();
             return GetMaxPath().ToString();

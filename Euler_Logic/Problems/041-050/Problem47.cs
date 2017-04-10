@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem47 : IProblem {
+    public class Problem47 : ProblemBase {
         private Dictionary<double, bool> _isPrime = new Dictionary<double, bool>();
         private HashSet<double> _primes = new HashSet<double>();
         private Dictionary<double, int> _primeFactorCount = new Dictionary<double, int>();
         private Dictionary<double, Dictionary<int, Dictionary<int, bool>>> _hash = new Dictionary<double, Dictionary<int, Dictionary<int, bool>>>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "47: Distinct primes factors"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindPrimes(4).ToString();
         }
 

@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem4 : IProblem {
-        public string ProblemName {
+    public class Problem4 : ProblemBase {
+        public override string ProblemName {
             get { return "4: Largest palindrome product"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindLargestPalindrome(3).ToString();
         }
 

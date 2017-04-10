@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem32 : IProblem {
+    public class Problem32 : ProblemBase {
         private List<string> _perms = new List<string>();
         private HashSet<int> _unique = new HashSet<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "32: Pandigital products"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GeneratePerms();
             return GetSums().ToString();
         }

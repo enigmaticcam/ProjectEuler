@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem93 : IProblem {
+    public class Problem93 : ProblemBase {
         private Token[] _numbersMaster = new Token[10];
         private Token[] _operatorsMaster = new Token[4];
         private Token _parenthesisOpen = new TokenParenthesisOpen();
@@ -15,11 +15,11 @@ namespace Euler_Logic.Problems {
         private Token[] _equation = new Token[11];
         private Dictionary<int, HashSet<double>> _numbersFound = new Dictionary<int, HashSet<double>>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "93: Arithmetic expressions"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             Initialize();
             FindAllNumbers(0, 3, 0);
             return FindLongest();

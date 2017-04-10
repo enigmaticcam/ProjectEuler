@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem204 : IProblem {
+    public class Problem204 : ProblemBase {
         private bool[] _notPrimes;
         private ulong _count = 0;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "204: Generalised Hamming Numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildPrimes((ulong)Math.Pow(10, 8));
             return "done";
         }

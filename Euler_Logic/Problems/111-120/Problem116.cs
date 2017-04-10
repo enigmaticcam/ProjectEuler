@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem116 : IProblem {
+    public class Problem116 : ProblemBase {
         private ulong[] _data;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "116: Red, green or blue tiles"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve(50).ToString();
         }
 

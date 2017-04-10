@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem87 : IProblem {
+    public class Problem87 : ProblemBase {
         private HashSet<double> _primes = new HashSet<double>();
         private HashSet<double> _cubes = new HashSet<double>();
         private HashSet<double> _numbers = new HashSet<double>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "87: Prime power triples"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             double max = 50000000;
             SievePrimes(Math.Sqrt(max));
             return GetCount(max).ToString();

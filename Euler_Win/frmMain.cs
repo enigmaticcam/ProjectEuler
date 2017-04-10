@@ -16,6 +16,8 @@ namespace Euler_Win {
 
         private void GetProblems() {
             _problems = new List<IProblem>();
+            _problems.Add(new ProblemGoogle1());
+            _problems.Add(new ProblemGoogle2());
             _problems.Add(new Problem1());
             _problems.Add(new Problem2());
             _problems.Add(new Problem3());
@@ -188,9 +190,33 @@ namespace Euler_Win {
                 IProblem problem = _problems[lstProblems.SelectedIndex];
                 Stopwatch watch = new Stopwatch();
                 watch.Start();
+                if (problem.RequiresInputFile) {
+                    problem.UploadInputFile(txtFileInput.Text);
+                }
                 txtAnswer.Text = problem.GetAnswer();
                 watch.Stop();
                 lblTime.Text = watch.Elapsed.TotalSeconds.ToString() + " seconds";
+            }
+        }
+
+        private void lstProblems_SelectedIndexChanged(object sender, EventArgs e) {
+            txtFileInput.Enabled = false;
+            cmdFileInput.Enabled = false;
+            cmdGo.Enabled = false;
+            if (lstProblems.SelectedIndex > -1) {
+                cmdGo.Enabled = true;
+                if (_problems[lstProblems.SelectedIndex].RequiresInputFile) {
+                    txtFileInput.Enabled = true;
+                    cmdFileInput.Enabled = true;
+                }
+            }
+        }
+
+        private void cmdFileInput_Click(object sender, EventArgs e) {
+            OpenFileDialog file = new OpenFileDialog();
+            file.RestoreDirectory = true;
+            if (file.ShowDialog() == DialogResult.OK) {
+                txtFileInput.Text = file.FileName;
             }
         }
     }

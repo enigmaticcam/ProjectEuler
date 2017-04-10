@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem346 : IProblem {
+    public class Problem346 : ProblemBase {
         private Dictionary<ulong, int> _counts = new Dictionary<ulong, int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "346: Strong Repunits"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve(1000000000000).ToString();
         }
 

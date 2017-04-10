@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem191 : IProblem {
+    public class Problem191 : ProblemBase {
         private ulong _max = 0;
         private ulong[] _absences;
         private ulong _count = 0;
         private Dictionary<ulong, Dictionary<ulong, ulong>> _combinations = new Dictionary<ulong, Dictionary<ulong, ulong>>();
         private Dictionary<ulong, ulong> _factorials = new Dictionary<ulong, ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "191: Prize Strings"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int length = 30;
             _max = CalcMax(length);
             FindAbsencesNoLates(length);

@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem38 : IProblem {
+    public class Problem38 : ProblemBase {
         private Dictionary<string, int> _textToBits = new Dictionary<string, int>();
         private Dictionary<string, bool> _isTextGood = new Dictionary<string, bool>();
         private int _answer = 1022;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "38: Pandigital multiples"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildInitialBits();
             return GetLargestPandigital();
         }

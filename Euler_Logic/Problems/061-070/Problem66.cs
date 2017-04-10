@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 using Euler_Logic.Helpers;
 
 namespace Euler_Logic.Problems {
-    public class Problem66 : IProblem {
+    public class Problem66 : ProblemBase {
         private BigInteger _denominator;
         private BigInteger _numerator;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "66: Diophantine equation"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindLargestValue(1000).ToString();
         }
 

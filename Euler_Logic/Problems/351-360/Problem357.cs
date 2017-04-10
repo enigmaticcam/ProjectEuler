@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem357 : IProblem {
+    public class Problem357 : ProblemBase {
         private bool[] _notPrimes;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "357: Prime generating integers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Calc(100000000).ToString();
         }
 

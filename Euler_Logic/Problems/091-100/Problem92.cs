@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem92 : IProblem {
+    public class Problem92 : ProblemBase {
         private Dictionary<UInt64, int> _chainToLoop = new Dictionary<UInt64, int>();
         private Dictionary<int, int> _counts = new Dictionary<int, int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "92: Square Digit Chains"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _counts.Add(1, 0);
             _counts.Add(89, 0);
             _chainToLoop.Add(1, 1);

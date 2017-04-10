@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem345 : IProblem {
+    public class Problem345 : ProblemBase {
         private ulong[][] _grid;
         private Dictionary<ulong, ulong> _bestFull = new Dictionary<ulong, ulong>();
         private Dictionary<ulong, ulong> _bestPartial = new Dictionary<ulong, ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "345: Matrix Sum"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve().ToString();
         }
 

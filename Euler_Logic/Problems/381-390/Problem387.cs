@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem387 : IProblem {
+    public class Problem387 : ProblemBase {
         private HashSet<string> _hashadNumbers = new HashSet<string>();
         private HashSet<ulong> _strongTruncatable = new HashSet<ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "387: Harshad Numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GenerateHashadNumbers("", 14);
             GenerateStrongTruncatablePrimes();
             return Sum().ToString();

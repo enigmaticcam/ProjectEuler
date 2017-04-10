@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem99 : IProblem {
+    public class Problem99 : ProblemBase {
         private List<BaseExp> _numbers = new List<BaseExp>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "99: Largest exponential"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadNumbers();
             return FindHighest().ToString();
         }

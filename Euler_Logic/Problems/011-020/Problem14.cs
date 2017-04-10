@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem14 : IProblem {
-        public string ProblemName {
+    public class Problem14 : ProblemBase {
+        public override string ProblemName {
             get { return "14: Longest Collatz sequence"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return GetLongestChain().ToString();
         }
 

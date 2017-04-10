@@ -6,14 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem94 : IProblem {
+    public class Problem94 : ProblemBase {
         private ulong _sum = 0;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "94: Almost equilateral triangles"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             Solve(1000000000);
             return _sum.ToString();
         }

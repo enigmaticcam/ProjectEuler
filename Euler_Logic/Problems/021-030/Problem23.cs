@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem23 : IProblem {
+    public class Problem23 : ProblemBase {
         private List<int> _abundants = new List<int>();
         private HashSet<int> _abundantSums = new HashSet<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "23: Non-abundant sums"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildAbundants();
             FindAbundantSums();
             return NonAbundantsSum().ToString();

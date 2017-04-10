@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem1 : IProblem {
-        public string ProblemName {
+    public class Problem1 : ProblemBase {
+        public override string ProblemName {
             get { return "1: Multiples of 3 and 5"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return CountMultiples(1000).ToString();
         }
 

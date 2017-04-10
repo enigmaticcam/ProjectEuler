@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem3 : IProblem {
+    public class Problem3 : ProblemBase {
         private Dictionary<ulong, bool> _primes = new Dictionary<ulong, bool>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "3: Largest prime factor"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return LargestPrimeFactor(600851475143).ToString(); ;
         }
 

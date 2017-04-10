@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem205 : IProblem {
+    public class Problem205 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "205: Dice Game"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             Dictionary<decimal, decimal> pete = new Dictionary<decimal, decimal>();
             Dictionary<decimal, decimal> colin = new Dictionary<decimal, decimal>();
             UpdateCountsRecursive(pete, 4, 8, 0);

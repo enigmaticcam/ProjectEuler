@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem86 : IProblem {
+    public class Problem86 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "86: Cuboid route"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve(1000000).ToString();
         }
 

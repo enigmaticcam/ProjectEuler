@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem22 : IProblem {
+    public class Problem22 : ProblemBase {
         private List<string> _names = new List<string>();
         private Dictionary<string, ulong> _charScores = new Dictionary<string, ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "22: Names scores"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadNames();
             GenerateCharacterScores();
             return CalcScores().ToString();

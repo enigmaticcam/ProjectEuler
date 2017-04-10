@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem74 : IProblem {
+    public class Problem74 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "74: Digit Factorial Chains"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int total = 0;
             for (int i = 1; i < 1000000; i++) {
                 int count = GetChainCount(i);

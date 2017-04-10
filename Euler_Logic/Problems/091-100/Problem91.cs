@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem91 : IProblem {
+    public class Problem91 : ProblemBase {
         private HashSet<string> _hash = new HashSet<string>();
         private Dictionary<int, Dictionary<int, int>> _keys = new Dictionary<int, Dictionary<int, int>>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "91: Right triangles with integer coordinates"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve(50, 50).ToString();
         }
 

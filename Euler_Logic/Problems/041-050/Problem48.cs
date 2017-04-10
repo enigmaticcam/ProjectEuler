@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem48 : IProblem {
+    public class Problem48 : ProblemBase {
         
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "48: Self powers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return StripCharacters(CalcAllSelfPowers(1000)).ToString();
         }
 

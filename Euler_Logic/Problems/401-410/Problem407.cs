@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem407 : IProblem {
-        public string ProblemName {
+    public class Problem407 : ProblemBase {
+        public override string ProblemName {
             get { return "407: Idempotents"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve().ToString();
         }
 

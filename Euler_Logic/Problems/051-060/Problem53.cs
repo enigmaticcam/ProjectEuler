@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem53 : IProblem {
+    public class Problem53 : ProblemBase {
         private Dictionary<double, double> _factorials = new Dictionary<double, double>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "53: Combinatoric selections"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GenerateFactorials();
             return CountAboveMillion().ToString();
         }

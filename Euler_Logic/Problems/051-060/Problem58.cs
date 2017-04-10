@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem58 : IProblem {
+    public class Problem58 : ProblemBase {
         private List<UInt64> _diagonals = new List<UInt64>();
         private UInt64 _squareSize;
         private UInt64 _number;
         private UInt64 _primeCount;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "58: Spiral Primes"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _squareSize = 1;
             _number = 1;
             _diagonals.Add(1);

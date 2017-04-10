@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem7 : IProblem {
-        public string ProblemName {
+    public class Problem7 : ProblemBase {
+        public override string ProblemName {
             get { return "7: 10001st prime"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return WhatIsPrimeAt(10001).ToString();
         }
 

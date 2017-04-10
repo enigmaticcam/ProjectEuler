@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem173 : IProblem {
-        public string ProblemName {
+    public class Problem173 : ProblemBase {
+        public override string ProblemName {
             get { return "173: Using up to one million tiles how many different 'hollow' square laminae can be formed?"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve(1000000).ToString();
         }
 

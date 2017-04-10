@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem117 : IProblem {
+    public class Problem117 : ProblemBase {
         private List<ulong> _blocks = new List<ulong>();
         private ulong[] _data;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "117: Red, green, and blue tiles"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildBlocks();
             return Solve(50).ToString();
         }

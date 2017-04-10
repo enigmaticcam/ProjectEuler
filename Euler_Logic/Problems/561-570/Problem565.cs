@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem565 : IProblem {
+    public class Problem565 : ProblemBase {
         private ulong[] _sums;
         private List<ulong> _found = new List<ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "565: Divisibility of sum of divisors"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return Solve(100000, 2017).ToString();
         }
 

@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem75 : IProblem {
+    public class Problem75 : ProblemBase {
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "75: Singular Integer Right Triangles"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return CalcAllTriangles(1500000).ToString();
         }
 

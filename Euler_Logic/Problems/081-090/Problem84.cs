@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem84 : IProblem {
+    public class Problem84 : ProblemBase {
         private Dictionary<int, enumSquareType> _squareTypes = new Dictionary<int, enumSquareType>();
         private Random _random = new Random();
         private Square[] _squareCounts;
@@ -20,11 +20,11 @@ namespace Euler_Logic.Problems {
             Chance
         }
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "84: Monopoly Odds"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildSquares();
             BuildSquareTypes();
             BuildCards();

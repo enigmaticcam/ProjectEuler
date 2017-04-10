@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem187 : IProblem {
+    public class Problem187 : ProblemBase {
         private bool[] _notPrimes;
         private List<ulong> _primes = new List<ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "187: Semiprimes"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildPrimes(100000000);
             return Solve(100000000).ToString();
         }

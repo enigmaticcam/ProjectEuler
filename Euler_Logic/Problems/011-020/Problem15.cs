@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem15 : IProblem {
+    public class Problem15 : ProblemBase {
         ulong[][] _paths;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "15: Lattice paths"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return GetLatticePaths(20).ToString();
         }
 

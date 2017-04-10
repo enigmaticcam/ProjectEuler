@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem24 : IProblem {
+    public class Problem24 : ProblemBase {
         List<string> _permutations = new List<string>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "24: Lexicographic permutations"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildPermutations();
             return GetPermutation(1000000);
         }

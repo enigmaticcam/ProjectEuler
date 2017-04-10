@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem206 : IProblem {
-        public string ProblemName {
+    public class Problem206 : ProblemBase {
+        public override string ProblemName {
             get { return "206: Concealed Square"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindConcealedSquare().ToString();
         }
 

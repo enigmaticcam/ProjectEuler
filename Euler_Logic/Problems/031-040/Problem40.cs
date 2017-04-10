@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem40 : IProblem {
+    public class Problem40 : ProblemBase {
         private HashSet<int> _checks = new HashSet<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "40: Champernowne's constant"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _checks.Add(1);
             _checks.Add(10);
             _checks.Add(100);

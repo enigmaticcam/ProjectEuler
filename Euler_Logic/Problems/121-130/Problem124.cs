@@ -5,16 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem124 : IProblem {
+    public class Problem124 : ProblemBase {
         private bool[] _notPrimes;
         private List<int> _primes = new List<int>();
         private List<Rad> _rads = new List<Rad>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "124: Ordered radicals"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int max = 100000;
             SievePrimes(max);
             LookForRads(max);

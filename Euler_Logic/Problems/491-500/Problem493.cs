@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem493 : IProblem {
+    public class Problem493 : ProblemBase {
         private int _colors;
         private int _colorCount;
         private int _pullCount;
@@ -15,11 +15,11 @@ namespace Euler_Logic.Problems {
         private Dictionary<double, double> _factorials = new Dictionary<double, double>();
         private List<int> _colorCounts = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "493: Under The Rainbow"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             SetProblemParameters();
             BuildColorCounts();
             Solve(_colors * _colorCount, _colors, _pullCount);

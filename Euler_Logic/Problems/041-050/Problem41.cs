@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem41 : IProblem {
+    public class Problem41 : ProblemBase {
         private List<string> _perms = new List<string>();
         private decimal _best;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "41: Pandigital prime"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GeneratePerms();
             return _best.ToString();
         }

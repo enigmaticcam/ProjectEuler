@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem13 : IProblem {
+    public class Problem13 : ProblemBase {
         private string[] _numbers;
         private List<int> _digits = new List<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "13: Large sum"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildNumbersList();
             return PerformSum();
         }

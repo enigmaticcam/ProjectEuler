@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem76 : IProblem {
+    public class Problem76 : ProblemBase {
         private int[][][] _data;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "76: Counting Summations"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             int max = 100;
             BuildSummations(max);
             return (_data[max][max][max] - 1).ToString();

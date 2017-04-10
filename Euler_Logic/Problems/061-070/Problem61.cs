@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem61 : IProblem {
+    public class Problem61 : ProblemBase {
         private int[] _combos;
         private HashSet<int> _uniqueCombos;
         List<Dictionary<int, int>> _polygonals;
         List<Dictionary<string, List<int>>> _subs;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "61: Cyclical figurate numbers"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _polygonals = GetPolygonals();
             _subs = GetSubs(_polygonals);
             _combos = new int[6];

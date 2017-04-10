@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem68 : IProblem {
+    public class Problem68 : ProblemBase {
         private List<List<int>> _nodePaths = new List<List<int>>();
         private int[] _nodes;
         private int _maxNum;
@@ -13,11 +13,11 @@ namespace Euler_Logic.Problems {
         private int _lowestNodePath;
         private int _maxKeyLength;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "68: Magic 5-gon ring"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             GenerateNodePaths();
             BuildPermutations();
             return GetMaxSet();

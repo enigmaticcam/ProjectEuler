@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem60 : IProblem {
+    public class Problem60 : ProblemBase {
         private Dictionary<int, HashSet<int>> _primeNetwork = new Dictionary<int, HashSet<int>>();
         private Dictionary<int, bool> _primes = new Dictionary<int, bool>();
         
-        public string ProblemName {
+        public override string ProblemName {
             get { return "60: Prime pair sets"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return LowestPairSum(5).ToString();
         }
 

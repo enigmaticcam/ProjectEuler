@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem51 : IProblem {
+    public class Problem51 : ProblemBase {
         private Dictionary<decimal, bool> _primes = new Dictionary<decimal, bool>();
         private decimal _lowestPrime;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "51: Prime Digit Replacements"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindBestFamily(8).ToString();
         }
 

@@ -6,14 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem104 : IProblem {
+    public class Problem104 : ProblemBase {
         double _phi = (1 + Math.Sqrt(5)) / 2;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "104: Pandigital Fibonacci ends"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindPandigitalFib().ToString();
         }
 

@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem211 : IProblem {
+    public class Problem211 : ProblemBase {
         private ulong[] _counts;
         private HashSet<ulong> _squares = new HashSet<ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "211: Divisor Square Sum"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             ulong max = 42;
             BuildSquares(max);
             _counts = new ulong[max + 1];

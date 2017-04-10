@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem118 : IProblem {
+    public class Problem118 : ProblemBase {
         private Dictionary<ulong, bool> _isPrime = new Dictionary<ulong,bool>();
         private Dictionary<int, ulong> _bitsCounts = new Dictionary<int, ulong>();
         private List<int> _bitsList;
         private ulong _sum = 0;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "118: Pandigital prime sets"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             FindDistinctSets(0, 0);
             _bitsList = _bitsCounts.Keys.ToList();
             FindFullSets(0, 0, 1);

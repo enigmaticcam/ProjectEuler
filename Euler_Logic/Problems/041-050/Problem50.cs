@@ -5,17 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-     public class Problem50 : IProblem {
+     public class Problem50 : ProblemBase {
         private HashSet<decimal> _primes = new HashSet<decimal>();
         private Dictionary<int, decimal> _left = new Dictionary<int, decimal>();
         private Dictionary<int, decimal> _right = new Dictionary<int, decimal>();
         private decimal _primeSum = 2;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "50: Consecutive prime sum"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             decimal max = 1000000;
             GeneratePrimes(max);
             return SliceAndDice(max).ToString();

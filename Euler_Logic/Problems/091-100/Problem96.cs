@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem96 : IProblem {
+    public class Problem96 : ProblemBase {
         private List<List<string>> _games = new List<List<string>>();
         private Dictionary<string, int> _numToBits = new Dictionary<string, int>();
         private List<Dictionary<int, int>> _rowColToRegion = new List<Dictionary<int, int>>();
@@ -17,11 +17,11 @@ namespace Euler_Logic.Problems {
         private bool _isBad;
         private int _sum;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "96: Su Doku"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             LoadAllGames();
             Initialize();
             return FindSum().ToString();

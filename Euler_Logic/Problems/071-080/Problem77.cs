@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem77 : IProblem {
+    public class Problem77 : ProblemBase {
         private List<decimal> _primes = new List<decimal>();
         private List<Dictionary<decimal, int>> _primeCounts = new List<Dictionary<decimal, int>>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "77: Prime summations"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             _primeCounts.Add(new Dictionary<decimal, int>());
             return PrimeSummations(5000).ToString();
         }

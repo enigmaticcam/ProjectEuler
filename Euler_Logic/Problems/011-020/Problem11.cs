@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem11 : IProblem {
+    public class Problem11 : ProblemBase {
         private string[][] _grid;
         private int[][] _gridAsNum;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "11: Largest product in a grid"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildGrid();
             ConvertGridToInt();
             return FindBestSums().ToString();

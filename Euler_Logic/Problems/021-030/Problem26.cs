@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem26 : IProblem {
-        public string ProblemName {
+    public class Problem26 : ProblemBase {
+        public override string ProblemName {
             get { return "26: Reciprocal cycles"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             return FindLongestCycle().ToString();
         }
 

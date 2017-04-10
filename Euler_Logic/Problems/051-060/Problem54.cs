@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem54 : IProblem {
+    public class Problem54 : ProblemBase {
         private enum enumHandRank {
             StraightFlush,
             FourOfAKind,
@@ -24,11 +24,11 @@ namespace Euler_Logic.Problems {
         private HashSet<int> _sameSuitRef = new HashSet<int>();
         private HashSet<int> _straightRef = new HashSet<int>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "54: Poker Hands"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             BuildCardRef();
             BuildSuitRef();
             return CountPlayerOneWins().ToString();

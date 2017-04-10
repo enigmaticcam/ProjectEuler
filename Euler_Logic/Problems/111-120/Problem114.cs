@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem114 : IProblem {
+    public class Problem114 : ProblemBase {
         private ulong[] _data;
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "114: Counting block combinations I"; }
         }
 
-        public string GetAnswer() {
+        public override string GetAnswer() {
             ulong minLength = 3;
             ulong maxUnits = 50;
             _data = new ulong[maxUnits + 1];
