@@ -18,6 +18,7 @@ namespace Euler_Win {
             _problems = new List<IProblem>();
             _problems.Add(new ProblemGoogle1());
             _problems.Add(new ProblemGoogle2());
+            _problems.Add(new ProblemGoogle3());
             _problems.Add(new Problem1());
             _problems.Add(new Problem2());
             _problems.Add(new Problem3());
