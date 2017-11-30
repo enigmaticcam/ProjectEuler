@@ -19,6 +19,9 @@ namespace Euler_Win {
             _problems.Add(new ProblemGoogle1());
             _problems.Add(new ProblemGoogle2());
             _problems.Add(new ProblemGoogle3());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem1());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem2());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem3());
             _problems.Add(new Problem1());
             _problems.Add(new Problem2());
             _problems.Add(new Problem3());
