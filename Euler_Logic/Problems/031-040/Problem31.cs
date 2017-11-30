@@ -16,14 +16,14 @@ namespace Euler_Logic.Problems {
         public override string GetAnswer() {
             CreateCoinTypes();
             _sums = new int[_coinTypes.Count + 1][];
-            return CoinSums().ToString();
+            return CoinSums(200).ToString();
         }
 
-        private int CoinSums() {
-            _sums[0] = new int[200];
+        private int CoinSums(int top) {
+            _sums[0] = new int[top];
             for (int coin = 0; coin < _coinTypes.Count; coin++) {
-                _sums[coin + 1] = new int[200];
-                for (int max = 1; max <= 200; max++) {
+                _sums[coin + 1] = new int[top];
+                for (int max = 1; max <= top; max++) {
                     int weight = 0;
                     while (weight <= max) {
                         if (weight == max) {
@@ -35,7 +35,7 @@ namespace Euler_Logic.Problems {
                     }
                 }
             }
-            return _sums[_coinTypes.Count][199];
+            return _sums[_coinTypes.Count][top - 1];
         }
 
         private void CreateCoinTypes() {

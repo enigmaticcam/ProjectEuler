@@ -107,14 +107,17 @@
     <Compile Include="Problems\211-220\Problem213.cs" />
     <Compile Include="Problems\291-300\Problem293.cs" />
     <Compile Include="Problems\311-320\Problem315.cs" />
+    <Compile Include="Problems\321-329\Problem323.cs" />
     <Compile Include="Problems\321-329\Problem327.cs" />
     <Compile Include="Problems\341-350\Problem345.cs" />
     <Compile Include="Problems\341-350\Problem346.cs" />
     <Compile Include="Problems\341-350\Problem347.cs" />
     <Compile Include="Problems\351-360\Problem357.cs" />
+    <Compile Include="Problems\381-390\Problem381.cs" />
     <Compile Include="Problems\381-390\Problem387.cs" />
     <Compile Include="Problems\401-410\Problem407.cs" />
     <Compile Include="Problems\491-500\Problem493.cs" />
+    <Compile Include="Problems\491-500\Problem500.cs" />
     <Compile Include="Problems\541-550\Problem549.cs" />
     <Compile Include="Problems\561-570\Problem565.cs" />
     <Compile Include="Problems\Google\ProblemGoogle1.cs" />
