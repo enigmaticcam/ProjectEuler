@@ -31,6 +31,7 @@ namespace Euler_Win {
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem5());
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem6());
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem7());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem8());
             _problems.Add(new Problem1());
             _problems.Add(new Problem2());
             _problems.Add(new Problem3());
