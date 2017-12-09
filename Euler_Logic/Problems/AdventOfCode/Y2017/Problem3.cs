@@ -14,8 +14,59 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
             return Answer2(325489);
         }
 
-        private int _x = 0;
-        private int _y = 0;
+        private int _x;
+        private int _y;
+        private int _offset;
+        private int _num;
+        private string Answer1(int number) {
+            int direction = 0;
+            int beforeNum = 0;
+            _num = 1;
+            do {
+                beforeNum = _num;
+                Next(direction);
+                if (_num >= number) {
+                    return FindNum(direction, number).ToString();
+                }
+                direction = (direction + 1) % 4;
+            } while (true);
+        }
+
+        private void Next(int direction) {
+            switch (direction) {
+                case 0:
+                    _offset++;
+                    _x += _offset;
+                    break;
+                case 1:
+                    _y -= _offset;
+                    break;
+                case 2:
+                    _offset++;
+                    _x -= _offset;
+                    break;
+                case 3:
+                    _y += _offset;
+                    break;
+            }
+            _num += _offset;
+        }
+
+        private int FindNum(int direction, int num) {
+            switch (direction) {
+                case 0:
+                    return Math.Abs(_x - (_num - num)) + Math.Abs(_y);
+                case 1:
+                    return Math.Abs(_y + (_num - num)) + Math.Abs(_x);
+                case 2:
+                    return Math.Abs(_x + (_num - num)) + Math.Abs(_y);
+                case 3:
+                    return Math.Abs(_y - (_num - num)) + Math.Abs(_y);
+                default:
+                    throw new Exception();
+            }
+        }
+        
         private int _minX = 0;
         private int _maxX = 0;
         private int _minY = 0;
