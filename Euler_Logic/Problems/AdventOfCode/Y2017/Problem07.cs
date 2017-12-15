@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
-    public class Problem7 : ProblemBase {
+    public class Problem07 : ProblemBase {
         public override string ProblemName {
             get { return "Advent of Code 2017: 7"; }
         }
