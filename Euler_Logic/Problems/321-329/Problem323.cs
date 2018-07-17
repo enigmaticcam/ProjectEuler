@@ -6,7 +6,6 @@ namespace Euler_Logic.Problems {
         private Random _random = new Random();
         private Dictionary<double, Dictionary<double, double>> _combinations = new Dictionary<double, Dictionary<double, double>>();
         private Dictionary<double, double> _factorials = new Dictionary<double, double>();
-        private Dictionary<int, Dictionary<int, double>> _subsets = new Dictionary<int, Dictionary<int, double>>();
         private Dictionary<int, Dictionary<int, double>> _increments = new Dictionary<int, Dictionary<int, double>>();
         private Dictionary<int, double> _expectedValues = new Dictionary<int, double>();
 
@@ -17,10 +16,48 @@ namespace Euler_Logic.Problems {
         public override string GetAnswer() {
             //return Test(16).ToString();
             int maxDigits = 33;
-            CalcSubsets(maxDigits);
             CalcIncrements(maxDigits);
             CalcExpectedValues(maxDigits);
             return _expectedValues[maxDigits - 1].ToString();
+        }
+
+        private void CalcIncrements(int maxDigits) {
+            double max = Math.Pow(2, maxDigits);
+            for (int maxZeroes = 1; maxZeroes <= maxDigits; maxZeroes++) {
+                _increments.Add(maxZeroes, new Dictionary<int, double>());
+                for (int zeroCount = 0; zeroCount <= maxZeroes; zeroCount++) {
+                    _increments[maxZeroes].Add(zeroCount, DistinctCombinationsOfSetInSet(maxZeroes, zeroCount) * Math.Pow(2, maxDigits - maxZeroes) / max);
+                }
+            }
+        }
+
+        public void CalcExpectedValues(int maxDigits) {
+            _expectedValues.Add(0, 1);
+            for (int maxZeroes = 1; maxZeroes < maxDigits; maxZeroes++) {
+                double value = _increments[maxZeroes][0];
+                for (int zeroCount = 1; zeroCount < maxZeroes; zeroCount++) {
+                    value += ((1 + _expectedValues[zeroCount]) * _increments[maxZeroes][zeroCount]);
+                }
+                value += _increments[maxZeroes][maxZeroes];
+                value = value / (1 - _increments[maxZeroes][maxZeroes]);
+                _expectedValues.Add(maxZeroes, value);
+            }
+        }
+
+        private double DistinctCombinationsOfSetInSet(double n, double r) {
+            if (n == r || r == 0) {
+                return 1;
+            } else {
+                return Factorial(n) / (Factorial(r) * Factorial(n - r));
+            }
+        }
+
+        private double Factorial(double max) {
+            double sum = max;
+            for (double num = max - 1; num >= 1; num--) {
+                sum *= num;
+            }
+            return sum;
         }
 
         private double Test(int maxDigits) {
@@ -41,65 +78,6 @@ namespace Euler_Logic.Problems {
                 } while (true);
             }
             return sum / maxCount;
-        }
-
-        private void CalcSubsets(int maxDigits) {
-            for (int n = 1; n <= maxDigits; n++) {
-                _subsets.Add(n, new Dictionary<int, double>());
-                _subsets[n].Add(0, 1);
-                for (int r = 1; r <= n; r++) {
-                    double result = DistinctCombinationsOfSetInSet(n, r);
-                    _subsets[n].Add(r, result);
-                }
-            }
-        }
-
-        private void CalcIncrements(int maxDigits) {
-            double max = Math.Pow(2, maxDigits);
-            for (int maxZeroes = 1; maxZeroes <= maxDigits; maxZeroes++) {
-                _increments.Add(maxZeroes, new Dictionary<int, double>());
-                for (int zeroCount = 0; zeroCount <= maxZeroes; zeroCount++) {
-                    _increments[maxZeroes].Add(zeroCount, _subsets[maxZeroes][zeroCount] * Math.Pow(2, maxDigits - maxZeroes) / max);
-                }
-            }
-        }
-
-        public void CalcExpectedValues(int maxDigits) {
-            _expectedValues.Add(0, 1);
-            for (int maxZeroes = 1; maxZeroes < maxDigits; maxZeroes++) {
-                double value = _increments[maxZeroes][0];
-                for (int zeroCount = 1; zeroCount < maxZeroes; zeroCount++) {
-                    value += ((1 + _expectedValues[zeroCount]) * _increments[maxZeroes][zeroCount]);
-                }
-                value += _increments[maxZeroes][maxZeroes];
-                value = value / (1 - _increments[maxZeroes][maxZeroes]);
-                _expectedValues.Add(maxZeroes, value);
-            }
-        }
-
-        private double Factorial(double max) {
-            if (!_factorials.ContainsKey(max)) {
-                double sum = max;
-                for (double num = max - 1; num >= 1; num--) {
-                    sum *= num;
-                }
-                _factorials.Add(max, sum);
-            }
-            return _factorials[max];
-        }
-
-        private double DistinctCombinationsOfSetInSet(double n, double r) {
-            if (!_combinations.ContainsKey(n)) {
-                _combinations.Add(n, new Dictionary<double, double>());
-            }
-            if (!_combinations[n].ContainsKey(r)) {
-                if (n == r) {
-                    _combinations[n].Add(r, 1);
-                } else {
-                    _combinations[n].Add(r, Factorial(n) / (Factorial(r) * Factorial(n - r)));
-                }
-            }
-            return _combinations[n][r];
         }
     }
 }
