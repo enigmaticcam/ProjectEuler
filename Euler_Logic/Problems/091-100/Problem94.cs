@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem94 : ProblemBase {
@@ -18,33 +13,25 @@ namespace Euler_Logic.Problems {
             return _sum.ToString();
         }
 
-        //private void Solve(double max) {
-        //    double num = 3;
-        //    do {
-        //        TryTriangle(num, num, num + 1, max);
-        //        TryTriangle(num, num, num - 1, max);
-        //        num += 2;
-        //    } while (num * 2 + num - 1 <= max);
-        //}
-
-        //private void TryTriangle(double a, double b, double c, double max) {
-        //    double p = (a + b + c) / 2;
-        //    double test = p * (p - a) * (p - b) * (p - c);
-        //    double area = (ulong)Math.Sqrt(test);
-
-        //    if (area * area == test) {
-        //        ulong sum = (ulong)(a + b + c);
-        //        if (sum <= max) {
-        //            _sum += sum;
-        //        }
-        //    }
-        //}
-
         private void Solve(ulong max) {
-            ulong p = 16;
+            ulong num = 2;
             do {
+                if (TryTriangle(num - 1, num)) {
+                    _sum += num * 3 - 1;
+                }
+                if (num * 3 + 1 <= max) {
+                    if (TryTriangle(num + 1, num)) {
+                        _sum += num * 3 + 1;
+                    }
+                }
+                num += 1;
+            } while (num * 3 - 1 <= max);
+        }
 
-            } while (p <= max);
+        private bool TryTriangle(ulong oneSide, ulong twoSide) {
+            ulong a = (4 * (twoSide * twoSide)) - (oneSide * oneSide);
+            ulong b = (ulong)Math.Sqrt(a);
+            return b * b == a;
         }
     }
 }
