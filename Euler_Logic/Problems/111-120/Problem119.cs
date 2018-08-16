@@ -5,69 +5,50 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
-    public class Problem119 : IProblem {
-        private List<decimal> _powers = new List<decimal>();
+    public class Problem119 : ProblemBase {
+        private List<ulong> _numbers = new List<ulong>();
 
-        public string ProblemName {
+        public override string ProblemName {
             get { return "119: Digit power sum"; }
         }
+        
+        /*
+            So this amazingly worked first try. I'm sure there are better ways, but whatever.
 
-        public string GetAnswer() {
-            Solve();
-            return "done";
+            Pick a base number, say 8. Try 8^2=16. 1+6 is not equal to 8. How about 8^3=512? 5+1+2=8 so save it. Now try 8^4=4096. 4+9+0+6 is not equal to 8. In fact,
+            we can stop adding after 9, because 4+9>8. Keep doing this until we reach the ulong limit, 2^63. Then try powers of 9. Do this for all base numbers 2
+            to 100. Return the 30th.
+        */
+
+        public override string GetAnswer() {
+            return Solve().ToString();
         }
 
-        private void Solve() {
-            Power start = new Power();
-            start.Root = 2;
-            start.Num = 4;
-            _powers.Add(4);
-            Power next = new Power();
-            next.Root = 3;
-            next.Num = 9;
-            start.Next = next;
-            decimal nextRoot = 4;
-            decimal last = 4;
-            do {
-                start.Num *= start.Root;
-                if (start.Num > start.Next.Num) {
-                    start = FindNewSpot(start);
-                }
-                if (nextRoot * nextRoot < start.Num) {
-                    Power newPower = new Power();
-                    newPower.Root = nextRoot;
-                    newPower.Num = nextRoot * nextRoot;
-                    newPower.Next = start;
-                    start = newPower;
-                    nextRoot++;
-                }
-                if (start.Num != last) {
-                    _powers.Add(start.Num);
-                    last = start.Num;
-                }
-            } while (true);
-        }
-
-        private Power FindNewSpot(Power power) {
-            Power returnNext = power.Next;
-            Power next = power.Next;
-            power.Next = null;
-            do {
-                if (next.Next == null) {
-                    next.Next = power;
-                    return returnNext;
-                } else if (next.Next.Num > power.Num) {
-                    power.Next = next.Next;
-                    next.Next = power;
-                    return returnNext;
-                }
-            } while (true);
-        }
-
-        private class Power {
-            public decimal Root { get; set; }
-            public decimal Num { get; set; }
-            public Power Next { get; set; }
+        private ulong Solve() {
+            for (ulong baseNum = 2; baseNum <= 100; baseNum++) {
+                ulong number = baseNum * baseNum;
+                ulong lastNumber = number;
+                do {
+                    if (number >= 10) {
+                        ulong sum = 0;
+                        ulong temp = number;
+                        do {
+                            ulong digit = temp % 10;
+                            temp /= 10;
+                            sum += digit;
+                            if (sum > baseNum) {
+                                break;
+                            }
+                        } while (temp > 0);
+                        if (sum == baseNum) {
+                            _numbers.Add(number);
+                        }
+                    }
+                    lastNumber = number;
+                    number *= baseNum;
+                } while (number > lastNumber);
+            }
+            return _numbers.OrderBy(x => x).ElementAt(29);
         }
     }
 }
