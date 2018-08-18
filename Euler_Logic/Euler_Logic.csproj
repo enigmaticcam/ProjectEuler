@@ -52,6 +52,7 @@
     <Compile Include="Problems\091-100\Problem94.cs" />
     <Compile Include="Problems\091-100\Problem95.cs" />
     <Compile Include="Problems\091-100\Problem98.cs" />
+    <Compile Include="Problems\101-110\Problem101.cs" />
     <Compile Include="Problems\101-110\Problem102.cs" />
     <Compile Include="Problems\101-110\Problem103.cs" />
     <Compile Include="Problems\101-110\Problem104.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Problems\491-500\Problem500.cs" />
     <Compile Include="Problems\541-550\Problem549.cs" />
     <Compile Include="Problems\561-570\Problem565.cs" />
+    <Compile Include="Problems\621-630\Problem628.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem1.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem2.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem3.cs" />

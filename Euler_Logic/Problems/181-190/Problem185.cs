@@ -16,7 +16,7 @@ namespace Euler_Logic.Problems {
         }
 
         /*
-            This is a trial by guess using itwise notation to represent the possibilities of each digit. If the first sequence has one correct digit, then assume
+            This is a trial by guess using bitwise notation to represent the possibilities of each digit. If the first sequence has one correct digit, then assume
             the first digit is correct. This means none of the other digits are correct. Move on to the second sequence and do the same. Continue until a digit
             has been removed of all possibilities (in which case we backtrack a guess and try another), or we reach the last sequence and find the solution. Not
             very efficient, takes about 10 minutes to run. Oh well.
