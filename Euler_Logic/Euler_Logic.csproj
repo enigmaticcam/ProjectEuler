@@ -41,12 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\BigNumber.cs" />
+    <Compile Include="Helpers\GCD.cs" />
+    <Compile Include="Helpers\PrimeSieve.cs" />
     <Compile Include="Problems\071-080\Problem80.cs" />
     <Compile Include="Problems\081-090\Problem84.cs" />
     <Compile Include="Problems\081-090\Problem86.cs" />
     <Compile Include="Problems\081-090\Problem87.cs" />
     <Compile Include="Problems\081-090\Problem88.cs" />
     <Compile Include="Problems\081-090\Problem90.cs" />
+    <Compile Include="Problems\091-100\Problem100.cs" />
     <Compile Include="Problems\091-100\Problem91.cs" />
     <Compile Include="Problems\091-100\Problem93.cs" />
     <Compile Include="Problems\091-100\Problem94.cs" />
@@ -96,6 +99,7 @@
     <Compile Include="Problems\121-130\Problem122.cs" />
     <Compile Include="Problems\121-130\Problem124.cs" />
     <Compile Include="Problems\121-130\Problem125.cs" />
+    <Compile Include="Problems\121-130\Problem127.cs" />
     <Compile Include="Problems\131-140\Problem135.cs" />
     <Compile Include="Problems\131-140\Problem136.cs" />
     <Compile Include="Problems\141-150\Problem145.cs" />
@@ -115,6 +119,7 @@
     <Compile Include="Problems\311-320\Problem315.cs" />
     <Compile Include="Problems\321-329\Problem323.cs" />
     <Compile Include="Problems\321-329\Problem327.cs" />
+    <Compile Include="Problems\321-329\Problem329.cs" />
     <Compile Include="Problems\341-350\Problem345.cs" />
     <Compile Include="Problems\341-350\Problem346.cs" />
     <Compile Include="Problems\341-350\Problem347.cs" />

@@ -135,6 +135,7 @@ namespace Euler_Win {
             _problems.Add(new Problem97());
             _problems.Add(new Problem98());
             _problems.Add(new Problem99());
+            _problems.Add(new Problem100());
             _problems.Add(new Problem101());
             _problems.Add(new Problem102());
             _problems.Add(new Problem103());
@@ -154,6 +155,7 @@ namespace Euler_Win {
             _problems.Add(new Problem122());
             _problems.Add(new Problem124());
             _problems.Add(new Problem125());
+            _problems.Add(new Problem127());
             _problems.Add(new Problem135());
             _problems.Add(new Problem136());
             _problems.Add(new Problem145());
@@ -175,6 +177,7 @@ namespace Euler_Win {
             _problems.Add(new Problem315());
             _problems.Add(new Problem323());
             _problems.Add(new Problem327());
+            _problems.Add(new Problem329());
             _problems.Add(new Problem345());
             _problems.Add(new Problem346());
             _problems.Add(new Problem347());
@@ -219,15 +222,19 @@ namespace Euler_Win {
             if (lstProblems.SelectedIndex > -1) {
                 GetProblems();
                 IProblem problem = _problems[lstProblems.SelectedIndex];
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-                if (problem.RequiresInputFile) {
-                    problem.UploadInputFile(txtFileInput.Text);
-                }
-                txtAnswer.Text = problem.GetAnswer();
-                watch.Stop();
-                lblTime.Text = watch.Elapsed.TotalSeconds.ToString() + " seconds";
+                Go(problem);
             }
+        }
+
+        private void Go(IProblem problem) {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            if (problem.RequiresInputFile) {
+                problem.UploadInputFile(txtFileInput.Text);
+            }
+            txtAnswer.Text = problem.GetAnswer();
+            watch.Stop();
+            lblTime.Text = watch.Elapsed.TotalSeconds.ToString() + " seconds";
         }
 
         private void lstProblems_SelectedIndexChanged(object sender, EventArgs e) {
@@ -249,6 +256,10 @@ namespace Euler_Win {
             if (file.ShowDialog() == DialogResult.OK) {
                 txtFileInput.Text = file.FileName;
             }
+        }
+
+        private void cmdDefault_Click(object sender, EventArgs e) {
+            Go(new Problem100());
         }
     }
 }
