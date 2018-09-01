@@ -183,6 +183,7 @@ namespace Euler_Win {
             _problems.Add(new Problem346());
             _problems.Add(new Problem347());
             _problems.Add(new Problem357());
+            _problems.Add(new Problem371());
             _problems.Add(new Problem381());
             _problems.Add(new Problem387());
             _problems.Add(new Problem407());
@@ -261,7 +262,7 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            Go(new Problem151());
+            Go(new Problem371());
         }
     }
 }
