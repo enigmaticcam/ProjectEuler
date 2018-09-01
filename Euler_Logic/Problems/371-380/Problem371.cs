@@ -22,9 +22,9 @@ namespace Euler_Logic.Problems {
             it down to: 
             
             x = a + b + c + x(d1 + x)
-            x = x + yx
-            x - yx = a
-            x = a/1/(1-y)
+            x = z + d1x
+            x - d1x = z
+            x = z/1/(1-d1)
             
             I use a hash table to save the results and briefly speed up the algorithm.
          */
