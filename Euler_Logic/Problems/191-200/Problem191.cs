@@ -1,92 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Euler_Logic.Problems {
     public class Problem191 : ProblemBase {
-        private ulong _max = 0;
-        private ulong[] _absences;
-        private ulong _count = 0;
-        private Dictionary<ulong, Dictionary<ulong, ulong>> _combinations = new Dictionary<ulong, Dictionary<ulong, ulong>>();
-        private Dictionary<ulong, ulong> _factorials = new Dictionary<ulong, ulong>();
+        private ulong[] _zeroL;
+
+        /*
+            This can be solved via dynamic programming. We loop up from Day 1 to Day 30 summing up the following measures where n = day:
+
+            a(n) = The total number of prize strings starting with "O"
+            b(n) = The total number of prize strings starting with just one "A"
+            c(n) = The total number of prize strings starting with just two "A"s
+            d(n) = The total number of prize strings starting with "L" (and therefore having no other "L"s)
+
+            The final answer is the sum of these four numbers at Day 30. Here is how to calculate these numbers:
+
+            a(n) = a(n - 1) + b(n - 1) + c(n - 1) + d(n - 1)
+            b(n) = a(n - 1) + d(n - 1)
+            c(n) = b(n - 1)
+            d(n) = ?
+
+            I couldn't find an immediately obvious way of solving for d(n) this method. However, you can rephrase d(n) as the
+            total number of ways of fitting blocks of either 1 or 2 size always having one empty space in between in space of
+            length n. Funnily enough, I've already done this on problem 114. So we just borrow the logic from there to calculate d(n).
+
+            I hard coded the values for n = 4 to make things easy. Then loop up from there to n = 30 and return the total.
+         */
 
         public override string ProblemName {
             get { return "191: Prize Strings"; }
         }
 
         public override string GetAnswer() {
-            int length = 30;
-            _max = CalcMax(length);
-            FindAbsencesNoLates(length);
-            FindTwoLatesOrMore((ulong)length);
-            FindOneLates(length);
-            return (_max - _count).ToString();
+            int maxSize = 30;
+            SolveFor0L(maxSize);
+            return SolveForAll(maxSize).ToString();
         }
 
-        private ulong CalcMax(int length) {
-            ulong num = 3;
-            for (int power = 2; power <= length; power++) {
-                num *= 3;
+        private ulong SolveForAll(int maxSize) {
+            Dictionary<bool, ulong> prizeWith0 = new Dictionary<bool, ulong>();
+            Dictionary<bool, ulong> prizeWithNoAPrefix = new Dictionary<bool, ulong>();
+            Dictionary<bool, ulong> prizeWithOneAPrefix = new Dictionary<bool, ulong>();
+            Dictionary<bool, ulong> prizeWithZeroL = new Dictionary<bool, ulong>();
+            prizeWith0.Add(false, 19);
+            prizeWithNoAPrefix.Add(false, 12);
+            prizeWithOneAPrefix.Add(false, 5);
+            prizeWithZeroL.Add(false, 7);
+            bool currentSet = true;
+            for (int index = 5; index <= maxSize; index++) {
+                prizeWith0[currentSet] = prizeWith0[!currentSet] + prizeWithNoAPrefix[!currentSet] + prizeWithOneAPrefix[!currentSet] + prizeWithZeroL[!currentSet];
+                prizeWithNoAPrefix[currentSet] = prizeWith0[!currentSet] + prizeWithZeroL[!currentSet];
+                prizeWithOneAPrefix[currentSet] = prizeWithNoAPrefix[!currentSet];
+                prizeWithZeroL[currentSet] = _zeroL[index - 1] + 1;
+                currentSet = !currentSet;
             }
-            return num;
+            ulong answer = prizeWith0[!currentSet] + prizeWithNoAPrefix[!currentSet] + prizeWithOneAPrefix[!currentSet] + prizeWithZeroL[!currentSet];
+            return answer;
         }
 
-        private void FindAbsencesNoLates(int maxLength) {
-            _absences = new ulong[maxLength + 1];
-            _absences[3] = 1;
-            for (int length = 4; length <= maxLength; length++) {
-                for (int position = 0; position + 3 <= length; position++) {
-                    ulong count = (ulong)Math.Pow(2, length - position - 3);
-                    if (position >= 2) {
-                        _absences[length] += count * (ulong)Math.Pow(2, position - 1) - _absences[position - 1];
-                    } else {
-                        _absences[length] += count;
+        private void SolveFor0L(int maxSize) {
+            List<int> blocks = new List<int>();
+            _zeroL = new ulong[maxSize + 1];
+            for (int length = 1; length <= maxSize; length++) {
+                for (int size = 1; size <= 2; size++) {
+                    if (size <= length) {
+                        _zeroL[length] += 1;
+                        for (int position = 0; position < length - size; position++) {
+                            _zeroL[length] += 1 + _zeroL[length - size - position - 1];
+                        }
                     }
                 }
             }
-            _count += _absences[maxLength];
-        }
-
-        private void FindTwoLatesOrMore(ulong maxLength) {
-            for (ulong lateCount = 2; lateCount <= maxLength; lateCount++) {
-                _count += (ulong)Math.Pow(2, maxLength - lateCount) * DistinctCombinationsOfSetInSet(maxLength, lateCount);
-            }
-        }
-
-        private void FindOneLates(int maxLength) {
-            for (int position = 0; position < maxLength; position++) {
-                ulong left = (ulong)Math.Pow(2, maxLength - position - 1) * _absences[position];
-                ulong right = (ulong)Math.Pow(2, position) * _absences[maxLength - position - 1];
-                ulong count = left + right - (left * right);
-                _count += count;
-            }
-        }
-
-        private ulong Factorial(ulong max) {
-            if (!_factorials.ContainsKey(max)) {
-                ulong sum = max;
-                for (ulong num = max - 1; num >= 1; num--) {
-                    sum *= num;
-                }
-                _factorials.Add(max, sum);
-            }
-            return _factorials[max];
-        }
-
-        private ulong DistinctCombinationsOfSetInSet(ulong n, ulong r) {
-            if (!_combinations.ContainsKey(n)) {
-                _combinations.Add(n, new Dictionary<ulong, ulong>());
-            }
-            if (!_combinations[n].ContainsKey(r)) {
-                if (n == r) {
-                    _combinations[n].Add(r, 1);
-                } else {
-                    _combinations[n].Add(r, Factorial(n) / (Factorial(r) * Factorial(n - r)));
-                }
-            }
-            return _combinations[n][r];
         }
     }
 }
