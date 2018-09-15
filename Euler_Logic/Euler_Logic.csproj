@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\BigNumber.cs" />
+    <Compile Include="Helpers\Factorial.cs" />
     <Compile Include="Helpers\GCD.cs" />
     <Compile Include="Helpers\PrimeSieve.cs" />
     <Compile Include="Problems\071-080\Problem80.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Problems\341-350\Problem346.cs" />
     <Compile Include="Problems\341-350\Problem347.cs" />
     <Compile Include="Problems\351-360\Problem357.cs" />
+    <Compile Include="Problems\351-360\Problem359.cs" />
     <Compile Include="Problems\371-380\Problem371.cs" />
     <Compile Include="Problems\381-390\Problem381.cs" />
     <Compile Include="Problems\381-390\Problem387.cs" />

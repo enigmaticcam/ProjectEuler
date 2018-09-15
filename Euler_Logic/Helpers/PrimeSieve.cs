@@ -28,7 +28,7 @@ namespace Euler_Logic.Helpers {
         private bool[] _notPrimes;
         private List<uint> _primes = new List<uint>();
 
-        public void SievePrimes(int max) {
+        public void SievePrimes(uint max) {
             _notPrimes = new bool[max + 1];
             for (uint num = 2; num <= max; num++) {
                 if (!_notPrimes[num]) {
@@ -77,7 +77,7 @@ namespace Euler_Logic.Helpers {
             get { return _primes[index]; }
         }
 
-        public bool IsPrime(uint num) {
+        public bool IsPrime(ulong num) {
             return !_notPrimes[num];
         }
 
