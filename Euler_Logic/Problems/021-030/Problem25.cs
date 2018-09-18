@@ -1,59 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Euler_Logic.Problems {
     public class Problem25 : ProblemBase {
-        private List<int> _digits = new List<int>();
-        private List<int> _previous = new List<int>();
+
+        /*
+            Fibonacci sequence can be represented as the golden ratio: (1 + sqrt(5)) / 2. Starting at 1, we simply multiply 
+            by this ratio repeatedly. Anytime we get a number that exceeds 10, we divide by 10 and count how many times
+            we divide by 10. Once we've divided by 10 1000 times, we return the index.
+         */
 
         public override string ProblemName {
             get { return "25: 1000-digit Fibonacci number"; }
         }
 
         public override string GetAnswer() {
-            return FindFibDigit(1000).ToString();
+            return Solve().ToString();
         }
 
-        private int FindFibDigit(int digits) {
-            int index = 2;            
-            _digits.Add(1);
-
-            List<int> last = new List<int>(_digits);
+        private int Solve() {
+            decimal ratio = ((decimal)1 + (decimal)Math.Sqrt(5)) / (decimal)2;
+            decimal num = 1;
+            int index = 1;
+            int digitCount = 1;
             do {
+                num *= ratio;
                 index++;
-                _previous = new List<int>(_digits);
-                AddDigits(last, _digits);
-                last = new List<int>(_previous);
-            } while (_digits.Count < digits);
+                while (num > 10) {
+                    num /= 10;
+                    digitCount++;
+                }
+            } while (digitCount < 1000);
             return index;
-        }
-
-        private void AddDigits(List<int> from, List<int> to) {
-            int carryOver = 0;
-            int digit = 0;
-            while (digit < from.Count || carryOver > 0) {
-                if (to.Count <= digit) {
-                    to.Add(0);
-                }
-                int sum = 0;
-                if (digit < from.Count) {
-                    sum = from[digit] + to[digit] + carryOver;
-                } else {
-                    sum = to[digit] + carryOver;
-                }
-                string sumText = sum.ToString();
-                if (sumText.Length > 1) {
-                    to[digit] = Convert.ToInt32(sumText.Substring(1, 1));
-                    carryOver = Convert.ToInt32(sumText.Substring(0, 1));
-                } else {
-                    to[digit] = sum;
-                    carryOver = 0;
-                }
-                digit++;
-            }
         }
     }
 }
