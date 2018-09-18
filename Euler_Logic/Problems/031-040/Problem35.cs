@@ -1,70 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Euler_Logic.Helpers;
+using System;
 
 namespace Euler_Logic.Problems {
     public class Problem35 : ProblemBase {
-        private HashSet<string> _primes = new HashSet<string>();
+        private PrimeSieveWithPrimeListUInt _primes = new PrimeSieveWithPrimeListUInt();
+
+        /*
+            For any given prime, we can find the next rotation by removing the first digit and putting it at the end.
+            If your prime is x, the next rotation is: ((x - a) * 10) + b, where a is 10^n where n is the count of the digits
+            of x, and b is the first digit of a.
+
+            For example:
+
+            x = 197
+            ((197 - 100) * 10) + 1 = 971
+            ((971 - 900) * 10) + 9 = 791
+
+            x = 1193
+            ((1193 - 1000) * 10 + 1 = 1931
+            ((1931 - 1000) * 10 + 1 = 9311
+            ((9311 - 9000) * 10 + 9 = 3119
+
+            After deriving all rotations, we simply check if all of them are prime. Assume any prime less than 10 is automatically good.
+            Do this for all primes up to 1 million.
+         */
 
         public override string ProblemName {
             get { return "35: Circular primes"; }
         }
 
         public override string GetAnswer() {
-            return CircularPrimeCount().ToString();
+            _primes.SievePrimes(1000000);
+            return Solve().ToString();
         }
 
-        private int CircularPrimeCount() {
-            int count = 1;
-            _primes.Add("2");
-            for (int num = 3; num < 1000000; num += 2) {
-                string numAsString = num.ToString();
-                if (!_primes.Contains(numAsString)) {
-                    List<string> rotations = GenerateRotations(numAsString);
-                    bool isGood = true;
-                    foreach (string rotation in rotations) {
-                        if (!IsPrime(Convert.ToDecimal(rotation))) {
+        private int Solve() {
+            int sum = 0;
+            foreach (var prime in _primes.Enumerate) {
+                bool isGood = true;
+                if (prime >= 10) {
+                    uint num = prime;
+                    uint max = (uint)Math.Log10(num);
+                    uint size = (uint)Math.Pow(10, max);
+                    for (int count = 0; count < max; count++) {
+                        uint subract = (num / size) * size;
+                        uint add = (subract / size);
+                        num = ((num - subract) * 10) + add;
+                        if (!_primes.IsPrime(num) || num < size) {
                             isGood = false;
+                            break;
                         }
-                        _primes.Add(rotation);
-                    }
-                    if (isGood) {
-                        count += rotations.Count;
                     }
                 }
-                
-            }
-            return count;
-        }
-
-        private List<string> GenerateRotations(string number) {
-            List<string> rotations = new List<string>();
-            rotations.Add(number);
-            if (number.Replace(number.Substring(0, 1), "") != "") {
-                string lastRotation = number;
-                for (int index = 0; index < number.Length - 1; index++) {
-                    lastRotation = lastRotation.Substring(lastRotation.Length - 1, 1) + lastRotation.Substring(0, lastRotation.Length - 1);
-                    rotations.Add(lastRotation);
+                if (isGood) {
+                    sum++;
                 }
             }
-            return rotations;
-        }
-
-        private bool IsPrime(decimal num) {
-            if (num == 2) {
-                return true;
-            } else if (num % 2 == 0) {
-                return false;
-            } else {
-                for (ulong factor = 3; factor <= Math.Sqrt((double)num); factor += 2) {
-                    if (num % factor == 0) {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return sum;
         }
     }
 }

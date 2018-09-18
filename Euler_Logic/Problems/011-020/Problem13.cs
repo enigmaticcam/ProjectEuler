@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 namespace Euler_Logic.Problems {
     public class Problem13 : ProblemBase {
         private string[] _numbers;
-        private List<int> _digits = new List<int>();
+
+        /*
+            Since we only need the first 10 digits, we only need to sum the first 11 digits of all 100 numbers.
+         */
 
         public override string ProblemName {
             get { return "13: Large sum"; }
@@ -15,56 +18,19 @@ namespace Euler_Logic.Problems {
 
         public override string GetAnswer() {
             BuildNumbersList();
-            return PerformSum();
+            return Solve().ToString();
         }
 
-        private string PerformSum() {
-            for (int i = 0; i <= _numbers.GetUpperBound(0); i++) {
-                List<int> numberDigits = new List<int>(50);
-                for (int digit = _numbers[i].Length - 1; digit >= 0; digit--) {
-                    numberDigits.Add(Convert.ToInt32(_numbers[i].Substring(digit, 1)));
-                }
-                AddDigits(numberDigits, _digits);
+        private ulong Solve() {
+            ulong sum = 0;
+            foreach (var text in _numbers) {
+                ulong num = Convert.ToUInt64(text.Substring(0, 11));
+                sum += num;
             }
-            return GetSum();
-        }
-
-        private string GetSum() {
-            StringBuilder sum = new StringBuilder();
-            for (int i = 0; i < _digits.Count; i++) {
-                sum.Append(_digits[_digits.Count - i - 1]);
+            while (sum > 9999999999) {
+                sum /= 10;
             }
-            string sumAsString = sum.ToString();
-            if (sumAsString.Length < 10) {
-                return sumAsString;
-            } else {
-                return sumAsString.Substring(0, 10);
-            }
-        }
-
-        private void AddDigits(List<int> from, List<int> to) {
-            int carryOver = 0;
-            int digit = 0;
-            while (digit < from.Count || carryOver > 0) {
-                if (to.Count <= digit) {
-                    to.Add(0);
-                }
-                int sum = 0;
-                if (digit < from.Count) {
-                    sum = from[digit] + to[digit] + carryOver;
-                } else {
-                    sum = to[digit] + carryOver;
-                }
-                string sumText = sum.ToString();
-                if (sumText.Length > 1) {
-                    to[digit] = Convert.ToInt32(sumText.Substring(1, 1));
-                    carryOver = Convert.ToInt32(sumText.Substring(0, 1));
-                } else {
-                    to[digit] = sum;
-                    carryOver = 0;
-                }
-                digit++;
-            }
+            return sum;
         }
 
         private void BuildNumbersList() {
