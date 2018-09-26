@@ -264,7 +264,7 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            Go(new Problem111());
+            Go(new Problem121());
         }
     }
 }
