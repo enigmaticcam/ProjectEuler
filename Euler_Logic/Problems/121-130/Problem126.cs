@@ -27,11 +27,11 @@ namespace Euler_Logic.Problems {
             3 layer = (layer 2) - (layer 1) + 8 + (layer 2) = 46 - 22 + 8 + 46 = 78
             4 layer = (layer 3) - (layer 2) + 8 + (layer 3) = 78 - 46 + 8 + 78 = 118
 
-            I read somewhere that the solution is definitely below 30000, so I simply
-            looped through every unique variant of x, y, z where z <= y <= x. For
-            each varient, I calculated all layers until the value exceeded 30000.
-            A lot of time can be saved by not searching x, y, z if x, y, 1 exceeds
-            30000.
+            So I simply looped through every unique variant of x, y, z where 
+            z <= y <= x. For each varient, I calculated all layers until the value 
+            exceeded some limit. I initially set the limit to 10000. Once that was done,
+            I looked for some number that equaled 1000. None was found, so I set the
+            limit to 20000, and viola!
          */
 
         public override string ProblemName {
@@ -39,26 +39,26 @@ namespace Euler_Logic.Problems {
         }
 
         public override string GetAnswer() {
-            Solve();
+            Solve(20000);
             return GetFirst().ToString();
         }
 
-        private void Solve() {
+        private void Solve(int limit) {
             int x = 1;
             do {
-                if (FirstLayerCount(x, 1, 1) > 30000) {
+                if (FirstLayerCount(x, 1, 1) > limit) {
                     break;
                 }
                 for (int y = 1; y <= x; y++) {
-                    if (FirstLayerCount(x, y, 1) > 30000) {
+                    if (FirstLayerCount(x, y, 1) > limit) {
                         break;
                     }
                     for (int z = 1; z <= y; z++) {
                         var firstLayerCount = FirstLayerCount(x, y, z);
-                        if (firstLayerCount > 30000) {
+                        if (firstLayerCount > limit) {
                             break;
                         }
-                        Count(x, y, z, firstLayerCount);
+                        Count(x, y, z, firstLayerCount, limit);
                     }
                 }
                 x++;
@@ -78,13 +78,13 @@ namespace Euler_Logic.Problems {
             return 0;
         }
 
-        private void Count(int x, int y, int z, int firstLayerCount) {
+        private void Count(int x, int y, int z, int firstLayerCount, int limit) {
             var first = firstLayerCount;
             var second = (x * 4) + (y * 4) + (z * 4) + first;
             AddCount(first);
             AddCount(second);
             int temp = 0;
-            while (second <= 30000) {
+            while (second <= limit) {
                 temp = second;
                 second = second - first + 8 + second;
                 first = temp;
