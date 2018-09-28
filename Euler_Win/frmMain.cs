@@ -142,8 +142,11 @@ namespace Euler_Win {
             _problems.Add(new Problem104());
             _problems.Add(new Problem105());
             _problems.Add(new Problem106());
+            _problems.Add(new Problem107());
             _problems.Add(new Problem108());
             _problems.Add(new Problem109());
+            _problems.Add(new Problem110());
+            _problems.Add(new Problem111());
             _problems.Add(new Problem112());
             _problems.Add(new Problem113());
             _problems.Add(new Problem114());
@@ -153,10 +156,15 @@ namespace Euler_Win {
             _problems.Add(new Problem118());
             _problems.Add(new Problem119());
             _problems.Add(new Problem120());
+            _problems.Add(new Problem121());
             _problems.Add(new Problem122());
+            _problems.Add(new Problem123());
             _problems.Add(new Problem124());
             _problems.Add(new Problem125());
+            _problems.Add(new Problem126());
             _problems.Add(new Problem127());
+            _problems.Add(new Problem129());
+            _problems.Add(new Problem130());
             _problems.Add(new Problem135());
             _problems.Add(new Problem136());
             _problems.Add(new Problem145());
@@ -264,7 +272,7 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            Go(new Problem123());
+            Go(new Problem130());
         }
     }
 }
