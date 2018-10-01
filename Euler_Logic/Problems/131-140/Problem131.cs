@@ -15,38 +15,49 @@ namespace Euler_Logic.Problems {
 
         public override string GetAnswer() {
             _primes.SievePrimes(999999);
-            Solve();
-            return "";
+            return Solve(100).ToString();
         }
 
-        private void Solve() {
-            List<Power> powers = new List<Power>();
-            ulong root = 1;
+        private int Solve(ulong max) {
+            int lastPrimeIndex = 0;
+            int total = 1;
+            ulong lastN = 8;
+            ulong cubeRoot = 12;
+            ulong cubed = 12 * 12 * 12;
             do {
-                var newPower = new Power();
-                newPower.Root = root;
-                newPower.Squared = root * root;
-                newPower.Cubed = newPower.Squared * root;
-                foreach (var oldPower in powers) {
-                    var a = newPower.Cubed - oldPower.Cubed;
-                    if (a % oldPower.Squared == 0) {
-                        var b = a / oldPower.Squared;
-                        if (b <= 999999 && _primes.IsPrime(b)) {
-                            bool stop = true;
-                        }
-                    }
-                    
-
+                int primeIndex = lastPrimeIndex;
+                bool found = false;
+                if (_primes[primeIndex] > max) {
+                    return total;
                 }
-                powers.Add(newPower);
-                root++;
+                do {
+                    ulong prime = _primes[primeIndex];
+                    if (prime > max) {
+                        break;
+                    }
+                    ulong n = lastN;
+                    ulong answer = 0;
+                    int count = 0;
+                    do {
+                        answer = (prime * n * n) + (n * n * n);
+                        if (answer == cubed) {
+                            lastPrimeIndex = primeIndex + 1;
+                            lastN = n + 1;
+                            found = true;
+                            total++;
+                            break;
+                        }
+                        count++;
+                        n++;
+                    } while (answer <= cubed);
+                    if (answer > cubed && count == 1) {
+                        break;
+                    }
+                    primeIndex++;
+                } while (!found);
+                cubeRoot++;
+                cubed = cubeRoot * cubeRoot * cubeRoot;
             } while (true);
-        }
-
-        private class Power {
-            public ulong Root;
-            public ulong Squared;
-            public ulong Cubed;
         }
     }
 }
