@@ -19,17 +19,13 @@ namespace Euler_Logic.Problems {
         }
 
         private ulong Solve() {
-            ulong sum = 0;
-            int count = 0;
+            ulong test = (ulong)Math.Pow(10, 9);
             foreach (var prime in _primes.Enumerate) {
-                if ((prime - 1) % 10 == 0) {
-                    sum += prime;
-                    if (count == 40) {
-                        break;
-                    }
+                if (test % prime == 1) {
+                    bool stop = true;
                 }
             }
-            return sum;
+            return 0;
         }
     }
 }

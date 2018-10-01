@@ -30,6 +30,8 @@ namespace Euler_Logic.Helpers {
 
         public void SievePrimes(uint max) {
             _notPrimes = new bool[max + 1];
+            _notPrimes[0] = true;
+            _notPrimes[1] = true;
             for (uint num = 2; num <= max; num++) {
                 if (!_notPrimes[num]) {
                     _primes.Add(num);
@@ -63,6 +65,8 @@ namespace Euler_Logic.Helpers {
 
         public void SievePrimes(ulong max) {
             _notPrimes = new bool[max + 1];
+            _notPrimes[0] = true;
+            _notPrimes[1] = true;
             for (ulong num = 2; num <= max; num++) {
                 if (!_notPrimes[num]) {
                     _primes.Add(num);
