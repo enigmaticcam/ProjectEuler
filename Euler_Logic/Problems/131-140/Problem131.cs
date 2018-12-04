@@ -14,50 +14,67 @@ namespace Euler_Logic.Problems {
         }
 
         public override string GetAnswer() {
-            _primes.SievePrimes(999999);
-            return Solve(100).ToString();
+            ulong max = 1000000;
+            _primes.SievePrimes(max - 1);
+            return Solve(max).ToString();
         }
 
         private int Solve(ulong max) {
-            int lastPrimeIndex = 0;
-            int total = 1;
-            ulong lastN = 8;
-            ulong cubeRoot = 12;
-            ulong cubed = 12 * 12 * 12;
-            do {
-                int primeIndex = lastPrimeIndex;
-                bool found = false;
-                if (_primes[primeIndex] > max) {
-                    return total;
-                }
-                do {
-                    ulong prime = _primes[primeIndex];
-                    if (prime > max) {
-                        break;
-                    }
-                    ulong n = lastN;
-                    ulong answer = 0;
-                    int count = 0;
-                    do {
-                        answer = (prime * n * n) + (n * n * n);
-                        if (answer == cubed) {
-                            lastPrimeIndex = primeIndex + 1;
-                            lastN = n + 1;
-                            found = true;
-                            total++;
-                            break;
-                        }
+            ulong nBase = 2;
+            ulong nPower = 2 * 2 * 2;
+            double third = (double)1 / (double)3;
+            int count = 2;
+            foreach (var prime in _primes.Enumerate) {
+                for (ulong increment = 1; increment <= 10; increment++) {
+                    ulong newBase = nBase + increment;
+                    ulong n = newBase * newBase * newBase;
+                    ulong cube = (n * n * n) + (prime * n * n);
+                    ulong root = (ulong)Math.Pow((double)cube, third) + 1;
+                    if (root * root * root == cube) {
+                        nBase = newBase;
+                        nPower = nBase * nBase * nBase;
                         count++;
-                        n++;
-                    } while (answer <= cubed);
-                    if (answer > cubed && count == 1) {
                         break;
                     }
-                    primeIndex++;
-                } while (!found);
-                cubeRoot++;
-                cubed = cubeRoot * cubeRoot * cubeRoot;
-            } while (true);
+                }
+            }
+            return count;
+        }
+
+        //private List<Number> _cubes = new List<Number>();
+        //private int Solve(ulong max) {
+        //    ulong root = 2;
+        //    _cubes.Add(new Number() {
+        //        Cubed = 1,
+        //        Root = 1,
+        //        Squared = 1
+        //    });
+        //    do {
+        //        ulong squared = root * root;
+        //        ulong cubed = squared * root;
+        //        foreach (var oldCube in _cubes) {
+        //            ulong diff = cubed - oldCube.Cubed;
+        //            if (diff % oldCube.Squared == 0) {
+        //                ulong result = diff / oldCube.Squared;
+        //                if (result < max && _primes.IsPrime(result)) {
+        //                    bool found = true;
+        //                    _cubes = new List<Number>();
+        //                }
+        //            }
+        //        }
+        //        _cubes.Add(new Number() {
+        //            Cubed = cubed,
+        //            Root = root,
+        //            Squared = squared
+        //        });
+        //        root++;
+        //    } while (true);
+        //}
+
+        private class Number {
+            public ulong Root;
+            public ulong Squared;
+            public ulong Cubed;
         }
     }
 }
