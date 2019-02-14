@@ -1,81 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem138 : ProblemBase {
+        /*
+            A quick brute force algorithm yields the first few triangles that satisfy the rule.
+            Those are:
+
+            (b,l,h)
+            16,17,15
+            272,305,273
+            4896,5473,4895
+            87840,98209,87841
+
+            You can generate unique integer based right triangles where (m,n) are coprime and m > n: 
+            a = m^2 - n^2
+            b = 2mn
+            c = m^2 + n^2
+
+            I found that for each valid triangle, the (m,n) values used to generate it are as
+            follows:
+
+            (b,l,h) - (m,n)
+            16,17,15 - 4,1
+            272,305,273 - 17,4
+            4896,5473,4895 - 72,17
+            87840,98209,87841 - 305,72
+
+            It can be observed that for each iteration, (m) roughly quadruples while (n) becomes
+            the prior (m). So my algorithm starts with (m,n) = (4,1) and for each subsequent
+            iteration:
+
+            1. n = m
+            2. m = 4m
+            3. Find a, b, c
+            4. Determine if the resulting triangle follows the rule
+            5. If not, continue to increase m by 1 until it does
+            6. Go back to step 1
+         */
+
         public override string ProblemName {
             get { return "138: Special isosceles triangles"; }
         }
 
         public override string GetAnswer() {
-            BruteForce2();
-            return "";
+            return Solve(12).ToString();
         }
 
-        private void BruteForce2() {
-            BigInteger index = 3;
-            do {
-                var square = index * index;
-                var next1 = (index - 1) / 2;
-                var next2 = (index + 1) / 2;
-                var result1 = square + (next1 * next1);
-                var result2 = square + (next2 * next2);
-                if (IsSquare(result1)) {
-                    bool stop = true;
-                    index = index * 179411764705882 / 10000000000000;
-                    index += index % 2 == 0 ? 1 : 0;
-                }
-                if (IsSquare(result2)) {
-                    bool stop = true;
-                    index = index * 179411764705882 / 10000000000000;
-                    index += index % 2 == 0 ? 1 : 0;
-                }
-                index += 2;
-            } while (true);
-        }
-
-        private bool IsSquare(BigInteger num) {
-            var root = SqRtN(num);
-            return root * root == num;
-        }
-
-        private bool IsSquare(ulong num) {
-            ulong root = (ulong)Math.Sqrt(num);
-            return root * root == num;
-        }
-
-        public static BigInteger SqRtN(BigInteger N) {
-            /*++
-             *  Using Newton Raphson method we calculate the
-             *  square root (N/g + g)/2
-             */
-            BigInteger rootN = N;
+        private ulong Solve(int total) {
+            ulong sum = 0;
             int count = 0;
-            int bitLength = 1; // There is a bug in finding bit length hence we start with 1 not 0
-            while (rootN / 2 != 0) {
-                rootN /= 2;
-                bitLength++;
-            }
-            bitLength = (bitLength + 1) / 2;
-            rootN = N >> bitLength;
-
-            BigInteger lastRoot = BigInteger.Zero;
+            ulong m = 4;
+            ulong n = 1;
             do {
-                if (lastRoot > rootN) {
-                    if (count++ > 1000)                   // Work around for the bug where it gets into an infinite loop
-                    {
-                        return rootN;
+                var a = m * m - n * n;
+                var b = m * n * 2;
+                var c = m * m + n * n;
+                var lower = Math.Min(a, b);
+                var higher = Math.Max(a, b);
+                if (higher - (lower * 2) == 1 || (lower * 2) - higher == 1) {
+                    n = m;
+                    m *= 4;
+                    sum += c;
+                    count++;
+                    if (count == total) {
+                        return sum;
                     }
                 }
-                lastRoot = rootN;
-                rootN = (BigInteger.Divide(N, rootN) + rootN) >> 1;
-            }
-            while (!((rootN ^ lastRoot).ToString() == "0"));
-            return rootN;
-        } // SqRtN
+                m++;
+            } while (true);
+        }
     }
 }

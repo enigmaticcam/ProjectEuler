@@ -1,6 +1,48 @@
 ﻿using System.Collections.Generic;
 
 namespace Euler_Logic.Helpers {
+    public class PrimeSieve {
+        private bool[] _notPrimes;
+        private List<ulong> _primes = new List<ulong>();
+
+        public PrimeSieve(ulong max) {
+            SievePrimes(max);
+        }
+
+        private void SievePrimes(ulong max) {
+            _notPrimes = new bool[max / 2 + 1];
+            _primes.Add(2);
+            for (ulong num = 3; num <= max; num += 2) {
+                if (!_notPrimes[num / 2 - 1]) {
+                    _primes.Add(num);
+                    for (ulong composite = 3; composite * num <= max; composite += 2) {
+                        _notPrimes[composite * num / 2 - 1] = true;
+                    }
+                }
+            }
+        }
+
+        public bool IsPrime(ulong num) {
+            if (num <= 1) {
+                return false;
+            } else if (num == 2) {
+                return true;
+            } else if (num % 2 == 0) {
+                return false;
+            } else {
+                return !_notPrimes[num / 2 - 1];
+            }
+        }
+
+        public int Count {
+            get { return _primes.Count; }
+        }
+
+        public IEnumerable<ulong> Enumerate {
+            get { return _primes; }
+        }
+    }
+
     public class PrimeSieveSimple {
         private bool[] _notPrimes;
 
