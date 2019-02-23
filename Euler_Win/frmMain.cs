@@ -163,32 +163,44 @@ namespace Euler_Win {
             _problems.Add(new Problem125());
             _problems.Add(new Problem126());
             _problems.Add(new Problem127());
+            _problems.Add(new Problem128());
             _problems.Add(new Problem129());
             _problems.Add(new Problem130());
+            _problems.Add(new Problem131());
+            _problems.Add(new Problem132());
+            _problems.Add(new Problem133());
             _problems.Add(new Problem134());
             _problems.Add(new Problem135());
             _problems.Add(new Problem136());
+            _problems.Add(new Problem137());
+            _problems.Add(new Problem138());
             _problems.Add(new Problem139());
+            _problems.Add(new Problem141());
             _problems.Add(new Problem142());
             _problems.Add(new Problem145());
+            _problems.Add(new Problem146());
+            _problems.Add(new Problem148());
             _problems.Add(new Problem149());
             _problems.Add(new Problem151());
+            _problems.Add(new Problem155());
             _problems.Add(new Problem164());
+            _problems.Add(new Problem165());
+            _problems.Add(new Problem170());
             _problems.Add(new Problem173());
             _problems.Add(new Problem174());
             _problems.Add(new Problem179());
             _problems.Add(new Problem185());
             _problems.Add(new Problem187());
             _problems.Add(new Problem191());
+            _problems.Add(new Problem203());
             _problems.Add(new Problem204());
             _problems.Add(new Problem205());
             _problems.Add(new Problem206());
-            _problems.Add(new Problem211());
-            _problems.Add(new Problem213());
+            _problems.Add(new Problem231());
             _problems.Add(new Problem243());
             _problems.Add(new Problem293());
             _problems.Add(new Problem301());
-            _problems.Add(new Problem306());
+            _problems.Add(new Problem303());
             _problems.Add(new Problem315());
             _problems.Add(new Problem323());
             _problems.Add(new Problem327());
@@ -196,20 +208,21 @@ namespace Euler_Win {
             _problems.Add(new Problem345());
             _problems.Add(new Problem346());
             _problems.Add(new Problem347());
+            _problems.Add(new Problem348());
             _problems.Add(new Problem357());
             _problems.Add(new Problem359());
             _problems.Add(new Problem371());
             _problems.Add(new Problem381());
             _problems.Add(new Problem387());
-            _problems.Add(new Problem407());
             _problems.Add(new Problem429());
+            _problems.Add(new Problem443());
             _problems.Add(new Problem491());
             _problems.Add(new Problem493());
             _problems.Add(new Problem500());
+            _problems.Add(new Problem501());
             _problems.Add(new Problem549());
-            _problems.Add(new Problem565());
-            _problems.Add(new Problem622());
-            _problems.Add(new Problem628());
+            _problems.Add(new Problem601());
+            _problems.Add(new Problem650());
         }
 
         private void PopulateProblems() {
@@ -278,7 +291,7 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            Go(new Problem231());
+            Go(new Problem148());
         }
     }
 }
