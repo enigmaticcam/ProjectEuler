@@ -138,11 +138,13 @@
     <Compile Include="Problems\181-190\Problem185.cs" />
     <Compile Include="Problems\181-190\Problem187.cs" />
     <Compile Include="Problems\191-200\Problem191.cs" />
+    <Compile Include="Problems\201-210\Problem203.cs" />
     <Compile Include="Problems\201-210\Problem204.cs" />
     <Compile Include="Problems\201-210\Problem205.cs" />
     <Compile Include="Problems\201-210\Problem206.cs" />
     <Compile Include="Problems\211-220\Problem211.cs" />
     <Compile Include="Problems\211-220\Problem213.cs" />
+    <Compile Include="Problems\231-240\Problem231.cs" />
     <Compile Include="Problems\241-250\Problem243.cs" />
     <Compile Include="Problems\291-300\Problem293.cs" />
     <Compile Include="Problems\301-310\Problem303.cs" />
