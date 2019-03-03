@@ -12,7 +12,7 @@ namespace Euler_Logic.Problems {
             The first thing that can be observed is that (n) must be some multiple of 10. This is because all the digits 1-9
             squared will yield either a 5 or an even number for the last digit when you add 1, 3, 7, 9, 13, or 27. Thus the 
             only digit squared that works is 0. It can also be observed that any (n) cannot be divisible by 3, 7, 9, 13, 
-            and 27. Also, per "twin primes" rule, any number that sits between two primes (p1, p2) where p2 - p1 = 1 must be 
+            and 27. Also, per "twin primes" rule, any number that sits between two primes (p1, p2) where p2 - p1 = 2 must be 
             divisible by 6.
 
             Now let's take a number (n), say 30, and a prime (p), say 7. n^2 = 900, and 900 % p = 4. That means if you add 3

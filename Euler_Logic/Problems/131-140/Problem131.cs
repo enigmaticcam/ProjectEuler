@@ -1,80 +1,55 @@
 ﻿using Euler_Logic.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem131 : ProblemBase {
-        private PrimeSieveWithPrimeListULong _primes = new PrimeSieveWithPrimeListULong();
+        private PrimeSieveWithPrimeListDecimal _primes = new PrimeSieveWithPrimeListDecimal();
+        private HashSet<decimal> _powersOfThree = new HashSet<decimal>();
+
+        /*
+            If you blow out the first few answers using a brute force algorithm, it can be seen that n will
+            always be a power of 3. For example, the first four prime numbers are 7, 19, 37, and 61, and
+            n for each are 1 (1^3), 8 (2^3), 27 (3^3), and 64 (4^3). It can also be seen that n steadily 
+            increases as the prime number increases (though not with a predictable pattern).
+
+            After looking at the first dozen answers, I was finally able to see that:
+            if a = root of n, or n^(1/3)
+            then a + p = (a + 1)^3
+            
+            So then, for each prime (p), all I need to do is find (a) where log(a + P, base a + 1) = 3.
+            Since n steadily increases, for each prime you can start from the last n. Also, you can stop
+            when log(a + P, base a + 1) < 3. Do this for all primes under 1000000.
+         */
 
         public override string ProblemName {
             get { return "131: Prime cube partnership"; }
         }
 
         public override string GetAnswer() {
-            ulong max = 1000000;
-            _primes.SievePrimes(max - 1);
-            return Solve(max).ToString();
+            _primes.SievePrimes(1000000);
+            return Solve().ToString();
         }
 
-        private int Solve(ulong max) {
-            ulong nBase = 2;
-            ulong nPower = 2 * 2 * 2;
-            double third = (double)1 / (double)3;
-            int count = 2;
-            foreach (var prime in _primes.Enumerate) {
-                for (ulong increment = 1; increment <= 10; increment++) {
-                    ulong newBase = nBase + increment;
-                    ulong n = newBase * newBase * newBase;
-                    ulong cube = (n * n * n) + (prime * n * n);
-                    ulong root = (ulong)Math.Pow((double)cube, third) + 1;
-                    if (root * root * root == cube) {
-                        nBase = newBase;
-                        nPower = nBase * nBase * nBase;
+        private int Solve() {
+            decimal x = 0;
+            int primeIndex = 0;
+            int count = 0;
+            do {
+                decimal prime = _primes[primeIndex];
+                decimal a = 0;
+                decimal subX = x;
+                do {
+                    subX++;
+                    a = prime + (subX * subX * subX);
+                    if ((decimal)Math.Pow((double)subX + 1, 3) == a) {
+                        x = subX;
                         count++;
-                        break;
                     }
-                }
-            }
+                } while ((decimal)Math.Log((double)a, (double)subX + 1) >= 3);
+                primeIndex++;
+            } while (primeIndex < _primes.Count);
             return count;
-        }
-
-        //private List<Number> _cubes = new List<Number>();
-        //private int Solve(ulong max) {
-        //    ulong root = 2;
-        //    _cubes.Add(new Number() {
-        //        Cubed = 1,
-        //        Root = 1,
-        //        Squared = 1
-        //    });
-        //    do {
-        //        ulong squared = root * root;
-        //        ulong cubed = squared * root;
-        //        foreach (var oldCube in _cubes) {
-        //            ulong diff = cubed - oldCube.Cubed;
-        //            if (diff % oldCube.Squared == 0) {
-        //                ulong result = diff / oldCube.Squared;
-        //                if (result < max && _primes.IsPrime(result)) {
-        //                    bool found = true;
-        //                    _cubes = new List<Number>();
-        //                }
-        //            }
-        //        }
-        //        _cubes.Add(new Number() {
-        //            Cubed = cubed,
-        //            Root = root,
-        //            Squared = squared
-        //        });
-        //        root++;
-        //    } while (true);
-        //}
-
-        private class Number {
-            public ulong Root;
-            public ulong Squared;
-            public ulong Cubed;
         }
     }
 }
