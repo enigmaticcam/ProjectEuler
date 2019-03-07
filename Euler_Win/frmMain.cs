@@ -183,6 +183,7 @@ namespace Euler_Win {
             _problems.Add(new Problem149());
             _problems.Add(new Problem151());
             _problems.Add(new Problem155());
+            _problems.Add(new Problem157());
             _problems.Add(new Problem164());
             _problems.Add(new Problem165());
             _problems.Add(new Problem169());
