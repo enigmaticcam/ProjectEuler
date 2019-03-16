@@ -140,6 +140,7 @@
     <Compile Include="Problems\171-180\Problem179.cs" />
     <Compile Include="Problems\181-190\Problem185.cs" />
     <Compile Include="Problems\181-190\Problem187.cs" />
+    <Compile Include="Problems\181-190\Problem188.cs" />
     <Compile Include="Problems\191-200\Problem191.cs" />
     <Compile Include="Problems\201-210\Problem203.cs" />
     <Compile Include="Problems\201-210\Problem204.cs" />
@@ -150,7 +151,10 @@
     <Compile Include="Problems\221-230\Problem225.cs" />
     <Compile Include="Problems\231-240\Problem231.cs" />
     <Compile Include="Problems\241-250\Problem243.cs" />
+    <Compile Include="Problems\251-260\Problem253.cs" />
+    <Compile Include="Problems\261-270\Problem265.cs" />
     <Compile Include="Problems\271-280\Problem277.cs" />
+    <Compile Include="Problems\281-290\Problem287.cs" />
     <Compile Include="Problems\291-300\Problem293.cs" />
     <Compile Include="Problems\301-310\Problem303.cs" />
     <Compile Include="Problems\311-320\Problem315.cs" />

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Euler_Logic.Problems {
     public class Problem111 : ProblemBase {
-        private PowerULong _power = new PowerULong();
+        private Power _power = new Power();
         private List<ulong> _found = new List<ulong>();
 
         /*
@@ -32,7 +32,7 @@ namespace Euler_Logic.Problems {
         }
 
         private void SolveDigitsZero(int length) {
-            ulong powerOfTen = _power.Power(10, length - 1);
+            ulong powerOfTen = (ulong)_power.GetPower(10, length - 1);
             for (ulong firstDigit = 1; firstDigit <= 9; firstDigit++) {
                 ulong num = powerOfTen * firstDigit;
                 if (PrimalityULong.IsPrime(num + 1)) {
@@ -102,8 +102,8 @@ namespace Euler_Logic.Problems {
         }
 
         private ulong ReplaceDigit(ulong num, int index, ulong replaceWith) {
-            ulong length = _power.Power(10, index);
-            ulong nextLength = _power.Power(10, index + 1);
+            ulong length = (ulong)_power.GetPower(10, index);
+            ulong nextLength = (ulong)_power.GetPower(10, index + 1);
             ulong last = num % length;
             ulong first = num - (num % nextLength);
             ulong replaced = replaceWith * length;
