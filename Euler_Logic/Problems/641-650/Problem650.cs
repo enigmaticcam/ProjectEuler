@@ -1,26 +1,24 @@
 ﻿using Euler_Logic.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem650 : ProblemBase {
         private PrimeSieve _primes;
         private Dictionary<ulong, List<Tuple>> _primeFactors = new Dictionary<ulong, List<Tuple>>();
+        private Dictionary<ulong, PowerSum> _powerSums = new Dictionary<ulong, PowerSum>();
+        private ulong _mod = 1000000007;
 
         /*
-            Using row 5 as an example, the values can be calculated like so:
+            Any individual cell (m,k) can be calculated: m! / (k! * (m - k)!). The product of an entire 
+            row (n) would then be n!^n / ((2)1! * (2)2! * (2)3! ... * (2)(n - 1)!). So I calculate the
+            prime factors of all these factorials. Then I simply start with the prime factors of n!^n and
+            subtract the double of all prime factors of all subsequent factorials less than n. 
 
-            5/1 = 5
-            5 * 4/2 = 10
-            10 * 3/3 = 10
-            10 * 2/4 = 5
-            5 * 1/5 = 1
-
-            So I find the prime factors of all numbers up to 20,000, and add/remove them based on these fractions for each row.
-            Unfortunately it's very slow and takes a few hours.
+            The above will calculate B(n). To calulate D(n), we simply take the sums of all the powers of
+            the prime factors of B(n) and multiply them. For example, if B(n) = 96, then the prime factors
+            of 96 would be 2^5 * 3^1. So then, D(96) = (2^0 + 2^1 + 2^2 + 2^3 + 2^4 + 2^5) * (3^0 + 3^1) 
+            = 252. I use a hash dictionary to assist with this. Takes 3gb of ram but it solves in less
+            than 60 seconds!
          */
 
         public override string ProblemName {
@@ -31,7 +29,6 @@ namespace Euler_Logic.Problems {
             ulong max = 20000;
             _primes = new PrimeSieve(max);
             BuildPrimeFactors(max);
-            BuildPrimeDivisors(max);
             return Solve(max).ToString();
         }
 
@@ -56,91 +53,76 @@ namespace Euler_Logic.Problems {
             }
         }
 
-        private void BuildPrimeDivisors(ulong max) {
-            foreach (var prime in _primes.Enumerate) {
-                _primeDivisors.Add(prime, new Dictionary<ulong, ulong>());
-                ulong num = 1;
-                ulong sub = 1;
-                for (ulong power = 1; power <= max; power++) {
-                    sub = (sub * prime) % 1000000007;
-                    num = (num + sub) % 1000000007;
-                    _primeDivisors[prime].Add(power, num);
-                }
-            }
-        }
-
         private ulong Solve(ulong max) {
             ulong sum = 1;
+            var subtract = new Dictionary<ulong, ulong>();
             for (ulong n = 2; n <= max; n++) {
-                sum = (sum + GetS(n)) % 1000000007;
+                var next = FactorialPrimeFactors(n);
+                ulong subSum = 1;
+                foreach (var prime in _primes.Enumerate) {
+                    if (prime > n) {
+                        break;
+                    }
+                    if (!subtract.ContainsKey(prime)) {
+                        subtract.Add(prime, next[prime] / (n - 1) * 2);
+                        subSum = (subSum * GetPowerSum(prime, next[prime])) % _mod;
+                    } else {
+                        subSum = (subSum * GetPowerSum(prime, next[prime] - subtract[prime])) % _mod;
+                        subtract[prime] += next[prime] / (n - 1) * 2;
+                    }
+                }
+                sum = (subSum + sum) % _mod;
             }
             return sum;
         }
 
-        private ulong GetS(ulong n) {
-            if (n == 2) {
-                return 3;
+        private ulong GetPowerSum(ulong prime, ulong power) {
+            if (!_powerSums.ContainsKey(prime)) {
+                _powerSums.Add(prime, new PowerSum() { HighestPowerKey = 0, HighestPowerValue = 1, Sums = new Dictionary<ulong, ulong>() });
+                _powerSums[prime].Sums.Add(0, 1);
             }
-            var totalPrimeCounts = new Dictionary<ulong, ulong>();
-            var subPrimeCounts = _primeFactors[n].ToDictionary(x => x.Prime, x => (ulong)0);
-            ulong y = 1;
-            ulong stop = n / 2 + (n % 2 == 0 ? (ulong)1 : 2);
-            for (ulong x = n; x >= stop; x--) {
-                if (x != 1) {
-                    _primeFactors[x].ForEach(tuple => {
-                        if (!subPrimeCounts.ContainsKey(tuple.Prime)) {
-                            subPrimeCounts.Add(tuple.Prime, tuple.Power);
-                        } else {
-                            subPrimeCounts[tuple.Prime] += tuple.Power;
-                        }
-                    });
-                }
-                if (y != 1) {
-                    _primeFactors[y].ForEach(tuple => subPrimeCounts[tuple.Prime] -= tuple.Power);
-                }
-                var doubleIt = (ulong)2;
-                if (n % 2 == 0 && x == n / 2 + 1) {
-                    doubleIt = 1;
-                }
-                foreach (var key in subPrimeCounts.Keys) {
-                    if (subPrimeCounts[key] != 0) {
-                        if (!totalPrimeCounts.ContainsKey(key)) {
-                            totalPrimeCounts.Add(key, subPrimeCounts[key] * doubleIt);
-                        } else {
-                            totalPrimeCounts[key] += subPrimeCounts[key] * doubleIt;
-                        }
-                    }
-                }
-                y++;
+            if (_powerSums[prime].Sums.ContainsKey(power)) {
+                return _powerSums[prime].Sums[power];
             }
-            return CalculateDivisorSum(totalPrimeCounts);
-        }
-
-        private Dictionary<ulong, Dictionary<ulong, ulong>> _primeDivisors = new Dictionary<ulong, Dictionary<ulong, ulong>>();
-        private ulong CalculateDivisorSum(Dictionary<ulong, ulong> primeCounts) {
-            ulong sum = 1;
-            foreach (var key in primeCounts.Keys) {
-                var value = primeCounts[key];
-                if (!_primeDivisors.ContainsKey(key)) {
-                    _primeDivisors.Add(key, new Dictionary<ulong, ulong>());
-                }
-                if (!_primeDivisors[key].ContainsKey(value)) {
-                    ulong num = 1;
-                    ulong sub = 1;
-                    for (ulong power = 1; power <= value; power++) {
-                        sub = (sub * key) % 1000000007;
-                        num = (num + sub) % 1000000007;
-                    }
-                    _primeDivisors[key].Add(value, num);
-                }
-                sum = (sum * _primeDivisors[key][value]) % 1000000007;
+            var powerSum = _powerSums[prime];
+            var sum = powerSum.Sums[powerSum.HighestPowerKey];
+            for (var next = powerSum.HighestPowerKey + 1; next <= power; next++) {
+                powerSum.HighestPowerValue = (powerSum.HighestPowerValue * prime) % _mod;
+                powerSum.HighestPowerKey = next;
+                sum = (sum + powerSum.HighestPowerValue) % _mod;
+                powerSum.Sums.Add(powerSum.HighestPowerKey, sum);
             }
             return sum;
+        }
+
+        private Dictionary<ulong, ulong> FactorialPrimeFactors(ulong n) {
+            var factors = new Dictionary<ulong, ulong>();
+            foreach (var prime in _primes.Enumerate) {
+                if (prime > n) {
+                    break;
+                }
+                ulong sum = 0;
+                ulong power = prime;
+                ulong result = n / power;
+                do {
+                    sum += result;
+                    power *= prime;
+                    result = n / power;
+                } while (result > 0);
+                factors.Add(prime, sum * (n - 1));
+            }
+            return factors;
         }
 
         private class Tuple {
             public ulong Prime { get; set; }
             public ulong Power { get; set; }
+        }
+
+        private class PowerSum {
+            public Dictionary<ulong, ulong> Sums { get; set; }
+            public ulong HighestPowerKey { get; set; }
+            public ulong HighestPowerValue { get; set; }
         }
     }
 }
