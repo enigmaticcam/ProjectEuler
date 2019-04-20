@@ -172,6 +172,7 @@
     <Compile Include="Problems\341-350\Problem349.cs" />
     <Compile Include="Problems\351-360\Problem357.cs" />
     <Compile Include="Problems\351-360\Problem359.cs" />
+    <Compile Include="Problems\361-370\Problem370.cs" />
     <Compile Include="Problems\371-380\Problem371.cs" />
     <Compile Include="Problems\381-390\Problem381.cs" />
     <Compile Include="Problems\381-390\Problem387.cs" />
@@ -184,8 +185,10 @@
     <Compile Include="Problems\491-500\Problem493.cs" />
     <Compile Include="Problems\491-500\Problem500.cs" />
     <Compile Include="Problems\501-510\Problem501.cs" />
+    <Compile Include="Problems\511-520\Problem518.cs" />
     <Compile Include="Problems\541-550\Problem549.cs" />
     <Compile Include="Problems\561-570\Problem565.cs" />
+    <Compile Include="Problems\571-580\Problem571.cs" />
     <Compile Include="Problems\601-610\Problem601.cs" />
     <Compile Include="Problems\621-630\Problem622.cs" />
     <Compile Include="Problems\621-630\Problem628.cs" />

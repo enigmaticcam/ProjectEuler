@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Euler_Logic.Helpers {
     public class Power {
         private Dictionary<long, Dictionary<long, long>> _powers = new Dictionary<long, Dictionary<long, long>>();
+        private Dictionary<ulong, Dictionary<ulong, ulong>> _powersULong = new Dictionary<ulong, Dictionary<ulong, ulong>>();
 
         public long GetPower(long root, long exponent) {
             if (!_powers.ContainsKey(root)) {
@@ -13,6 +14,16 @@ namespace Euler_Logic.Helpers {
                 _powers[root].Add(exponent, (long)Math.Pow(root, exponent));
             }
             return _powers[root][exponent];
+        }
+
+        public ulong GetPower(ulong root, ulong exponent) {
+            if (!_powersULong.ContainsKey(root)) {
+                _powersULong.Add(root, new Dictionary<ulong, ulong>());
+            }
+            if (!_powersULong[root].ContainsKey(exponent)) {
+                _powersULong[root].Add(exponent, (ulong)Math.Pow(root, exponent));
+            }
+            return _powersULong[root][exponent];
         }
 
         // Calculate x^y % z
