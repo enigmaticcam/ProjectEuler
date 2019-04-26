@@ -190,7 +190,7 @@ namespace Euler_Win {
             _problems.Add(new Problem159());
             _problems.Add(new Problem164());
             _problems.Add(new Problem165());
-            _problems.Add(new Problem169());
+            _problems.Add(new Problem166());
             _problems.Add(new Problem170());
             _problems.Add(new Problem173());
             _problems.Add(new Problem174());

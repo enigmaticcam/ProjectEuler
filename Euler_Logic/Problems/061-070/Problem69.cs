@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Euler_Logic.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,75 +7,57 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem69 : ProblemBase {
-        private HashSet<int> _primes = new HashSet<int>();
-        private Number[] _numbers;
+        private PrimeSieve _primes;
+
+        /*
+            According to the wiki on euler's totient function (https://en.wikipedia.org/wiki/Euler%27s_totient_function), if the prime factors
+            of (n) are (p1, p2, p3...pr), then the totient value can be calculated: n(1 - (1/p1))(1 - (1/p2))...(1 - (1/pr)). So what I do
+            is create a starting fraction for all numbers up to 1000000. Then I loop through all prime numbers, and for each prime number,
+            I multiply all of its composites by (p - 1)/p. That will give me the totient value for all numbers. I then just loop through them
+            all to find the highest value for n/t.
+         */
 
         public override string ProblemName {
             get { return "69: Totient maximum"; }
         }
 
         public override string GetAnswer() {
-            int max = 1000000;
-            SievePrimes(max);
-            Instantiate(max);
-            BuildTotients(max);
-            return FindMax().ToString();
+            ulong max = 1000000;
+            _primes = new PrimeSieve(max);
+            BuildPractions(max);
+            FindTotiens(max);
+            return FindHighest(max).ToString();
         }
 
-        private void SievePrimes(int max) {
-            HashSet<int> numbers = new HashSet<int>();
-            for (int num = 2; num <= max; num++) {
-                if (!numbers.Contains(num)) {
-                    _primes.Add(num);
-                    int composite = num;
-                    do {
-                        numbers.Add(composite);
-                        composite += num;
-                    } while (composite <= max);
+        private Dictionary<ulong, Fraction> _fractions = new Dictionary<ulong, Fraction>();
+        private void BuildPractions(ulong max) {
+            for (ulong num = 2; num <= max; num++) {
+                _fractions.Add(num, new Fraction(num, 1));
+            }
+        }
+
+        private void FindTotiens(ulong max) {
+            foreach (var prime in _primes.Enumerate) {
+                for (ulong composite = 2; composite * prime <= max; composite++) {
+                    _fractions[composite * prime].Multiply(prime - 1, prime);
                 }
             }
         }
 
-        private void Instantiate(int max) {
-            _numbers = new Number[max];
-            for (int num = 1; num <= max; num++) {
-                _numbers[num - 1] = new Number();
-                _numbers[num - 1].PhiCount = 1;
-                _numbers[num - 1].Unfactored = num;
-            }
-        }
-
-        private void BuildTotients(int max) {
-            foreach (int prime in _primes) {
-                int composite = prime;
-                do {
-                    _numbers[composite - 1].Unfactored /= prime;
-                    _numbers[composite - 1].PhiCount *= (prime - 1);
-                    while (_numbers[composite - 1].Unfactored % prime == 0) {
-                        _numbers[composite - 1].Unfactored /= prime;
-                        _numbers[composite - 1].PhiCount *= prime;
+        private ulong FindHighest(ulong max) {
+            ulong highestNum = 0;
+            decimal highestValue = 0;
+            for (ulong num = 4; num <= max; num++) {
+                if (!_primes.IsPrime(num)) {
+                    var fract = _fractions[num];
+                    decimal value = (decimal)num / (decimal)fract.X;
+                    if (value > highestValue) {
+                        highestValue = value;
+                        highestNum = num;
                     }
-                    composite += prime;
-                } while (composite <= max);
-            }
-        }
-
-        private decimal FindMax() {
-            int bestValue = -1;
-            decimal bestScore = 0;
-            for (decimal index = 0; index <= _numbers.GetUpperBound(0); index++) {
-                decimal score = (index + 1) / _numbers[(int)index].PhiCount;
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestValue = (int)index + 1;
                 }
             }
-            return bestValue;
-        }
-
-        private class Number {
-            public int Unfactored { get; set; }
-            public int PhiCount { get; set; }
+            return highestNum;
         }
     }
 }
