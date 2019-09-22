@@ -45,6 +45,7 @@
     <Compile Include="Helpers\Fraction.cs" />
     <Compile Include="Helpers\GCD.cs" />
     <Compile Include="Helpers\Power.cs" />
+    <Compile Include="Helpers\PowerAll.cs" />
     <Compile Include="Helpers\Primality.cs" />
     <Compile Include="Helpers\PrimeCount.cs" />
     <Compile Include="Helpers\PrimeSieve.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Problems\141-150\Problem149.cs" />
     <Compile Include="Problems\141-150\Problem150.cs" />
     <Compile Include="Problems\151-160\Problem151.cs" />
+    <Compile Include="Problems\151-160\Problem152.cs" />
     <Compile Include="Problems\151-160\Problem154.cs" />
     <Compile Include="Problems\151-160\Problem155.cs" />
     <Compile Include="Problems\151-160\Problem157.cs" />
@@ -147,6 +149,7 @@
     <Compile Include="Problems\171-180\Problem173.cs" />
     <Compile Include="Problems\171-180\Problem174.cs" />
     <Compile Include="Problems\171-180\Problem179.cs" />
+    <Compile Include="Problems\181-190\Problem183.cs" />
     <Compile Include="Problems\181-190\Problem185.cs" />
     <Compile Include="Problems\181-190\Problem186.cs" />
     <Compile Include="Problems\181-190\Problem187.cs" />
@@ -161,6 +164,7 @@
     <Compile Include="Problems\201-210\Problem206.cs" />
     <Compile Include="Problems\211-220\Problem211.cs" />
     <Compile Include="Problems\211-220\Problem213.cs" />
+    <Compile Include="Problems\211-220\Problem215.cs" />
     <Compile Include="Problems\221-230\Problem225.cs" />
     <Compile Include="Problems\231-240\Problem231.cs" />
     <Compile Include="Problems\241-250\Problem243.cs" />
