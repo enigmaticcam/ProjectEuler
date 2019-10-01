@@ -174,6 +174,7 @@
     <Compile Include="Problems\281-290\Problem287.cs" />
     <Compile Include="Problems\291-300\Problem293.cs" />
     <Compile Include="Problems\301-310\Problem303.cs" />
+    <Compile Include="Problems\301-310\Problem304.cs" />
     <Compile Include="Problems\311-320\Problem315.cs" />
     <Compile Include="Problems\321-329\Problem323.cs" />
     <Compile Include="Problems\321-329\Problem327.cs" />
