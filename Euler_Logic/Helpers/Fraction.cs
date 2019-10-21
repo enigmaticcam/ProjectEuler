@@ -26,5 +26,12 @@ namespace Euler_Logic.Helpers {
             X /= gcd;
             Y /= gcd;
         }
+
+        public void Subtract(ulong x, ulong y) {
+            var lcm = LCM.GetLCM(Y, y);
+            X = lcm / Y * X - lcm / y * x;
+            Y = lcm;
+            Reduce();
+        }
     }
 }
