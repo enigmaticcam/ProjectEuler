@@ -220,6 +220,8 @@ namespace Euler_Win {
             _problems.Add(new Problem225());
             _problems.Add(new Problem231());
             _problems.Add(new Problem243());
+            _problems.Add(new Problem249());
+            _problems.Add(new Problem250());
             _problems.Add(new Problem253());
             _problems.Add(new Problem265());
             _problems.Add(new Problem277());

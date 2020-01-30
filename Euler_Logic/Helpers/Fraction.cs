@@ -8,7 +8,7 @@ namespace Euler_Logic.Helpers {
     public class Fraction {
         public Fraction() { }
         public Fraction(ulong x, ulong y) {
-            X = x;
+            X = x; 
             Y = y;
         }
 
