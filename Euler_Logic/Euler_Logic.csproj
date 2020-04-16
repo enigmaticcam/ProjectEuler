@@ -213,6 +213,7 @@
     <Compile Include="Problems\621-630\Problem622.cs" />
     <Compile Include="Problems\621-630\Problem628.cs" />
     <Compile Include="Problems\641-650\Problem650.cs" />
+    <Compile Include="Problems\681-690\Problem686.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem1.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem2.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem3.cs" />
