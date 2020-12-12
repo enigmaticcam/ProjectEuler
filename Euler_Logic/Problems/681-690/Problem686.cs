@@ -4,18 +4,18 @@ using System;
 namespace Euler_Logic.Problems {
     public class Problem686 : ProblemBase {
         /*
-            Just multiple by two until we get the answer. If we go beyond 64 digits, then just divide by 10.
+            Just multiply by two until we get the answer. If we go beyond 64 digits, then just divide by 10.
             When checking if a power of 2 has the matching digits, I figure the difference of log(10) between
             the two and divide by that power of 10. This is faster than dividing by 10 until the numbers are
             the same (saves 30 seconds).
          */
+        private PowerAll _powerOf10;
+        private int _logOfL;
 
         public override string ProblemName {
             get { return "686: Powers of Two"; }
         }
-
-        private PowerAll _powerOf10;
-        private int _logOfL;
+        
         public override string GetAnswer() {
             _powerOf10 = new PowerAll(10);
             return BruteForce(123, 678910).ToString();

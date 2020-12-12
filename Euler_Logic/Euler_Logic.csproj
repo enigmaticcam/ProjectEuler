@@ -214,11 +214,17 @@
     <Compile Include="Problems\621-630\Problem628.cs" />
     <Compile Include="Problems\641-650\Problem650.cs" />
     <Compile Include="Problems\681-690\Problem686.cs" />
+    <Compile Include="Problems\691-700\Problem700.cs" />
+    <Compile Include="Problems\AdventOfCode\AdventOfCodeBase.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem1.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem2.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem3.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem4.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem5.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2016\Problem01.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2016\Problem02.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2016\Problem03.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2016\Problem04.cs" />
     <Compile Include="Problems\AdventOfCode\Y2017\Problem01.cs" />
     <Compile Include="Problems\AdventOfCode\Y2017\Problem10.cs" />
     <Compile Include="Problems\AdventOfCode\Y2017\Problem11.cs" />
@@ -231,6 +237,47 @@
     <Compile Include="Problems\AdventOfCode\Y2017\Problem08.cs" />
     <Compile Include="Problems\AdventOfCode\Y2017\Problem09.cs" />
     <Compile Include="Problems\AdventOfCode\Y2017\Problem12.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem01.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem02.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem03.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem04.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem05.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem06.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem07.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem08.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem09.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem10.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem11.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem12.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem13.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem14.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem15.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem16.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2018\Problem17.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\IntComputer.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem01.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem02.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem03.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem04.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem05.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem06.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem07.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem08.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem09.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem10.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem11.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem12.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem13.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem14.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem15.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem01.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem02.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem03.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem04.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem05.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem06.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem07.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem08.cs" />
     <Compile Include="Problems\Google\ProblemGoogle1.cs" />
     <Compile Include="Problems\Google\GoogleBase.cs" />
     <Compile Include="Problems\Google\ProblemGoogle2.cs" />
@@ -306,6 +353,7 @@
     <Compile Include="Problems\071-080\Problem73.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
