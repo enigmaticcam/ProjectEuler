@@ -9,13 +9,50 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
         public override string ProblemName => "Advent of Code 2020: 9";
 
         public override string GetAnswer() {
-            return Answer1(Input(), 25).ToString();
+            return Answer2(Input(), 25).ToString();
         }
 
         private ulong Answer1(List<string> input, int preamble) {
             var nums = GetNumbers(input, preamble);
             GetSums(nums, preamble);
             return FindFirstInvalid(nums, preamble);
+        }
+
+        private ulong Answer2(List<string> input, int preamble) {
+            var nums = GetNumbers(input, preamble);
+            GetSums(nums, preamble);
+            var lookingFor = FindFirstInvalid(nums, preamble);
+            return FindContiguous(nums, preamble, lookingFor);
+        }
+
+        private ulong FindContiguous(List<Number> nums, int preamble, ulong lookingFor) {
+            int length = 1;
+            ulong[] counts = new ulong[nums.Count];
+            do {
+                var nextCount = new ulong[nums.Count];
+                for (int index = 0; index < nums.Count - length + 1; index++) {
+                    nextCount[index] = counts[index] + nums[index + length - 1].Value;
+                    if (nextCount[index] == lookingFor && length != 1) {
+                        return GetSmallestPlusLargest(index, index + length - 1, nums);
+                    }
+                }
+                counts = nextCount;
+                length++;
+            } while (true);
+        }
+
+        private ulong GetSmallestPlusLargest(int start, int end, List<Number> nums) {
+            ulong smallest = ulong.MaxValue;
+            ulong largest = 0;
+            for (int index = start; index <= end; index++) {
+                if (nums[index].Value < smallest) {
+                    smallest = nums[index].Value;
+                }
+                if (nums[index].Value > largest) {
+                    largest = nums[index].Value;
+                }
+            }
+            return smallest + largest;
         }
 
         private ulong FindFirstInvalid(List<Number> nums, int preamble) {
