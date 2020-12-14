@@ -1,4 +1,5 @@
-﻿
+﻿using System.Numerics;
+
 namespace Euler_Logic.Helpers {
     public static class GCD {
         public static ulong GetGCD(ulong num1, ulong num2) {
@@ -33,6 +34,17 @@ namespace Euler_Logic.Helpers {
             }
             return num1 == 0 ? num2 : num1;
         }
+
+        public static BigInteger GetGCD(BigInteger num1, BigInteger num2) {
+            while (num1 != 0 && num2 != 0) {
+                if (num1 > num2) {
+                    num1 %= num2;
+                } else {
+                    num2 %= num1;
+                }
+            }
+            return num1 == 0 ? num2 : num1;
+        }
     }
 
     public static class LCM {
@@ -45,6 +57,10 @@ namespace Euler_Logic.Helpers {
         }
 
         public static long GetLCM(long num1, long num2) {
+            return (num1 / GCD.GetGCD(num1, num2)) * num2;
+        }
+
+        public static BigInteger GetLCM(BigInteger num1, BigInteger num2) {
             return (num1 / GCD.GetGCD(num1, num2)) * num2;
         }
     }
