@@ -123,13 +123,14 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                     }
                 } while (true);
 
-                nodes.ForEach(node => node.IsTraversed = false);
+                //nodes.ForEach(node => node.IsTraversed = false);
                 _x = x;
                 _y = y;
                 _direction = tdirection;
                 _traverseCount = traverseCount;
                 _route--;
             }
+            return false;
         }
 
         private bool PerformRoute(int route, bool isDebug) {

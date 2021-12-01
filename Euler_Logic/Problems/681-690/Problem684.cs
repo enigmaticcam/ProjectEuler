@@ -14,8 +14,43 @@ namespace Euler_Logic.Problems {
         private ulong _mod;
         public override string GetAnswer() {
             _mod = 1000000007;
-            return Solve().ToString();
+            BuildF();
+            Solve();
             return "";
+        }
+
+        private void Solve() {
+            ulong sum = 0;
+            for (int i = 2; i <= 90; i++) {
+                sum += S(_f[i]);
+            }
+        }
+
+        //private ulong S(ulong n) {
+        //    ulong sum = 0;
+        //    for (ulong num = 1; num <= n; num++) {
+        //        sum += s(num);
+        //    }
+        //    return sum;
+        //}
+
+        private ulong _lastNum = 1;
+        private ulong _lastSum;
+        private ulong S(ulong n) {
+            for (; _lastNum <= n; _lastNum++) {
+                _lastSum += s(_lastNum);
+            }
+            return _lastSum;
+        }
+
+        private ulong s(ulong n) {
+            ulong count = n / 9;
+            ulong num = n - (count * 9);
+            while (count > 0) {
+                num = (num * 10 + 9) % _mod;
+                count--;
+            }
+            return num;
         }
 
         private ulong DigitSum(ulong n) {
@@ -27,58 +62,13 @@ namespace Euler_Logic.Problems {
             return sum;
         }
 
-        private ulong s(ulong n) {
-            if (n < 10) {
-                return n;
+        private ulong[] _f;
+        private void BuildF() {
+            _f = new ulong[91];
+            _f[1] = 1;
+            for (int i = 2; i <= 90; i++) {
+                _f[i] = _f[i - 1] + _f[i - 2];
             }
-            //ulong count = n / 9;
-            //ulong num = n - (count * 9);
-            //for (ulong next = 1; next <= count; next++) {
-            //    num *= 10;
-            //    num += 9;
-            //}
-            //return num;
-            ulong count = n / 9;
-            ulong remainder = n - (count * 9);
-            ulong num = Power.Exp(10, count, _mod);
-            num += num * remainder;
-            if (num == 0) {
-                num = _mod;
-            } else {
-                num -= 1;
-            }
-            return num;
-        }
-
-        private ulong Test(ulong n) {
-            ulong num = 1;
-            do {
-                if (DigitSum(num) == n) {
-                    return num;
-                }
-                num++;
-            } while (true);
-        }
-
-        private ulong _maxNumber;
-        private ulong _maxSum;
-        private ulong S(ulong n) {
-            for (; _maxNumber <= n; _maxNumber++) {
-                _maxSum += s(n);
-            }
-            return _maxSum;
-        }
-
-        private ulong Solve() {
-            ulong num1 = 0;
-            ulong num2 = 1;
-            ulong total = 0;
-            for (int count = 2; count <= 90; count++) {
-                num2 += num1;
-                num1 = num2 - num1;
-                total = (total + S(num2)) % _mod;
-            }
-            return total;
         }
     }
 }

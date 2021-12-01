@@ -19,11 +19,11 @@ namespace Euler_Win {
             _problems.Add(new ProblemGoogle1());
             _problems.Add(new ProblemGoogle2());
             _problems.Add(new ProblemGoogle3());
-            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem1());
-            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem2());
-            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem3());
-            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem4());
-            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem5());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem01());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem02());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem03());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem04());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2015.Problem05());
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem01());
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem02());
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem03());
@@ -273,7 +273,7 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            Go(new Problem1());
+            Go(new Euler_Logic.Problems.AdventOfCode.Y2019.Problem18());
         }
     }
 }
