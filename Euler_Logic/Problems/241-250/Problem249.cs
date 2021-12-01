@@ -38,9 +38,11 @@ namespace Euler_Logic.Problems {
                 sums[0] = sums[1];
                 sums[1] = new ulong[top];
                 for (ulong subMax = 1; subMax <= maxTop; subMax++) {
+
+
                     if (subMax == prime) {
                         sums[1][subMax - 1] += 1;
-                    } 
+                    }
                     if (subMax > prime) {
                         sums[1][subMax - 1] += sums[0][subMax - prime - 1] + sums[0][subMax - 1];
                     } else {

@@ -9,16 +9,16 @@ namespace Euler_Logic.Problems {
         private ulong _fibB;
 
         /*
-            Finding all the next primes is easy. I simply do a segmented prime sieve starting at 10^14. I experimented 
+            Finding all the next primes is easy. I simply do a segmented prime sieve starting at 10^14. I experimented
             with the length until I got something close but not less than 100,000 primes. The range for that is
             +4,000,000.
-            
-            F(n) % m is periodic. In other words, it follows a repeated sequence. The sequence starts with 0, 1. 
-            So if you follow F(1) % m, F(2) % m, F(3) % m, etc. until you get 0, 1 again, then you have the 
+           
+            F(n) % m is periodic. In other words, it follows a repeated sequence. The sequence starts with 0, 1.
+            So if you follow F(1) % m, F(2) % m, F(3) % m, etc. until you get 0, 1 again, then you have the
             sequence. Once you know the sequence length (l), then F(n) % m = F(n % l) % m.
 
             However, the length for m = 1234567891011 is quite large, too large in fact to hold the entire sequence
-            in memory. Instead, I first find the length (l), then find (n % l), and end the sequence once I get 
+            in memory. Instead, I first find the length (l), then find (n % l), and end the sequence once I get
             there. Starting from there, I begin looking at the primes. Prime or not, I continue to find the next
             fib. But for each prime, I sum the total of the fib and do this until I've gotten all 100,000 primes.
          */

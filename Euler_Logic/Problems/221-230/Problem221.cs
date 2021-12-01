@@ -73,7 +73,7 @@ namespace Euler_Logic.Problems {
             divisors = divisors.Distinct().OrderBy(x => x).ToList();
             for (int index1 = 0; index1 < divisors.Count; index1++) {
                 var d1 = divisors[index1];
-                for (int index2 = index1 ; index2 < divisors.Count; index2++) {
+                for (int index2 = index1; index2 < divisors.Count; index2++) {
                     var d2 = divisors[index2];
                     if (d1 * d2 > num) {
                         break;

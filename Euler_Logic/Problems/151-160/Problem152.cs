@@ -1,7 +1,6 @@
 ﻿using Euler_Logic.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace Euler_Logic.Problems {
     public class Problem152 : ProblemBase {
@@ -96,6 +95,8 @@ namespace Euler_Logic.Problems {
 
         private Dictionary<ulong, int> _subsets = new Dictionary<ulong, int>();
         private void ComputeBottomSubsets(int index, ulong sum) {
+
+
             var num = _lcm[_validNums[index]];
             var nextSum = sum + num;
             if (nextSum <= _half) {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Euler_Logic.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,131 +7,79 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem47 : ProblemBase {
-        private Dictionary<double, bool> _isPrime = new Dictionary<double, bool>();
-        private HashSet<double> _primes = new HashSet<double>();
-        private Dictionary<double, int> _primeFactorCount = new Dictionary<double, int>();
-        private Dictionary<double, Dictionary<int, Dictionary<int, bool>>> _hash = new Dictionary<double, Dictionary<int, Dictionary<int, bool>>>();
+        private PrimeSieve _primes;
+
+        /*
+            Assume the answer is <= 1000000. Create an array of integers up to 1000000. each array will represent the number
+            of distinct factors for that index. Find all primes up to sqrt(1000000). For each prime, add one to every composite.
+            Then loop through the array and find the first ocurrance were the value of 4 consecutive numbers are eqaul to 4.
+         */
 
         public override string ProblemName {
             get { return "47: Distinct primes factors"; }
         }
 
         public override string GetAnswer() {
-            return FindPrimes(4).ToString();
+            return Solve2().ToString();
         }
 
-        private double FindPrimes(int count) {
-            double num = 3;
-            double first = 0;
-            bool isGood = false;
-            int goodCount = 0;
-
-            _primes.Add(2);
-            do {
-                if (IsPrime(num)) {
-                    _primes.Add(num);
+        private int[] _counts;
+        private int Solve2() {
+            _primes = new PrimeSieve((ulong)Math.Sqrt(1000000));
+            _counts = new int[1000001];
+            foreach (var prime in _primes.Enumerate) {
+                for (ulong composite = 2; composite * prime <= 1000000; composite++) {
+                    _counts[composite * prime]++;
                 }
-                if (FindPrimeSums(num, 0, count)) {
-                    if (isGood) {
-                        goodCount++;
-                    } else {
-                        isGood = true;
-                        goodCount = 1;
-                        first = num;
-                    }
-                    if (goodCount == count) {
-                        return first;
+            }
+            int consecutiveCount = 0;
+            for (int num = 2 * 3 * 5 * 7; num <= 1000000; num++) {
+                if (_counts[num] == 4) {
+                    consecutiveCount++;
+                    if (consecutiveCount == 4) {
+                        return num - 3;
                     }
                 } else {
-                    isGood = false;
+                    consecutiveCount = 0;
+                }
+            }
+            return 0;
+        }
+
+        private ulong Solve1() {
+            _primes = new PrimeSieve(1000000);
+            ulong num = 2 * 3 * 5 * 7;
+            int consecutiveCount = 0;
+            do {
+                ulong remainder = num;
+                int primeCount = 0;
+                foreach (var prime in _primes.Enumerate) {
+                    if (remainder % prime == 0) {
+                        primeCount++;
+                        if (primeCount > 4) {
+                            break;
+                        }
+                        do {
+                            remainder /= prime;
+                        } while (remainder % prime == 0);
+                        if (prime == 1) {
+                            break;
+                        } else if (_primes.IsPrime(remainder)) {
+                            primeCount++;
+                            break;
+                        }
+                    }
+                }
+                if (primeCount == 4) {
+                    consecutiveCount++;
+                    if (consecutiveCount == 4) {
+                        return num - 3;
+                    }
+                } else {
+                    consecutiveCount = 0;
                 }
                 num++;
-                if (num == 200000) {
-                    throw new Exception();
-                }
             } while (true);
-        }
-
-        private bool FindPrimeSums(double num, int primeIndex, int count) {
-            if (count == 1) {
-                for (int a = primeIndex; a < _primes.Count; a++) {
-                    if (_primes.ElementAt(a) == num) {
-                        return true;
-                    } else if (_primes.ElementAt(a) > num) {
-                        return false;
-                    }
-                }
-                return false;
-
-            } else if (_primes.Count - primeIndex - 1 < count) {
-                return false;
-
-            } else if (_hash.ContainsKey(num) && _hash[num].ContainsKey(primeIndex) && _hash[num][primeIndex].ContainsKey(count)) {
-                return _hash[num][primeIndex][count];
-
-            } else {                
-                for (int index = primeIndex; index < _primes.Count; index++) {
-                    double prime = _primes.ElementAt(index);
-                    if (prime > Math.Sqrt(num)) {
-                        AddToHash(num, primeIndex, count, false);
-                        return false;
-                    }
-                    if (num % prime == 0) {
-                        if (FindPrimeSums(num / prime, index + 1, count - 1)) {
-                            AddToHash(num, primeIndex, count, true);
-                            return true;
-                        }
-                    }
-                    double power = Math.Pow(prime, prime);
-                    if (power <= Math.Sqrt(num) && num % power == 0) {
-                        if (FindPrimeSums(num / power, index + 1, count - 1)) {
-                            AddToHash(num, primeIndex, count, true);
-                            return true;
-                        }
-                    }
-
-                    double timesItself = prime * prime;
-                    if (timesItself <= Math.Sqrt(num) && num % timesItself == 0) {
-                        if (FindPrimeSums(num / timesItself, index + 1, count - 1)) {
-                            AddToHash(num, primeIndex, count, true);
-                            return true;
-                        }
-                    }
-                }
-                AddToHash(num, primeIndex, count, false);
-                return false;
-            }
-        }
-
-        private void AddToHash(double num, int primeIndex, int count, bool value) {
-            if (!_hash.ContainsKey(num)) {
-                _hash.Add(num, new Dictionary<int, Dictionary<int, bool>>());
-            }
-            if (!_hash[num].ContainsKey(primeIndex)) {
-                _hash[num].Add(primeIndex, new Dictionary<int, bool>());
-            }
-            _hash[num][primeIndex].Add(count, value);
-        }
-
-        private bool IsPrime(double num) {
-            if (_isPrime.ContainsKey(num)) {
-                return _isPrime[num];
-            } else if (num == 2) {
-                _isPrime.Add(num, true);
-                return true;
-            } else if (num % 2 == 0) {
-                _isPrime.Add(num, false);
-                return false;
-            } else {
-                for (ulong factor = 3; factor <= Math.Sqrt((double)num); factor += 2) {
-                    if (num % factor == 0) {
-                        _isPrime.Add(num, false);
-                        return false;
-                    }
-                }
-            }
-            _isPrime.Add(num, true);
-            return true;
         }
     }
 }

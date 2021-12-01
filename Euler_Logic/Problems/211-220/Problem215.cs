@@ -11,12 +11,12 @@ namespace Euler_Logic.Problems {
         /*
             This can be solved using basic DP. First I calculate all the possible ways of arranging bricks of sizes 2 and 3
             in a single row. I store the result as a bitmask where each bit represents a border number. Then, I find all
-            the different ways a single row can pair against another row. Simply perform bitwise AND between all 
-            combinations of singles. Store a list for each single row which contains a list of all the other single rows 
-            that can pair with it. Finally, the DP part is just a matter of counting. Loop through all the pair counts to 
+            the different ways a single row can pair against another row. Simply perform bitwise AND between all
+            combinations of singles. Store a list for each single row which contains a list of all the other single rows
+            that can pair with it. Finally, the DP part is just a matter of counting. Loop through all the pair counts to
             determine how many ways to end on a single. Obviously we start with a count of 1 for each single. But since
-            some singles only pair with others, the counts will change for each row. For example, if there are 10 ways of 
-            ending on single #3, then for each possible pair starting with single #3, we add 10 to that single. Sum the
+            some singles only pair with others, the counts will change for each row. For example, if there are 10 ways of
+            ending on single #3,  then for each possible pair starting with single #3, we add 10 to that single. Sum the
             counts of the last row to get the answer.
          */
 
@@ -94,6 +94,8 @@ namespace Euler_Logic.Problems {
             for (int index = 0; index < single.Length - 1; index++) {
                 sum += single[index];
                 hash += _powerOf2.GetPower(sum);
+
+
             }
             _singles.Add(hash);
         }

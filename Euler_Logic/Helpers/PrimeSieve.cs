@@ -19,7 +19,7 @@ namespace Euler_Logic.Helpers {
                 if (!_notPrimes[num / 2 - 1]) {
                     _primes.Add(num);
                     if (num <= maxComposite) {
-                        for (ulong composite = 3; composite * num <= max; composite += 2) {
+                        for (ulong composite = num; composite * num <= max; composite += 2) {
                             _notPrimes[composite * num / 2 - 1] = true;
                         }
                     }
@@ -68,7 +68,7 @@ namespace Euler_Logic.Helpers {
                 if (!_notPrimes[num / 2 - 1]) {
                     _primes.Add(num);
                     if (num <= maxComposite) {
-                        for (uint composite = 3; composite * num <= max; composite += 2) {
+                        for (uint composite = num; composite * num <= max; composite += 2) {
                             _notPrimes[composite * num / 2 - 1] = true;
                         }
                     }
@@ -95,6 +95,10 @@ namespace Euler_Logic.Helpers {
         public IEnumerable<uint> Enumerate {
             get { return _primes; }
         }
+
+        public uint this[int index] {
+            get { return _primes[index]; }
+        }
     }
 
     public class PrimeSieveSimple {
@@ -104,7 +108,7 @@ namespace Euler_Logic.Helpers {
             _notPrimes = new bool[max + 1];
             for (uint num = 2; num <= max; num++) {
                 if (!_notPrimes[num]) {
-                    for (uint composite = 2; composite * num <= max; composite++) {
+                    for (uint composite = num; composite * num <= max; composite++) {
                         _notPrimes[composite * num] = true;
                     }
                 }
@@ -129,7 +133,7 @@ namespace Euler_Logic.Helpers {
             for (uint num = 2; num <= max; num++) {
                 if (!_notPrimes[num]) {
                     _primes.Add(num);
-                    for (uint composite = 2; composite * num <= max; composite++) {
+                    for (uint composite = num; composite * num <= max; composite++) {
                         _notPrimes[composite * num] = true;
                     }
                 }
@@ -164,7 +168,7 @@ namespace Euler_Logic.Helpers {
             for (ulong num = 2; num <= max; num++) {
                 if (!_notPrimes[num]) {
                     _primes.Add(num);
-                    for (uint composite = 2; composite * num <= max; composite++) {
+                    for (ulong composite = num; composite * num <= max; composite++) {
                         _notPrimes[composite * num] = true;
                     }
                 }
@@ -199,7 +203,7 @@ namespace Euler_Logic.Helpers {
             for (uint num = 2; num <= max; num++) {
                 if (!_notPrimes[num]) {
                     _primes.Add(num);
-                    for (uint composite = 2; composite * num <= max; composite++) {
+                    for (uint composite = num; composite * num <= max; composite++) {
                         _notPrimes[composite * num] = true;
                     }
                 }

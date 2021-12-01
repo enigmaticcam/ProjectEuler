@@ -50,6 +50,6 @@ namespace Euler_Logic.Problems {
             return sums[1][0];
         }
 
-        
+
     }
 }

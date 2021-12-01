@@ -22,7 +22,7 @@ namespace Euler_Logic.Problems {
         public override string GetAnswer() {
             return Solve((ulong)Math.Pow(2, 50)).ToString();
         }
-        
+
         private ulong Solve(ulong max) {
             _sum = 0;
             var rootMax = (ulong)Math.Sqrt(max);
@@ -35,7 +35,7 @@ namespace Euler_Logic.Problems {
             for (int index = startPrime; index < _primes.Count; index++) {
                 var prime = _primes[index];
                 prime *= prime;
-                if (max / prime >= prod) { 
+                if (max / prime >= prod) {
                     if (add) {
                         var temp = _sum;
                         _sum += max / (prime * prod);
