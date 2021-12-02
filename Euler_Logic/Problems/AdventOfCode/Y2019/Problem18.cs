@@ -6,15 +6,16 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
     public class Problem18 : AdventOfCodeBase {
         private Dictionary<int, Dictionary<int, Node>> _grid;
         private List<Node> _connectedGrid;
-        private Node _startNode;
+        private Node[] _startNodes;
         private int _maxX;
         private int _maxY;
         private Dictionary<char, ulong> _charToBit;
-        private List<Node> _keys;
-        private Dictionary<Node, List<Route>> _routes;
         private ulong _allKeys;
         private Dictionary<Node, Dictionary<ulong, int>> _hash;
         private BinaryHeap_Min _heap;
+        private List<Node> _keyPaths;
+        private List<SubNode> _subNodePaths;
+        private ulong _keysFound;
 
         private enum enumNodeType {
             Empty,
@@ -30,165 +31,162 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
 
         public override string GetAnswer() {
             _heap = new BinaryHeap_Min();
+            _best = int.MaxValue;
             SetCharToBit();
-            GetGrid(Input());
-            return Answer1().ToString();
+            GetGrid(Input_Test9());
+            return Answer2().ToString();
         }
 
         private string Answer1() {
-            SetAllRoutes();
-            _best = int.MaxValue;
-            FindBestRoute(_startNode, 0, 0);
+            FindBestRoute(_startNodes[0], 0);
             return _best.ToString();
         }
 
+        private string Answer2() {
+            AddCenterDivision();
+            FindBestRoute(0);
+            return _best.ToString();
+        }
+
+        private void AddCenterDivision() {
+            var start = _startNodes[0];
+            _grid[start.X][start.Y].NodeType = enumNodeType.Wall;
+            _grid[start.X - 1][start.Y].NodeType = enumNodeType.Wall;
+            _grid[start.X + 1][start.Y].NodeType = enumNodeType.Wall;
+            _grid[start.X][start.Y - 1].NodeType = enumNodeType.Wall;
+            _grid[start.X][start.Y + 1].NodeType = enumNodeType.Wall;
+            _startNodes[0] = _grid[start.X - 1][start.Y - 1];
+            _startNodes[1] = _grid[start.X - 1][start.Y + 1];
+            _startNodes[2] = _grid[start.X + 1][start.Y - 1];
+            _startNodes[3] = _grid[start.X + 1][start.Y + 1];
+            _startNodes[0].NodeType = enumNodeType.Start;
+            _startNodes[1].NodeType = enumNodeType.Start;
+            _startNodes[2].NodeType = enumNodeType.Start;
+            _startNodes[3].NodeType = enumNodeType.Start;
+        }
+
         private int _best;
-        private void FindBestRoute(Node currentNode, int currentDistance, ulong keysFound) {
-            foreach (var route in _routes[currentNode]) {
-                var newDistance = currentDistance + route.Distance;
-                if (newDistance > _best) {
-                    break;
+        private void FindBestRoute(Node currentNode, int currentDistance) {
+            FindPaths(currentNode);
+            var nextPaths = _keyPaths.Select(x => new SubNode() {
+                N = x,
+                D = x.Num,
+                KeysFound = x.KeysFound
+            }).ToList();
+            FindBestRouteRecursive(nextPaths, currentDistance, false);
+        }
+
+        private void FindBestRoute(int currentDistance) {
+            var nextPaths = new List<SubNode>();
+            foreach (var start in _startNodes) {
+                FindPaths(start);
+                nextPaths.AddRange(_keyPaths.Select(x => new SubNode() {
+                    N = x,
+                    D = x.Num,
+                    KeysFound = x.KeysFound
+                }));
+            }
+            FindBestRouteRecursive(nextPaths, currentDistance, true);
+        }
+
+        private void FindBestRouteRecursive(List<SubNode> nextPaths, int currentDistance, bool multiplePaths) {
+            foreach (var path in nextPaths) {
+                var keyDiff = _keysFound ^ path.KeysFound;
+                keyDiff &= path.KeysFound;
+                _keysFound += keyDiff;
+                var nextDistance = currentDistance + path.D;
+                if (_keysFound == _allKeys && nextDistance < _best) {
+                    _best = nextDistance;
                 }
-                var nextNode = route.Node1;
-                if (currentNode == nextNode) {
-                    nextNode = route.Node2;
-                }
-                if ((nextNode.DoorOrKeyBit & keysFound) == 0) {
-                    var keyXor = route.Keys ^ keysFound;
-                    var keyDiff = keyXor - (keyXor & keysFound);
-                    if ((route.Doors & keysFound) == route.Doors && keyDiff != 0) {
-                        keysFound += keyDiff;
-                        if (keysFound == _allKeys) {
-                            _best = newDistance;
+                if (_hash[path.N].ContainsKey(_keysFound)) {
+                    var bestSoFar = _hash[path.N][_keysFound];
+                    if (bestSoFar > nextDistance) {
+                        _hash[path.N][_keysFound] = nextDistance;
+                        if (multiplePaths) {
+                            FindBestRoute(nextDistance);
                         } else {
-                            if (_hash[currentNode].ContainsKey(keysFound)) {
-                                var bestForThisNode = _hash[currentNode][keysFound];
-                                if (newDistance < bestForThisNode) {
-                                    _hash[currentNode][keysFound] = newDistance;
-                                    FindBestRoute(nextNode, newDistance, keysFound);
-                                }
-                            } else {
-                                _hash[currentNode].Add(keysFound, newDistance);
-                                FindBestRoute(nextNode, newDistance, keysFound);
-                            }
+                            FindBestRoute(path.N, nextDistance);
                         }
-                        keysFound -= keyDiff;
+                    }
+                } else {
+                    _hash[path.N].Add(_keysFound, nextDistance);
+                    if (multiplePaths) {
+                        FindBestRoute(nextDistance);
+                    } else {
+                        FindBestRoute(path.N, nextDistance);
                     }
                 }
+                _keysFound -= keyDiff;
             }
         }
 
-        private void SetAllRoutes() {
-            _heap = new BinaryHeap_Min();
-            _connectedGrid.ForEach(x => _heap.Add(x));
-            _routes = new Dictionary<Node, List<Route>>();
-            _routes.Add(_startNode, new List<Route>());
-            foreach (var key in _keys) {
-                _routes[_startNode].Add(FindRoute(_startNode, key));
-                _routes.Add(key, new List<Route>());
-            }
-            _routes[_startNode] = _routes[_startNode].OrderBy(x => x.Distance).ToList();
-            for (int index1 = 0; index1 < _keys.Count; index1++) {
-                var key1 = _keys[index1];
-                for (int index2 = index1 + 1; index2 < _keys.Count; index2++) {
-                    var key2 = _keys[index2];
-                    var route = FindRoute(key1, key2);
-                    _routes[key1].Add(route);
-                    _routes[key2].Add(route);
-                }
-                _routes[key1] = _routes[key1].OrderBy(x => x.Distance).ToList();
-            }
-        }
-
-        private Route FindRoute(Node start, Node find) {
+        private void FindPaths(Node start) {
             _connectedGrid.ForEach(x => {
                 x.Num = int.MaxValue;
                 x.Prior = null;
+                x.KeysFound = 0;
             });
             _heap.Reset();
             start.Num = 0;
             _heap.Adjust(start.Index);
-            Node found = null;
+            int total = _connectedGrid.Count;
+            _keyPaths = new List<Node>();
             do {
-                var current = FindLowestDistance();
+                var current = (Node)_heap.Top;
+                if (current.Num == int.MaxValue) {
+                    break;
+                }
                 var nextDistance = current.Num + 1;
                 
                 // Left
                 if (current.X > 0) {
                     var next = _grid[current.X - 1][current.Y];
-                    if (next.Num > nextDistance) {
-                        next.Num = nextDistance;
-                        _heap.Adjust(next.Index);
-                        next.Prior = current;
-                    }
-                    if (next == find) {
-                        found = next;
-                        break;
-                    }
+                    HandleNode(current, next, nextDistance);
                 }
 
                 // Right
                 if (current.X < _maxX) {
                     var next = _grid[current.X + 1][current.Y];
-                    if (next.Num > nextDistance) {
-                        next.Num = nextDistance;
-                        _heap.Adjust(next.Index);
-                        next.Prior = current;
-                    }
-                    if (next == find) {
-                        found = next;
-                        break;
-                    }
+                    HandleNode(current, next, nextDistance);
                 }
 
                 // Up
                 if (current.Y > 0) {
                     var next = _grid[current.X][current.Y - 1];
-                    if (next.Num > nextDistance) {
-                        next.Num = nextDistance;
-                        _heap.Adjust(next.Index);
-                        next.Prior = current;
-                    }
-                    if (next == find) {
-                        found = next;
-                        break;
-                    }
+                    HandleNode(current, next, nextDistance);
                 }
 
                 // Down
                 if (current.Y < _maxY) {
                     var next = _grid[current.X][current.Y + 1];
-                    if (next.Num > nextDistance) {
-                        next.Num = nextDistance;
-                        _heap.Adjust(next.Index);
-                        next.Prior = current;
-                    }
-                    if (next == find) {
-                        found = next;
-                        break;
-                    }
+                    HandleNode(current, next, nextDistance);
                 }
-                //_heap.Adjust(current.Index);
                 _heap.Remove(current.Index);
-            } while (true);
-            return MakeRoute(start, found);
-        }
-
-        private Route MakeRoute(Node start, Node find) {
-            var route = new Route() { Node1 = start, Node2 = find, Distance = find.Num };
-            while (find != null) {
-                if (find.NodeType == enumNodeType.Door) {
-                    route.Doors += find.DoorOrKeyBit;
-                } else if (find.NodeType == enumNodeType.Key) {
-                    route.Keys += find.DoorOrKeyBit;
+                total--;
+                if (total == 0) {
+                    break;
                 }
-                find = find.Prior;
-            }
-            return route;
+            } while (true);
         }
 
-        private Node FindLowestDistance() {
-            return (Node)_heap.Top;
+        private void HandleNode(Node current, Node next, int nextDistance) {
+            bool canMoveTo = false;
+            if (next.NodeType == enumNodeType.Empty || next.NodeType == enumNodeType.Start || next.NodeType == enumNodeType.Key) {
+                canMoveTo = true;
+            } else if (next.NodeType == enumNodeType.Door && (_keysFound & next.DoorOrKeyBit) == next.DoorOrKeyBit) {
+                canMoveTo = true;
+            }
+            if (canMoveTo) {
+                if (next.Num > nextDistance) {
+                    next.Num = nextDistance;
+                    _heap.Adjust(next.Index);
+                    next.Prior = current;
+                    if (next.NodeType == enumNodeType.Key && (_keysFound & next.DoorOrKeyBit) == 0) {
+                        next.KeysFound = next.DoorOrKeyBit + current.KeysFound;
+                        _keyPaths.Add(next);
+                    }
+                }
+            }
         }
 
         private void GetGrid(List<string> input) {
@@ -197,8 +195,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             _connectedGrid = new List<Node>();
             _maxX = input[0].Length - 1;
             _maxY = input.Count - 1;
+            _startNodes = new Node[4];
             var allKeys = new HashSet<char>();
-            _keys = new List<Node>();
             for (int y = 0; y < input.Count; y++) {
                 for (int x = 0; x < input[y].Length; x++) {
                     var node = new Node() {
@@ -214,7 +212,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                             node.NodeType = enumNodeType.Empty;
                         } else if (digit == '@') {
                             node.NodeType = enumNodeType.Start;
-                            _startNode = node;
+                            _startNodes[0] = node;
                             _hash.Add(node, new Dictionary<ulong, int>());
                         } else {
                             int ascii = (int)digit;
@@ -227,7 +225,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                                 node.DoorOrKeyChar = (char)(ascii - 32);
                                 node.DoorOrKeyBit = _charToBit[node.DoorOrKeyChar];
                                 allKeys.Add(digit);
-                                _keys.Add(node);
                                 _allKeys += node.DoorOrKeyBit;
                                 _hash.Add(node, new Dictionary<ulong, int>());
                             }
@@ -239,6 +236,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                     _grid[x].Add(y, node);
                 }
             }
+            _heap = new BinaryHeap_Min();
+            _connectedGrid.ForEach(x => _heap.Add(x));
         }
 
         private void SetCharToBit() {
@@ -303,6 +302,56 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             };
         }
 
+        private List<string> Input_Test6() {
+            return new List<string>() {
+                "#######",
+                "#a.#Cd#",
+                "##...##",
+                "##.@.##",
+                "##...##",
+                "#cB#Ab#",
+                "#######"
+            };
+        }
+
+        private List<string> Input_Test7() {
+            return new List<string>() {
+                "###############",
+                "#d.ABC.#.....a#",
+                "######...######",
+                "######.@.######",
+                "######...######",
+                "#b.....#.....c#",
+                "###############"
+            };
+        }
+
+        private List<string> Input_Test8() {
+            return new List<string>() {
+                "#############",
+                "#DcBa.#.GhKl#",
+                "#.###...#I###",
+                "#e#d#.@.#j#k#",
+                "###C#...###J#",
+                "#fEbA.#.FgHi#",
+                "#############"
+            };
+        }
+
+        private List<string> Input_Test9() {
+            return new List<string>() {
+                "#############",
+                "#g#f.D#..h#l#",
+                "#F###e#E###.#",
+                "#dCba...BcIJ#",
+                "#####.@.#####",
+                "#nK.L...G...#",
+                "#M###N#H###.#",
+                "#o#m..#i#jk.#",
+                "#############"
+            };
+        }
+
         private class Node : BinaryHeap_Min.Node {
             public enumNodeType NodeType { get; set; }
             public int X { get; set; }
@@ -310,14 +359,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             public char DoorOrKeyChar { get; set; }
             public ulong DoorOrKeyBit { get; set; }
             public Node Prior { get; set; }
+            public ulong KeysFound { get; set; }
         }
 
-        private class Route {
-            public Node Node1 { get; set; }
-            public Node Node2 { get; set; }
-            public ulong Keys { get; set; }
-            public ulong Doors { get; set; }
-            public int Distance { get; set; }
+        private class SubNode {
+            public Node N { get; set; }
+            public int D { get; set; }
+            public ulong KeysFound { get; set; }
         }
     }
 }
