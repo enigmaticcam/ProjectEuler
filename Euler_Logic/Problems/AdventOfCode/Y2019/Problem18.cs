@@ -14,7 +14,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         private Dictionary<Node, Dictionary<ulong, int>> _hash;
         private BinaryHeap_Min _heap;
         private List<Node> _keyPaths;
-        private List<SubNode> _subNodePaths;
         private ulong _keysFound;
 
         private enum enumNodeType {
@@ -33,7 +32,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             _heap = new BinaryHeap_Min();
             _best = int.MaxValue;
             SetCharToBit();
-            GetGrid(Input_Test9());
+            GetGrid(Input());
             return Answer2().ToString();
         }
 
@@ -78,12 +77,14 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
 
         private void FindBestRoute(int currentDistance) {
             var nextPaths = new List<SubNode>();
-            foreach (var start in _startNodes) {
+            for (int index = 0; index < _startNodes.Length; index++) {
+                var start = _startNodes[index];
                 FindPaths(start);
                 nextPaths.AddRange(_keyPaths.Select(x => new SubNode() {
                     N = x,
                     D = x.Num,
-                    KeysFound = x.KeysFound
+                    KeysFound = x.KeysFound,
+                    StartNodeIndex = index
                 }));
             }
             FindBestRouteRecursive(nextPaths, currentDistance, true);
@@ -103,7 +104,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                     if (bestSoFar > nextDistance) {
                         _hash[path.N][_keysFound] = nextDistance;
                         if (multiplePaths) {
+                            var startNode = _startNodes[path.StartNodeIndex];
+                            _startNodes[path.StartNodeIndex] = path.N;
                             FindBestRoute(nextDistance);
+                            _startNodes[path.StartNodeIndex] = startNode;
                         } else {
                             FindBestRoute(path.N, nextDistance);
                         }
@@ -111,7 +115,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                 } else {
                     _hash[path.N].Add(_keysFound, nextDistance);
                     if (multiplePaths) {
+                        var startNode = _startNodes[path.StartNodeIndex];
+                        _startNodes[path.StartNodeIndex] = path.N;
                         FindBestRoute(nextDistance);
+                        _startNodes[path.StartNodeIndex] = startNode;
                     } else {
                         FindBestRoute(path.N, nextDistance);
                     }
@@ -366,6 +373,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             public Node N { get; set; }
             public int D { get; set; }
             public ulong KeysFound { get; set; }
+            public int StartNodeIndex { get; set; }
         }
     }
 }

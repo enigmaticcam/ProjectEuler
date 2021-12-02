@@ -273,7 +273,7 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            Go(new Euler_Logic.Problems.AdventOfCode.Y2021.Problem02());
+            Go(new Euler_Logic.Problems.AdventOfCode.Y2019.Problem19());
         }
     }
 }

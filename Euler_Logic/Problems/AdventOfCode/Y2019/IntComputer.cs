@@ -10,6 +10,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
 
         public bool PerformFinish { get; set; }
         public List<long> Output { get; set; }
+        public long LastOutput { get; set; }
+        public bool SingleOutputOnly { get; set; }
         private long _relativeBase = 0;
 
         public void Run(List<string> instructions, Func<int> input, Action outputCaller, IEnumerable<LineOverride> lineOverrides) {
@@ -109,7 +111,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         private long Op4(Dictionary<long, long> codes, long index) {
             long op = codes[index];
             op /= 100;
-            Output.Add(GetValue(codes, op % 10, GetRawValue(codes, index + 1)));
+            LastOutput = GetValue(codes, op % 10, GetRawValue(codes, index + 1));
+            if (!SingleOutputOnly) {
+                Output.Add(LastOutput);
+            }
             return index + 2;
         }
 
