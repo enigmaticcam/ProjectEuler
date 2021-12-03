@@ -7,6 +7,7 @@ namespace Euler_Logic.Helpers {
         private int _lastDeletedIndex;
 
         public Node Top => _nums[0];
+        public int LastDeletedIndex => _lastDeletedIndex;
 
         public void Reset() {
             _lastDeletedIndex = _nums.Count;
