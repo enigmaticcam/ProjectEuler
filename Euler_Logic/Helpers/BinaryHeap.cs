@@ -21,8 +21,9 @@ namespace Euler_Logic.Helpers {
         }
 
         public void Add(Node node) {
-            node.Index = _nums.Count;
-            _nums.Add(node);
+            node.Index = _lastDeletedIndex;
+            _nums.Insert(_lastDeletedIndex, node);
+            _lastDeletedIndex++;
             MoveUp(node.Index);
         }
 
@@ -46,7 +47,7 @@ namespace Euler_Logic.Helpers {
             var item = _nums[index];
             var parentIndex = (index - 1) / 2;
             var parent = _nums[parentIndex];
-            if (parent.Num > item.Num) {
+            if (parent.Num > item.Num || index > _lastDeletedIndex) {
                 _nums[index] = parent;
                 _nums[parentIndex] = item;
                 item.Index = parentIndex;
