@@ -4,6 +4,7 @@ using System.Linq;
 namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
     public class Problem05 : AdventOfCodeBase {
         private List<Line> _lines;
+        private int _totals;
 
         public override string ProblemName {
             get { return "Advent of Code 2021: 05"; }
@@ -16,24 +17,12 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
 
         private int Answer1() {
             var counts = GetCounts(_lines.Where(x => x.X1 == x.X2 || x.Y1 == x.Y2));
-            return FindMultiplePoints(counts);
+            return _totals;
         }
 
         private int Answer2() {
             var counts = GetCounts(_lines);
-            return FindMultiplePoints(counts);
-        }
-
-        private int FindMultiplePoints(Dictionary<int, Dictionary<int, int>> counts) {
-            int count = 0;
-            foreach (var x in counts.Keys) {
-                foreach (var y in counts[x].Keys) {
-                    if (counts[x][y] >= 2) {
-                        count++;
-                    }
-                }
-            }
-            return count;
+            return _totals;
         }
         
         private Dictionary<int, Dictionary<int, int>> GetCounts(IEnumerable<Line> lines) {
@@ -75,6 +64,9 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             if (!counts[x].ContainsKey(y)) {
                 counts[x].Add(y, 1);
             } else {
+                if (counts[x][y] == 1) {
+                    _totals++;
+                }
                 counts[x][y]++;
             }
         }
