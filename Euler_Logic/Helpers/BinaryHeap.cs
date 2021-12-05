@@ -14,9 +14,8 @@ namespace Euler_Logic.Helpers {
         }
 
         public Node Add(int num) {
-            var node = new Node() { Index = _nums.Count, Num = num };
-            _nums.Add(node);
-            MoveUp(node.Index);
+            var node = new Node() { Num = num };
+            Add(node);
             return node;
         }
 
@@ -25,6 +24,10 @@ namespace Euler_Logic.Helpers {
             _nums.Insert(_lastDeletedIndex, node);
             _lastDeletedIndex++;
             MoveUp(node.Index);
+        }
+
+        public void Remove(Node node) {
+            Remove(node.Index);
         }
 
         public void Remove(int index) {
@@ -94,6 +97,10 @@ namespace Euler_Logic.Helpers {
                 return true;
             }
             return false;
+        }
+
+        public void Adjust(Node node) {
+            Adjust(node.Index);
         }
 
         public void Adjust(int index) {

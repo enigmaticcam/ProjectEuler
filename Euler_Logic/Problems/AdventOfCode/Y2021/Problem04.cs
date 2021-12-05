@@ -21,7 +21,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         private int Answer1() {
             InitializeFinals();
             BuildHash();
-            FindWinningBoard();
+            FindFirstBoard();
             return Score();
         }
 
@@ -32,7 +32,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             return Score();
         }
 
-        private void FindWinningBoard() {
+        private void FindFirstBoard() {
             bool stop = false;
             foreach (var random in _randoms) {
                 _lastRandom = random;
@@ -158,7 +158,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 var board = new int[5, 5];
                 for (int y = 0; y < 5; y++) {
                     for (int x = 0; x < 5; x++) {
-                        var test = new char[2] { input[index][x * 3], input[index][x * 3 + 1] };
                         var split = Convert.ToInt32(new string(new char[2] { input[index][x * 3], input[index][x * 3 + 1] }));
                         board[x, y] = split;
                     }
