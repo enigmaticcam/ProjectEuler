@@ -237,6 +237,7 @@
     <Compile Include="Problems\AdventOfCode\Y2017\Problem08.cs" />
     <Compile Include="Problems\AdventOfCode\Y2017\Problem09.cs" />
     <Compile Include="Problems\AdventOfCode\Y2017\Problem12.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2017\Problem13.cs" />
     <Compile Include="Problems\AdventOfCode\Y2018\Problem01.cs" />
     <Compile Include="Problems\AdventOfCode\Y2018\Problem02.cs" />
     <Compile Include="Problems\AdventOfCode\Y2018\Problem03.cs" />
@@ -293,6 +294,7 @@
     <Compile Include="Problems\AdventOfCode\Y2020\Problem22.cs" />
     <Compile Include="Problems\AdventOfCode\Y2020\Problem23.cs" />
     <Compile Include="Problems\AdventOfCode\Y2020\Problem24.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2020\Problem25.cs" />
     <Compile Include="Problems\Google\ProblemGoogle1.cs" />
     <Compile Include="Problems\Google\GoogleBase.cs" />
     <Compile Include="Problems\Google\ProblemGoogle2.cs" />

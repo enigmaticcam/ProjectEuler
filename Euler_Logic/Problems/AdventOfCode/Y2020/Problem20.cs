@@ -10,15 +10,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
         private PowerAll _powerOf2;
         private Dictionary<ulong, Tile> _tiles;
         private Dictionary<ulong, List<Edge>> _edges;
-        private Dictionary<int, Dictionary<int, Image>> _images;
-        private Dictionary<Tuple<int, int>, Tile> _grid;
+        private Dictionary<Tuple<int, int>, Image> _images;
         private List<ulong> _corners;
 
         public override string ProblemName => "Advent of Code 2020: 20";
 
         public override string GetAnswer() {
             _powerOf2 = new PowerAll(2);
-            _images = new Dictionary<int, Dictionary<int, Image>>();
             return Answer2(TestInput()).ToString();
         }
 
@@ -26,7 +24,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
             GetTiles(input);
             PopulateTileBorders();
             BuildEdges();
-            SetFirstImage();
             FindCorners();
             return GetCornerProduct();
         }
@@ -35,33 +32,91 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
             GetTiles(input);
             PopulateTileBorders();
             BuildEdges();
-            SetFirstImage();
             FindCorners();
             BuildGrid();
             return 0;
         }
 
         private void BuildGrid() {
-            _grid = new Dictionary<Tuple<int, int>, Tile>();
-            _grid.Add(new Tuple<int, int>(0, 0), _tiles[_corners[0]]);
+            _images = new Dictionary<Tuple<int, int>, Image>();
+            _images.Add(new Tuple<int, int>(0, 0), new Image() {
+                HasImage = true,
+                ImageTile = _tiles[_corners[0]],
+                IsFlippedX = false,
+                IsFlippedY = false,
+                RotateCount = 0,
+                X = 0,
+                Y = 0
+            });
             BuildGrid(new Tuple<int, int>(0, 0));
         }
 
         private void BuildGrid(Tuple<int, int> point) {
-            var image = _grid[point];
-            foreach (var edge in _edges[image.Borders[0]]) {
-                if (edge.EdgeTile.Id != image.Id) {
-                    foreach (var border in edge.EdgeTile.Borders) {
-                        if (border == image.Borders[0]) {
-                            bool stop = true;
-                        }
+            var image = _images[point];
+            FindEdges(image, image.ImageTile.Borders[0], 0, false);
+            FindEdges(image, image.ImageTile.Borders[1], 1, false);
+            FindEdges(image, image.ImageTile.Borders[2], 2, false);
+            FindEdges(image, image.ImageTile.Borders[3], 3, false);
+            FindEdges(image, image.ImageTile.BordersFlipped[0], 0, true);
+            FindEdges(image, image.ImageTile.BordersFlipped[1], 1, true);
+            FindEdges(image, image.ImageTile.BordersFlipped[2], 2, true);
+            FindEdges(image, image.ImageTile.BordersFlipped[3], 3, true);
+        }
+
+        private void FindEdges(Image image, ulong border, int borderSide, bool isBorderFlipped) {
+            foreach (var edge in _edges[border]) {
+                if (image.ImageTile.Id == 1427 && edge.EdgeTile.Id == 1489) {
+                    bool stop = true;
+                }
+                if (edge.EdgeTile.Id != image.ImageTile.Id) {
+                    var rotateBy = ((borderSide + 2) % 4) - edge.Side;
+                    if (rotateBy < 0) {
+                        rotateBy += 4;
+                    }
+                    rotateBy = (rotateBy + image.RotateCount) % 4;
+                    var position = (borderSide + image.RotateCount) % 4;
+                    if (image.IsFlippedX && position % 2 == 1) {
+                        position = (position + 2) % 4;
+                    } else if (image.IsFlippedY && position % 2 == 0) {
+                        position = (position + 2) % 4;
+                    }
+                    var flippedX = false;
+                    var flippedY = false;
+                    int x = image.X;
+                    int y = image.Y;
+                    switch (position) {
+                        case 0:
+                            y++;
+                            flippedX = isBorderFlipped == image.IsFlippedX;
+                            break;
+                        case 1:
+                            x++;
+                            flippedY = isBorderFlipped == image.IsFlippedY;
+                            break;
+                        case 2:
+                            y--;
+                            flippedX = isBorderFlipped == image.IsFlippedX;
+                            break;
+                        case 3:
+                            x--;
+                            flippedY = isBorderFlipped == image.IsFlippedY;
+                            break;
+                    }
+                    var key = new Tuple<int, int>(x, y);
+                    if (!_images.ContainsKey(key)) {
+                        _images.Add(key, new Image() {
+                            HasImage = true,
+                            ImageTile = edge.EdgeTile,
+                            IsFlippedX = flippedX,
+                            IsFlippedY = flippedY,
+                            RotateCount = rotateBy,
+                            X = x,
+                            Y = y
+                        });
+                        BuildGrid(key);
                     }
                 }
             }
-        }
-
-        private void FindMatching(Tile sourceTile, ulong border) {
-            
         }
 
         private ulong GetCornerProduct() {
@@ -70,17 +125,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
                 result *= corner;
             }
             return result;
-        }
-
-        private void SetFirstImage() {
-            var image = new Image() {
-                ImageTile = _tiles.Values.ElementAt(0),
-                IsFlipped = false,
-                RotateCount = 0,
-                X = 0,
-                Y = 0
-            };
-            AddImage(image);
         }
 
         private void FindCorners() {
@@ -114,20 +158,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
             }
         }
 
-        private bool DoesImageExist(int x, int y) {
-            if (!_images.ContainsKey(x)) {
-                return false;
-            }
-            return _images[x].ContainsKey(y);
-        }
-
-        private void AddImage(Image image) {
-            if (!_images.ContainsKey(image.X)) {
-                _images.Add(image.X, new Dictionary<int, Image>());
-            }
-            _images[image.X].Add(image.Y, image);
-        }
-
         private void AddEdge(ulong key, Edge edge) {
             if (!_edges.ContainsKey(key)) {
                 _edges.Add(key, new List<Edge>());
@@ -141,14 +171,15 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
                 tile.BordersFlipped = new ulong[4];
                 for (int index = 0; index < 10; index++) {
                     tile.Borders[0] += _powerOf2.GetPower(9 - index) * (tile.Grid[index, 0] ? (ulong)1 : 0);
-                    tile.Borders[1] += _powerOf2.GetPower(9 - index) * (tile.Grid[9, index] ? (ulong)1 : 0);
-                    tile.Borders[2] += _powerOf2.GetPower(9 - index) * (tile.Grid[index, 9] ? (ulong)1 : 0);
+                    tile.Borders[1] += _powerOf2.GetPower(index) * (tile.Grid[9, index] ? (ulong)1 : 0);
+                    tile.Borders[2] += _powerOf2.GetPower(index) * (tile.Grid[index, 9] ? (ulong)1 : 0);
                     tile.Borders[3] += _powerOf2.GetPower(9 - index) * (tile.Grid[0, index] ? (ulong)1 : 0);
                     tile.BordersFlipped[0] += _powerOf2.GetPower(index) * (tile.Grid[index, 0] ? (ulong)1 : 0);
-                    tile.BordersFlipped[1] += _powerOf2.GetPower(index) * (tile.Grid[9, index] ? (ulong)1 : 0);
-                    tile.BordersFlipped[2] += _powerOf2.GetPower(index) * (tile.Grid[index, 9] ? (ulong)1 : 0);
+                    tile.BordersFlipped[1] += _powerOf2.GetPower(9 - index) * (tile.Grid[9, index] ? (ulong)1 : 0);
+                    tile.BordersFlipped[2] += _powerOf2.GetPower(9 - index) * (tile.Grid[index, 9] ? (ulong)1 : 0);
                     tile.BordersFlipped[3] += _powerOf2.GetPower(index) * (tile.Grid[0, index] ? (ulong)1 : 0);
                 }
+                bool stop = true;
             }
         }
 
@@ -186,7 +217,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
         private class Image {
             public bool HasImage { get; set; }
             public Tile ImageTile { get; set; }
-            public bool IsFlipped { get; set; }
+            public bool IsFlippedX { get; set; }
+            public bool IsFlippedY { get; set; }
             public int RotateCount { get; set; }
             public int X { get; set; }
             public int Y { get; set; }
