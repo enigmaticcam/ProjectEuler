@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
-    public class Problem5 : ProblemBase {
+    public class Problem05 : ProblemBase {
         private List<string> _vowels;
         private List<string> _invalids;
 

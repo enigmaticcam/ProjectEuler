@@ -16,7 +16,7 @@ namespace Euler_Logic.Problems {
         public override string GetAnswer() {
             CreateCoinTypes();
             _sums = new int[_coinTypes.Count + 1][];
-            return CoinSums(200).ToString();
+            return CoinSums(100).ToString();
         }
 
         private int CoinSums(int top) {
@@ -40,13 +40,11 @@ namespace Euler_Logic.Problems {
 
         private void CreateCoinTypes() {
             _coinTypes.Add(1);
-            _coinTypes.Add(2);
             _coinTypes.Add(5);
             _coinTypes.Add(10);
-            _coinTypes.Add(20);
+            _coinTypes.Add(25);
             _coinTypes.Add(50);
             _coinTypes.Add(100);
-            _coinTypes.Add(200);
         }
     }
 }

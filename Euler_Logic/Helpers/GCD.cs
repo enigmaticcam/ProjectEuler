@@ -2,6 +2,7 @@
 
 namespace Euler_Logic.Helpers {
     public static class GCD {
+
         public static ulong GetGCD(ulong num1, ulong num2) {
             while (num1 != 0 && num2 != 0) {
                 if (num1 > num2) {

@@ -1,4 +1,5 @@
 ﻿using Euler_Logic.Helpers;
+using System;
 using System.Collections.Generic;
 
 namespace Euler_Logic.Problems {
@@ -9,10 +10,10 @@ namespace Euler_Logic.Problems {
             -----------------------------------NEW METHOD-----------------------------------
             According to http://mathworld.wolfram.com/PythagoreanTriple.html, pythagorian triplets can be derived using a matrix transformation.
             Any single triplet can generate three more. It's only a question of what base triplet(s) to start from.
-       
+        
             -----------------------------------OLD METHOD-----------------------------------
             a^2 + b^2 = c^2 can be rewritten:
-           
+            
             a^2 + b^2 = c^2
             a^2 - 1 = c^2 - b^2
             a^2 - 1 = (c + b)(c - b)
@@ -31,10 +32,15 @@ namespace Euler_Logic.Problems {
         }
 
         public override string GetAnswer() {
-            return Solve(25000000).ToString();
+            return Best(25000000).ToString();
+            ulong maxP = 25000000;
+            InitializePrimeFactors();
+            _primes = new PrimeSieve(1000000000);
+            _divisors = new ulong[100000];
+            return Solve(maxP).ToString();
         }
 
-        private ulong Solve(ulong maxP) {
+        private ulong Best(ulong maxP) {
             ulong count = 0;
             var list = new List<Triple>();
             list.Add(new Triple(1, 1, 1));
@@ -85,9 +91,101 @@ namespace Euler_Logic.Problems {
             public ulong C { get; set; }
             public ulong P {
                 get { return A + B + C; }
-
-
             }
+        }
+
+        private ulong Solve(ulong maxP) {
+            ulong count = (maxP - 1) / 2;
+            for (ulong a = 4; a <= maxP / 3; a++) {
+                var num = (a * a) - 1;
+                if (a % 2 == 0) {
+                    if (IsDivisorGood(1, num, a, maxP)) {
+                        count++;
+                    }
+                }
+                GetDivisors(num);
+                for (int index = 0; index < _divisorMaxIndex; index++) {
+                    if (IsDivisorGood(_divisors[index], num, a, maxP)) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        private bool IsDivisorGood(ulong d1, ulong num, ulong a, ulong maxP) {
+            var d2 = num / d1;
+            var b = (d2 - d1);
+            if (b % 2 == 0) {
+                b /= 2;
+                var c = d2 - b;
+                if (a <= b && b <= c && a + b + c <= maxP) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private PrimeFactor[] _primeFactors;
+        private int _primeFactorIndex;
+        private ulong[] _divisors;
+        private int _divisorMaxIndex;
+        private void GetDivisors(ulong num) {
+            _divisorMaxIndex = 0;
+            _primeFactorIndex = 0;
+            ulong max = (ulong)Math.Sqrt(num);
+            foreach (var prime in _primes.Enumerate) {
+                if (prime > max) {
+                    break;
+                }
+                if (num % prime == 0) {
+                    _primeFactors[_primeFactorIndex].Power = 0;
+                    _primeFactors[_primeFactorIndex].Prime = prime;
+                    do {
+                        _primeFactors[_primeFactorIndex].Power++;
+                        num /= prime;
+                    } while (num % prime == 0);
+                    _primeFactorIndex++;
+                    if (num == 1) {
+                        break;
+                    }
+                    if (num <= max && _primes.IsPrime(num)) {
+                        _primeFactors[_primeFactorIndex].Power = 1;
+                        _primeFactors[_primeFactorIndex].Prime = num;
+                        _primeFactorIndex++;
+                        break;
+                    }
+                }
+            }
+            DivisorRecurisve(max, 0, 1);
+        }
+
+        private void DivisorRecurisve(ulong max, int primeFactorIndex, ulong product) {
+            var prime = _primeFactors[primeFactorIndex];
+            ulong power = 1;
+            for (ulong next = 0; next <= prime.Power; next++) {
+                if (product * power <= max) {
+                    if (primeFactorIndex < _primeFactorIndex - 1) {
+                        DivisorRecurisve(max, primeFactorIndex + 1, product * power);
+                    } else if (product * power != 1) {
+                        _divisors[_divisorMaxIndex] = product * power;
+                        _divisorMaxIndex++;
+                    }
+                }
+                power *= prime.Prime;
+            }
+        }
+
+        private void InitializePrimeFactors() {
+            _primeFactors = new PrimeFactor[100];
+            for (int index = 0; index < _primeFactors.Length; index++) {
+                _primeFactors[index] = new PrimeFactor();
+            }
+        }
+
+        private class PrimeFactor {
+            public ulong Prime { get; set; }
+            public ulong Power { get; set; }
         }
     }
 }

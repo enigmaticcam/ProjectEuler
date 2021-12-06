@@ -6,325 +6,243 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
     public class Problem17 : AdventOfCodeBase {
-        private int _count;
-        private int _xOffset;
-        private List<WaterVelocity> _water;
-        private Grid _grid;
-        private List<WaterVelocity> _waterToAdd;
+        private Dictionary<int, Dictionary<int, enumNodeType>> _grid;
+        private int _highestY;
+        private int _lowestY;
+        private int _highestX;
+        private int _lowestX;
+
+        private enum enumNodeType {
+            Empty,
+            Wall,
+            WaterStagnant,
+            WaterFlowing
+        }
 
         public override string ProblemName {
             get { return "Advent of Code 2018: 17"; }
         }
 
         public override string GetAnswer() {
-            return Answer1();
+            return Answer1(Input()).ToString();
         }
 
-        public string Answer1() {
-            Initialize();
-            FillWater();
-            return GetWaterCount().ToString();
+        private int Answer1(List<string> input) {
+            GetGrid(input);
+            SetHighestLowest();
+            Vertical(500, 0);
+            return GetCount(false);
         }
 
-        private int GetWaterCount() {
+        private int Answer2(List<string> input) {
+            GetGrid(input);
+            SetHighestLowest();
+            Vertical(500, 0);
+            return GetCount(true);
+        }
+
+        private int GetCount(bool onlyStagnant) {
             int count = 0;
-            for (int x = 0; x <= _grid.Points.GetUpperBound(0); x++) {
-                for (int y = 0; y <= _grid.Points.GetUpperBound(1); y++) {
-                    if (_grid.Points[x, y].PointType == enumPointType.WaterFlowing || _grid.Points[x, y].PointType == enumPointType.WaterStagnant) {
-                        count++;
+            foreach (var x in _grid) {
+                foreach (var y in x.Value) {
+                    if (y.Key >= _lowestY && y.Key <= _highestY) {
+                        if (y.Value == enumNodeType.WaterStagnant) {
+                            count++;
+                        } else if (y.Value == enumNodeType.WaterFlowing && !onlyStagnant) {
+                            count++;
+                        }
                     }
                 }
             }
             return count;
         }
 
-        private void Initialize() {
-            _count = 1;
-            _grid = GetGrid(Input());
-            _waterToAdd = new List<WaterVelocity>();
-            _water = new List<WaterVelocity>();
-            _water.Add(new WaterVelocity() {
-                Direction = enumDirection.Down,
-                X = 500 - _xOffset,
-                Y = 0,
-                Max = 0
-            });
-        }
-
-        private void FillWater() {
-            bool allDead = false;
-            int count = 0;
-            do {
-                count++;
-                if (count % 1000 == 0) {
+        private bool Vertical(int startX, int startY) {
+            int x = startX;
+            int y = startY;
+            while (y <= _highestY && GetNode(x, y) == enumNodeType.Empty) {
+                SetNode(x, y, enumNodeType.WaterFlowing);
+                if (y == 39) {
                     bool stop = true;
                 }
-                if (count % 100 == 0) {
-                    bool stop = true;
-                }
-                if (count % 50 == 0) {
-                    bool stop = true;
-                }
-                if (count % 25 == 0) {
-                    bool stop = true;
-                }
-                if (count % 10 == 0) {
-                    bool stop = true;
-                }
-                if (count == 650) {
-                    bool stop = true;
-                }
-                allDead = true;
-                foreach (var water in _water) {
-                    if (!water.IsDead) {
-                        allDead = false;
-                        if (water.Direction == enumDirection.Down) {
-                            MoveWaterVertical(water);
-                        } else {
-                            MoveWaterHorizontal(water);
+                y++;
+            }
+            if (y <= _highestY) {
+                y--;
+                bool left = false;
+                bool right = false;
+                bool foundFlowing = LookForFlowing(x - 1, y, -1);
+                foundFlowing = foundFlowing || LookForFlowing(x + 1, y, 1);
+                if (!foundFlowing) {
+                    do {
+                        SetNode(x, y, enumNodeType.WaterStagnant);
+                        left = Horizontal(x - 1, y, -1);
+                        right = Horizontal(x + 1, y, 1);
+                        if (!left || !right) {
+                            SetNode(x, y, enumNodeType.WaterFlowing);
+                            SetRowToFlowing(x, y);
                         }
+                        y--;
+                        foundFlowing = LookForFlowing(x - 1, y, -1);
+                        foundFlowing = foundFlowing || LookForFlowing(x + 1, y, 1);
+                    } while (left && right && y > startY && !foundFlowing);
+                    if (GetNode(x, y - 1) == enumNodeType.WaterStagnant) {
+                        SetNode(x, y, enumNodeType.WaterStagnant);
                     }
-                }
-                if (_waterToAdd.Count > 0) {
-                    _water.AddRange(_waterToAdd);
-                    _waterToAdd.Clear();
-                }
-            } while (!allDead);
-            bool xyz = true;
+                } 
+            }
+            return y <= startY;
         }
 
-        private void MoveWaterVertical(WaterVelocity water) {
-            if (water.Y + 1 <= _grid.Points.GetUpperBound(1)) {
-                var point = _grid.Points[water.X, water.Y + 1];
-                if (point.PointType == enumPointType.Blank) {
-                    point.PointType = enumPointType.WaterFlowing;
-                    water.Y++;
-                } else {
-                    water.IsDead = true;
-                    water.Children = new WaterVelocity[2];
-                    water.Children[0] = new WaterVelocity() {
-                        Direction = enumDirection.Left,
-                        Parent = water,
-                        X = water.X,
-                        Y = water.Y
-                    };
-                    water.Children[1] = new WaterVelocity() {
-                        Direction = enumDirection.Right,
-                        Parent = water,
-                        X = water.X,
-                        Y = water.Y
-                    };
-                    _waterToAdd.AddRange(water.Children);
-                    MoveWaterHorizontal(water.Children[0]);
-                    MoveWaterHorizontal(water.Children[1]);
-                }
-            } else {
-                water.IsDead = true;
-            }
-        }
-        
-        private void MoveWaterHorizontal(WaterVelocity water) {
-            int direction = -1;
-            if (water.Direction == enumDirection.Right) {
-                direction = 1;
-            }
-            var point = _grid.Points[water.X + direction, water.Y];
-            if (_grid.Points[water.X, water.Y + 1].PointType == enumPointType.Blank) {
-                water.IsDead = true;
-                water.Children = new WaterVelocity[1];
-                water.Children[0] = new WaterVelocity() {
-                    Direction = enumDirection.Down,
-                    Parent = water,
-                    X = water.X,
-                    Y = water.Y,
-                    Max = water.Y
-                };
-                _waterToAdd.Add(water.Children[0]);
-                MoveWaterVertical(water.Children[0]);
-            } else if (point.PointType != enumPointType.Clay) {
-                point.PointType = enumPointType.WaterFlowing;
-                water.X += direction;
-            } else {
-                water.IsDead = true;
-                Rollup(water);
-            }
-        }
-
-        private void Rollup(WaterVelocity water) {
-            bool finished = false;
+        private void SetRowToFlowing(int x, int y) {
+            int step = 1;
+            bool leftStop = false;
+            bool rightStop = false;
             do {
-                water = water.Parent;
-                if (!HasChildrenAlive(water)) {
-                    if (water.Direction == enumDirection.Down) {
-                        if (ReactivateVertical(water)) {
-                            finished = true;
-                        }
-                    } else if (ReactiveHorizontal(water)) {
-                        finished = true;
-                    }
-                } else {
-                    finished = true;
+                if (!leftStop && GetNode(x - step, y) == enumNodeType.WaterStagnant) {
+                    SetNode(x - step, y, enumNodeType.WaterFlowing);
+                } else if (!leftStop) {
+                    leftStop = true;
                 }
-            } while (!finished);
+                if (!rightStop && GetNode(x + step, y) == enumNodeType.WaterStagnant) {
+                    SetNode(x + step, y, enumNodeType.WaterFlowing);
+                } else if (!rightStop) {
+                    rightStop = true;
+                }
+                step++;
+            } while (!leftStop || !rightStop);
         }
 
-        private bool HasChildrenAlive(WaterVelocity water) {
-            if (water.Children == null) {
-                return false;
-            } else if (water.Children.Where(x => x.IsDead == false).Count() > 0) {
-                return true;
-            } else {
-                foreach (var child in water.Children) {
-                    if (HasChildrenAlive(child)) {
-                        return true;
-                    }
+        private bool LookForFlowing(int startX, int startY, int direction) {
+            int x = startX;
+            int y = startY;
+            var node = GetNode(x, y + 1);
+            if (node == enumNodeType.WaterStagnant || node == enumNodeType.WaterFlowing) {
+                do {
+                    x += direction;
+                } while (GetNode(x, y) == enumNodeType.Empty && GetNode(x, y + 1) != enumNodeType.Empty);
+                if (GetNode(x, y) == enumNodeType.WaterFlowing) {
+                    return true;
                 }
-                return false;
-            }
-        }
-
-        private bool ReactivateVertical(WaterVelocity water) {
-            if (water.Y > water.Max) {
-                water.Y--;
-                water.Children[0].X = water.X;
-                water.Children[0].Y = water.Y;
-                water.Children[0].IsDead = false;
-                water.Children[1].X = water.X;
-                water.Children[1].Y = water.Y;
-                water.Children[1].IsDead = false;
-                MoveWaterHorizontal(water.Children[0]);
-                MoveWaterHorizontal(water.Children[1]);
-                return true;
             }
             return false;
         }
 
-        private bool ReactiveHorizontal(WaterVelocity water) {
-            water.IsDead = false;
-            MoveWaterHorizontal(water);
-            return true;
+        private bool Horizontal(int startX, int startY, int direction) {
+            int x = startX;
+            int y = startY;
+            if (GetNode(x, y + 1) == enumNodeType.WaterStagnant) {
+                do {
+                    x += direction;
+                } while (GetNode(x, y) == enumNodeType.Empty && GetNode(x, y + 1) != enumNodeType.Empty);
+                if (GetNode(x, y) != enumNodeType.Wall) {
+                    if (GetNode(x, y) == enumNodeType.WaterFlowing) {
+                        return false;
+                    }
+                    if (GetNode(x - direction, y + 1) == enumNodeType.WaterStagnant) {
+                        return false;
+                    }
+                }
+                x = startX;
+            }
+            do {
+                var next = GetNode(x, y);
+                if (next == enumNodeType.Wall) {
+                    return true;
+                }
+                SetNode(x, y, enumNodeType.WaterStagnant);
+                if (GetNode(x, y + 1) == enumNodeType.Empty) {
+                    var result = Vertical(x, y + 1);
+                    if (!result) {
+                        return false;
+                    }
+                }
+                x += direction;
+            } while (true);
         }
 
-        private Grid GetGrid(List<string> input) {
-            var hash = new Dictionary<Tuple<int, int>, Point>();
+        private void SetHighestLowest() {
+            _highestY = 0;
+            _highestX = _grid.Keys.Max();
+            _lowestY = int.MaxValue;
+            _lowestX = _grid.Keys.Min();
+            foreach (var points in _grid) {
+                var highest = points.Value.Keys.Max();
+                if (highest > _highestY) {
+                    _highestY = highest;
+                }
+                var lowest = points.Value.Keys.Min();
+                if (lowest < _lowestY) {
+                    _lowestY = lowest;
+                }
+            }
+        }
+
+        private void GetGrid(List<string> input) {
+            _grid = new Dictionary<int, Dictionary<int, enumNodeType>>();
             foreach (var line in input) {
-                var split = line.Split(' ');
-                if (split[0][0] == 'x') {
-                    var x = Convert.ToInt32(split[0].Replace("x=", "").Replace(",", ""));
-                    var yRange = split[1].Replace("y=", "").Replace("..", " ").Split(' ').Select(num => Convert.ToInt32(num));
-                    for (int y = yRange.First(); y <= yRange.Last(); y++) {
-                        AddPoint(hash, x, y);
-                    }
-                } else {
-                    var y = Convert.ToInt32(split[0].Replace("y=", "").Replace(",", ""));
-                    var xRange = split[1].Replace("x=", "").Replace("..", " ").Split(' ').Select(num => Convert.ToInt32(num));
-                    for (int x = xRange.First(); x <= xRange.Last(); x++) {
-                        AddPoint(hash, x, y);
-                    }
-                }
-            }
-            var normalized = Normalize(hash);
-            FillBlanks(normalized);
-            return new Grid() {
-                Points = normalized,
-                Keys = Keys(normalized)
-            };
-        }
-
-        private void AddPoint(Dictionary<Tuple<int, int>, Point> hash, int x, int y) {
-            var key = new Tuple<int, int>(x, y);
-            if (!hash.ContainsKey(key)) {
-                var point = new Point();
-                point.PointType = enumPointType.Clay;
-                hash.Add(key, point);
-            }
-        }
-
-        private Point[,] Normalize(Dictionary<Tuple<int, int>, Point> points) {
-            int xMin = points.Keys.Select(x => x.Item1).Min();
-            int xMax = points.Keys.Select(x => x.Item1).Max();
-            int yMax = points.Keys.Select(x => x.Item2).Max();
-            _xOffset = xMin - 100;
-            var normalized = new Point[xMax - xMin + 201, yMax + 1];
-            var keys = new Tuple<int, int>[normalized.GetUpperBound(0) + 1, normalized.GetUpperBound(1) + 1];
-            foreach (var point in points) {
-                point.Value.X = point.Key.Item1 - _xOffset;
-                point.Value.Y = point.Key.Item2;
-                point.Value.Key = new Tuple<int, int>(point.Value.X, point.Value.Y);
-                normalized[point.Value.X, point.Value.Y] = point.Value;
-            }
-            return normalized;
-        }
-
-        private void FillBlanks(Point[,] points) {
-            for (int x = 0; x <= points.GetUpperBound(0); x++) {
-                for (int y = 0; y <=points.GetUpperBound(1); y++) {
-                    if (points[x, y] == null) {
-                        points[x, y] = new Point() {
-                            Key = new Tuple<int, int>(x, y),
-                            PointType = enumPointType.Blank,
-                            X = x,
-                            Y = y
-                        };
-                    }
-                }
-            }
-        }
-
-        private Tuple<int, int>[,] Keys(Point[,] points) {
-            var keys = new Tuple<int, int>[points.GetUpperBound(0) + 1, points.GetUpperBound(1) + 1];
-            for (int x = 0; x <= points.GetUpperBound(0); x++) {
-                for (int y = 0; y <= points.GetUpperBound(1); y++) {
-                    var key = new Tuple<int, int>(x, y);
-                    keys[x, y] = key;
-                }
-            }
-            return keys;
-        }
-
-        private string PrintOutput(int markX, int markY) {
-            var alive = _water.Where(x => !x.IsDead);
-            var text = new StringBuilder();
-            for (int y = 0; y <= _grid.Points.GetUpperBound(1); y++) {
-                string line = "";
-                for (int x = 0; x <= _grid.Points.GetUpperBound(0); x++) {
-                    string toAdd = "";
-                    if (x == markX && y == markY) {
-                        line += "*";
+                var split = line.Split(',');
+                bool isNum1X = split[0][0] == 'x';
+                var num1 = Convert.ToInt32(split[0].Replace("x=", "").Replace("y=", ""));
+                var subSplit = split[1].Replace("..", ",").Split(',');
+                var num2 = Convert.ToInt32(subSplit[0].Replace("x=", "").Replace("y=", ""));
+                var num3 = Convert.ToInt32(subSplit[1]);
+                for (int axis = num2; axis <= num3; axis++) {
+                    if (isNum1X) {
+                        SetNode(num1, axis, enumNodeType.Wall);
                     } else {
-                        switch (_grid.Points[x, y].PointType) {
-                            case enumPointType.Blank:
-                                toAdd = ".";
-                                break;
-                            case enumPointType.Clay:
-                                toAdd = "#";
-                                break;
-                            case enumPointType.WaterFlowing:
-                                toAdd = "|";
-                                break;
-                            case enumPointType.WaterStagnant:
-                                toAdd = "~";
-                                break;
-                        }
+                        SetNode(axis, num1, enumNodeType.Wall);
                     }
-                    foreach (var water in alive) {
-                        if (!water.IsDead && water.X == x && water.Y == y) {
-                            switch (water.Direction) {
-                                case enumDirection.Down:
-                                    toAdd = "v";
-                                    break;
-                                case enumDirection.Left:
-                                    toAdd = "<";
-                                    break;
-                                case enumDirection.Right:
-                                    toAdd = ">";
-                                    break;
-                            }
-                        }
-                    }
-                    line += toAdd;
                 }
-                text.AppendLine(line);
+            }
+        }
+
+        private enumNodeType GetNode(int x, int y) {
+            if (_grid.ContainsKey(x) && _grid[x].ContainsKey(y)) {
+                return _grid[x][y];
+            } else {
+                return enumNodeType.Empty;
+            }
+        }
+
+        private void SetNode(int x, int y, enumNodeType node) {
+            if (!_grid.ContainsKey(x)) {
+                _grid.Add(x, new Dictionary<int, enumNodeType>());
+            }
+            if (!_grid[x].ContainsKey(y)) {
+                _grid[x].Add(y, node);
+            } else {
+                _grid[x][y] = node;
+            }
+            if (x > _highestX) {
+                bool stop = true;
+            }
+        }
+
+        private string Output() {
+            return Output(0, 0);
+        }
+
+        private string Output(int currentX, int currentY) {
+            var text = new StringBuilder();
+            for (int y = _lowestY; y <= _highestY; y++) {
+                for (int x = _lowestX; x <= _highestX; x++) {
+                    if (x == currentX && y == currentY) {
+                        text.Append("x");
+                    } else {
+                        var node = GetNode(x, y);
+                        if (node == enumNodeType.Empty) {
+                            text.Append(".");
+                        } else if (node == enumNodeType.Wall) {
+                            text.Append("#");
+                        } else if (node == enumNodeType.WaterStagnant) {
+                            text.Append("~");
+                        } else {
+                            text.Append("|");
+                        }
+                    }
+                }
+                text.AppendLine();
             }
             return text.ToString();
         }
@@ -340,42 +258,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
                 "x=504, y=10..13",
                 "y=13, x=498..504"
             };
-        }
-
-        private enum enumPointType {
-            Blank,
-            Clay,
-            WaterFlowing,
-            WaterStagnant
-        }
-
-        private enum enumDirection {
-            Left,
-            Right,
-            Down
-        }
-
-        private class WaterVelocity {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public enumDirection Direction { get; set; }
-            public bool IsDead { get; set; }
-            public WaterVelocity Parent { get; set; }
-            public WaterVelocity[] Children { get; set; }
-            public int Max { get; set; }
-        }
-
-        private class Point {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public Tuple<int, int> Key { get; set; }
-            public enumPointType PointType { get; set; }
-            public bool HasWater { get; set; }
-        }
-
-        private class Grid {
-            public Point[,] Points { get; set; }
-            public Tuple<int, int>[,] Keys { get; set; }
         }
     }
 }

@@ -6,407 +6,278 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
     public class Problem15 : AdventOfCodeBase {
+        private Dictionary<int, Dictionary<int, Node>> _grid;
+        private List<int> _currentRoute;
+        private List<Node> _nodes;
+        private int _x;
+        private int _y;
+        private Node _targetNode;
+
+        private enum enumNodeType {
+            Wall,
+            Empty,
+            Target,
+            Unknown
+        }
+
         public override string ProblemName {
             get { return "Advent of Code 2019: 15"; }
         }
 
-        private Grid _grid;
-        private int _currentX;
-        private int _currentY;
-        private int _robotX;
-        private int _robotY;
         public override string GetAnswer() {
-            _grid = new Grid();
-            _grid.AddNode(0, 0, enumSpot.Empty);
-            return Answer1(Input()).ToString();
+            return Answer2(Input()).ToString();
         }
 
         private int Answer1(List<string> input) {
+            Initialize();
             var computer = new IntComputer();
             computer.Run(
                 instructions: input,
                 input: () => HandleInput(computer),
                 outputCaller: () => HandleOutput(computer));
-            return 0;
+            return GetDistance();
+        }
+
+        private int Answer2(List<string> input) {
+            Initialize();
+            var computer = new IntComputer();
+            computer.Run(
+                instructions: input,
+                input: () => HandleInput(computer),
+                outputCaller: () => HandleOutput(computer));
+            return FillOxygen();
+        }
+
+        private int FillOxygen() {
+            int minutes = 0;
+            var nodes = new List<Node>() { _targetNode };
+            _targetNode.HasOxygen = true;
+            do {
+                var nextNodes = new List<Node>();
+                foreach (var node in nodes) {
+                    int x = node.X;
+                    int y = node.Y;
+                    if (_grid.ContainsKey(x - 1) && _grid[x - 1].ContainsKey(y) && _grid[x - 1][y].NodeType == enumNodeType.Empty && !_grid[x - 1][y].HasOxygen) {
+                        var adj = _grid[x - 1][y];
+                        adj.HasOxygen = true;
+                        nextNodes.Add(adj);
+                    }
+                    if (_grid.ContainsKey(x + 1) && _grid[x + 1].ContainsKey(y) && _grid[x + 1][y].NodeType == enumNodeType.Empty && !_grid[x + 1][y].HasOxygen) {
+                        var adj = _grid[x + 1][y];
+                        adj.HasOxygen = true;
+                        nextNodes.Add(adj);
+                    }
+                    if (_grid.ContainsKey(x) && _grid[x].ContainsKey(y - 1) && _grid[x][y - 1].NodeType == enumNodeType.Empty && !_grid[x][y - 1].HasOxygen) {
+                        var adj = _grid[x][y - 1];
+                        adj.HasOxygen = true;
+                        nextNodes.Add(adj);
+                    }
+                    if (_grid.ContainsKey(x) && _grid[x].ContainsKey(y + 1) && _grid[x][y + 1].NodeType == enumNodeType.Empty && !_grid[x][y + 1].HasOxygen) {
+                        var adj = _grid[x][y + 1];
+                        adj.HasOxygen = true;
+                        nextNodes.Add(adj);
+                    }
+                }
+                minutes++;
+                nodes = nextNodes;
+            } while (nodes.Count != 0);
+            return minutes - 1;
+        }
+
+        private int GetDistance() {
+            _x = 0;
+            _y = 0;
+            var result = FindNearestUnknown(enumNodeType.Target);
+            return result.Distance;
+        }
+
+        private void Initialize() {
+            _grid = new Dictionary<int, Dictionary<int, Node>>();
+            _currentRoute = new List<int>();
+            _nodes = new List<Node>();
+            AddNode(new Node() { NodeType = enumNodeType.Empty });
+            AddNode(new Node() { X = -1, NodeType = enumNodeType.Unknown });
+            AddNode(new Node() { X = 1, NodeType = enumNodeType.Unknown });
+            AddNode(new Node() { Y = -1, NodeType = enumNodeType.Unknown });
+            AddNode(new Node() { Y = 1, NodeType = enumNodeType.Unknown });
         }
 
         private int HandleInput(IntComputer computer) {
-            if (!_grid[_robotX, _robotY].VisitCheck.IsFullyVisited) {
-                return ExploreIncomplete();
-            } else {
-                return MoveTowardsClosestIncomplete();
+            if (_currentRoute.Count > 0) {
+                _currentRoute.RemoveAt(0);
             }
-        }
-
-        private int MoveTowardsClosestIncomplete() {
-            var closestIncomplete = FindClosestIncomplete();
-            var bestMove = BestMoveToIncomplete(closestIncomplete);
-            _currentX = bestMove.X;
-            _currentY = bestMove.Y;
-            if (_currentX == _robotX + 1) {
-                return 4;
-            } else if (_currentX == _robotX - 1) {
-                return 3;
-            } else if (_currentY == _robotY + 1) {
-                return 2;
-            } else if (_currentY == _robotY - 1) {
-                return 1;
-            }
-            throw new Exception();
-        }
-
-        private Node FindClosestIncomplete() {
-            FindShortestDistance(_robotX, _robotY, GetUnvisited(), null);
-            int bestDistance = int.MaxValue;
-            Node bestNode = null;
-            foreach (var node in _grid.Nodes) {
-                if (!node.VisitCheck.IsFullyVisited) {
-                    if (node.Distance < bestDistance) {
-                        bestDistance = node.Distance;
-                        bestNode = node;
-                    }
+            if (_currentRoute.Count == 0) {
+                var keepGoing = SetRoute();
+                if (!keepGoing) {
+                    computer.PerformFinish = true;
+                    return 0;
                 }
             }
-            if (bestNode == null) {
-                bool stop = true;
-            }
-            return bestNode;
-        }
-
-        private Node BestMoveToIncomplete(Node incomplete) {
-            var complete = new List<Node>();
-            if (_grid.CanMoveTo(_robotX + 1, _robotY)) {
-                complete.Add(_grid[_robotX + 1, _robotY]);
-            }
-            if (_grid.CanMoveTo(_robotX - 1, _robotY)) {
-                complete.Add(_grid[_robotX - 1, _robotY]);
-            }
-            if (_grid.CanMoveTo(_robotX, _robotY + 1)) {
-                complete.Add(_grid[_robotX, _robotY + 1]);
-            }
-            if (_grid.CanMoveTo(_robotX, _robotY - 1)) {
-                complete.Add(_grid[_robotX, _robotY - 1]);
-            }
-            FindShortestDistance(incomplete.X, incomplete.Y, GetUnvisited(), complete);
-            Node bestNode = null;
-            int bestDistance = int.MaxValue;
-            foreach (var node in complete) {
-                if (node.Distance < bestDistance) {
-                    bestNode = node;
-                    bestDistance = node.Distance;
-                }
-            }
-            return bestNode;
-        }
-
-        private int ExploreIncomplete() {
-            var node = _grid[_robotX, _robotY];
-            if (!node.VisitCheck.VisitedFromRight) {
-                _currentX = _robotX + 1;
-                return 4;
-            } else if (!node.VisitCheck.VisitedFromLeft) {
-                _currentX = _robotX - 1;
-                return 3;
-            } else if (!node.VisitCheck.VisitedFromUp) {
-                _currentY = _robotY - 1;
-                return 1;
-            } else if (!node.VisitCheck.VisitedFromDown) {
-                _currentY = _robotY + 1;
-                return 2;
-            }
-            throw new Exception();
+            return _currentRoute[0];
         }
 
         private void HandleOutput(IntComputer computer) {
-            var status = (enumSpot)computer.Output.Last();
-            _grid.AddNode(_currentX, _currentY, status);
-            if (_currentX == _robotX + 1) {
-                _grid[_robotX, _robotY].VisitCheck.VisitedFromRight = true;
-                _grid[_currentX, _currentY].VisitCheck.VisitedFromLeft = true;
-            } else if (_currentX == _robotX - 1) {
-                _grid[_robotX, _robotY].VisitCheck.VisitedFromLeft = true;
-                _grid[_currentX, _currentY].VisitCheck.VisitedFromRight = true;
-            } else if (_currentY == _robotY + 1) {
-                _grid[_robotX, _robotY].VisitCheck.VisitedFromDown = true;
-                _grid[_currentX, _currentY].VisitCheck.VisitedFromUp = true;
-            } else {
-                _grid[_robotX, _robotY].VisitCheck.VisitedFromUp = true;
-                _grid[_currentX, _currentY].VisitCheck.VisitedFromDown = true;
+            Node node = null;
+            var output = computer.Output.Last();
+            switch (_currentRoute[0]) {
+                case 1:
+                    node = _grid[_x][_y + 1];
+                    if (output != 0) _y++;
+                    break;
+                case 2:
+                    node = _grid[_x][_y - 1];
+                    if (output != 0) _y--;
+                    break;
+                case 3:
+                    node = _grid[_x - 1][_y];
+                    if (output != 0) _x--;
+                    break;
+                case 4:
+                    node = _grid[_x + 1][_y];
+                    if (output != 0) _x++;
+                    break;
             }
-            if (status != enumSpot.Wall) {
-                _robotX = _currentX;
-                _robotY = _currentY;
-            } else {
-                _currentX = _robotX;
-                _currentY = _robotY;
-            }
-        }
-
-        private void FindShortestDistance(int x, int y, List<Node> unvisited, List<Node> complete) {
-            bool finished = false;
-            while (unvisited.Count > 0 || finished) {
-                var shortest = GetShortest(unvisited);
-                if (!shortest.VisitDistance.VisitedFromDown) {
-                    if (_grid.CanMoveTo(shortest.X, shortest.Y + 1)) {
-                        var next = _grid[shortest.X, shortest.Y + 1];
-                        next.Distance = Math.Min(next.Distance, shortest.Distance + 1);
-                    }
-                    shortest.VisitDistance.VisitedFromDown = true;
+            if (node.NodeType == enumNodeType.Unknown) {
+                if (output == 0) {
+                    node.NodeType = enumNodeType.Wall;
+                } else if (output == 1) {
+                    node.NodeType = enumNodeType.Empty;
+                } else {
+                    node.NodeType = enumNodeType.Target;
+                    _targetNode = node;
                 }
-                if (!shortest.VisitDistance.VisitedFromUp) {
-                    if (_grid.CanMoveTo(shortest.X, shortest.Y - 1)) {
-                        var next = _grid[shortest.X, shortest.Y - 1];
-                        next.Distance = Math.Min(next.Distance, shortest.Distance + 1);
-                    }
-                    shortest.VisitDistance.VisitedFromUp = true;
-                }
-                if (!shortest.VisitDistance.VisitedFromLeft) {
-                    if (_grid.CanMoveTo(shortest.X - 1, shortest.Y)) {
-                        var next = _grid[shortest.X - 1, shortest.Y];
-                        next.Distance = Math.Min(next.Distance, shortest.Distance + 1);
-                    }
-                    shortest.VisitDistance.VisitedFromLeft = true;
-                }
-                if (!shortest.VisitDistance.VisitedFromRight) {
-                    if (_grid.CanMoveTo(shortest.X + 1, shortest.Y)) {
-                        var next = _grid[shortest.X + 1, shortest.Y];
-                        next.Distance = Math.Min(next.Distance, shortest.Distance + 1);
-                    }
-                    shortest.VisitDistance.VisitedFromLeft = true;
-                }
-                if (complete != null) {
-                    finished = true;
-                    foreach (var node in complete) {
-                        if (!node.VisitDistance.IsFullyVisited) {
-                            finished = false;
-                            break;
-                        }
-                    }
-                }
+                AddNewNodes();
             }
         }
 
-        private List<Node> GetUnvisited() {
-            var unvisited = new List<Node>();
-            for (int x = _grid.MinX; x <= _grid.MaxX; x++) {
-                for (int y = _grid.MinY; y <= _grid.MaxY; y++) {
-                    if (_grid.CanMoveTo(x, y)) {
-                        var next = _grid[x, y];
-                        next.Distance = int.MaxValue;
-                        next.VisitDistance.ResetVisits();
-                        unvisited.Add(next);
-                    }
-                }
+        private void AddNewNodes() {
+            if (!_grid.ContainsKey(_x - 1)) {
+                _grid.Add(_x - 1, new Dictionary<int, Node>());
             }
-            return unvisited;
+            if (!_grid[_x - 1].ContainsKey(_y)) {
+                AddNode(new Node() {
+                    NodeType = enumNodeType.Unknown,
+                    X = _x - 1,
+                    Y = _y
+                });
+            }
+            if (!_grid.ContainsKey(_x + 1)) {
+                _grid.Add(_x + 1, new Dictionary<int, Node>());
+            }
+            if (!_grid[_x + 1].ContainsKey(_y)) {
+                AddNode(new Node() {
+                    NodeType = enumNodeType.Unknown,
+                    X = _x + 1,
+                    Y = _y
+                });
+            }
+            if (!_grid[_x].ContainsKey(_y - 1)) {
+                AddNode(new Node() {
+                    NodeType = enumNodeType.Unknown,
+                    X = _x,
+                    Y = _y - 1
+                });
+            }
+            if (!_grid[_x].ContainsKey(_y + 1)) {
+                AddNode(new Node() {
+                    NodeType = enumNodeType.Unknown,
+                    X = _x,
+                    Y = _y + 1
+                });
+            }
         }
 
-        private Node GetShortest(List<Node> unvisited) {
-            Node shortest = null;
-            foreach (var next in unvisited) {
-                if (!next.VisitDistance.IsFullyVisited) {
-                    if (shortest == null || next.Distance < shortest.Distance) {
-                        shortest = next;
-                    } 
-                }
-            }
-            return shortest;
-        }
-
-        private string PrintOutput() {
-            var text = new StringBuilder();
-            for (int y = _grid.MinY; y <= _grid.MaxY; y++) {
-                var line = new char[_grid.MaxX - _grid.MinX + 1];
-                int index = 0;
-                for (int x = _grid.MinX; x <= _grid.MaxX; x++) {
-                    if (_grid.Exists(x, y)) {
-                        var spot = _grid[x, y].Spot;
-                        if (spot == enumSpot.Empty) {
-                            line[index] = '.';
-                        } else if (spot == enumSpot.Finish) {
-                            line[index] = 'O';
-                        } else {
-                            line[index] = '|';
-                        }
-                    }  else {
-                        line[index] = ' ';
-                    }
-                    index++;
-                }
-                text.AppendLine(new string(line));
-            }
-            return text.ToString();
-        }
-
-        private enum enumSpot {
-            Wall,
-            Empty,
-            Finish
-        }
-
-        private class Grid {
-            private Dictionary<int, Dictionary<int, Node>> _nodes = new Dictionary<int, Dictionary<int, Node>>();
-            private List<Node> _list = new List<Node>();
-
-            private int _maxX;
-            public int MaxX {
-                get { return _maxX; }
-            }
-
-            private int _maxY;
-            public int MaxY {
-                get { return _maxY; }
-            }
-
-            private int _minX;
-            public int MinX {
-                get { return _minX; }
-            }
-
-            private int _minY;
-            public int MinY {
-                get { return _minY; }
-            }
-
-            public IEnumerable<Node> Nodes {
-                get { return _list; }
-            }
-
-            public bool CanMoveTo(int x, int y) {
-                if (!_nodes.ContainsKey(x)) {
-                    return false;
-                } else if (!_nodes[x].ContainsKey(y)) {
-                    return false;
-                } else if (_nodes[x][y].Spot == enumSpot.Wall) {
-                    return false;
-                }
-                return true;
-            }
-
-            public Node this[int x, int y] {
-                get { return _nodes[x][y]; }
-            }
-
-            public void AddNode(int x, int y, enumSpot spot) {
-                var newNode = new Node() {
-                    Spot = spot,
-                    X = x,
-                    Y = y
-                };
-                if (!_nodes.ContainsKey(x)) {
-                    _nodes.Add(x, new Dictionary<int, Node>());
-                }
-                _nodes[x].Add(y, newNode);
-                _list.Add(newNode);
-                if (x < _minX) {
-                    _minX = x;
-                } else if (x > _maxX) {
-                    _maxX = x;
-                }
-                if (y < _minY) {
-                    _minY = y;
-                } else if (y > _maxY) {
-                    _maxY = y;
-                }
-            }
-
-            private void UpdateVisitCheck(int x, int y) {
-                var node = _nodes[x][y];
-                node.VisitCheck.ResetVisits();
-                if (_nodes.ContainsKey(x + 1) && _nodes.ContainsKey(y)) {
-                    node.VisitCheck.VisitedFromRight = true;
-                }
-                if (_nodes.ContainsKey(x - 1) && _nodes.ContainsKey(y)) {
-                    node.VisitCheck.VisitedFromLeft = true;
-                }
-                if (_nodes.ContainsKey(x) && _nodes.ContainsKey(y - 1)) {
-                    node.VisitCheck.VisitedFromUp = true;
-                }
-                if (_nodes.ContainsKey(x) && _nodes.ContainsKey(y + 1)) {
-                    node.VisitCheck.VisitedFromDown = true;
-                }
-            }
-
-            public bool Exists(int x, int y) {
-                if (_nodes.ContainsKey(x) && _nodes[x].ContainsKey(y)) {
-                    return true;
-                }
+        private bool SetRoute() {
+            var nearest = FindNearestUnknown(enumNodeType.Unknown);
+            if (nearest == null) {
                 return false;
             }
+            ExtractRouteFromNodes(nearest);
+            return true;
+        }
+
+        private void ExtractRouteFromNodes(Node node) {
+            var route = new List<int>();
+            do {
+                if (node.Prior == null) {
+                    break;
+                }
+                if (node.Prior.X == node.X - 1) {
+                    route.Insert(0, 4);
+                } else if (node.Prior.X == node.X + 1) {
+                    route.Insert(0, 3);
+                } else if (node.Prior.Y == node.Y - 1) {
+                    route.Insert(0, 1);
+                } else {
+                    route.Insert(0, 2);
+                }
+                node = node.Prior;
+            } while (true);
+            _currentRoute = route;
+        }
+
+        private Node FindNearestUnknown(enumNodeType nodeType) {
+            _nodes.ForEach(node => {
+                node.Distance = int.MaxValue;
+                node.Prior = null;
+            });
+            _grid[_x][_y].Distance = 0;
+            var unvisited = new List<Node>(_nodes);
+            do {
+                var currentNode = GetLowestDistanceNode(unvisited);
+                if (currentNode == null || currentNode.NodeType == nodeType) {
+                    return currentNode;
+                }
+                int x = currentNode.X;
+                int y = currentNode.Y;
+                SetNodeDistance(currentNode, x - 1, y);
+                SetNodeDistance(currentNode, x + 1, y);
+                SetNodeDistance(currentNode, x, y - 1);
+                SetNodeDistance(currentNode, x, y + 1);
+                unvisited.Remove(currentNode);
+            } while (unvisited.Count > 0);
+            return null;
+        }
+
+        private void SetNodeDistance(Node currentNode, int x, int y) {
+            if (_grid.ContainsKey(x) && _grid[x].ContainsKey(y)) {
+                var adjacent = _grid[x][y];
+                if (adjacent.Distance > currentNode.Distance + 1) {
+                    adjacent.Distance = currentNode.Distance + 1;
+                    adjacent.Prior = currentNode;
+                }
+            }
+        }
+
+        private Node GetLowestDistanceNode(IEnumerable<Node> nodes) {
+            Node lowest = null;
+            foreach (var node in nodes) {
+                if (node.NodeType != enumNodeType.Wall) {
+                    if (lowest == null) {
+                        lowest = node;
+                    } else if (lowest.Distance > node.Distance) {
+                        lowest = node;
+                    }
+                }
+            }
+            return lowest;
+        }
+
+        private void AddNode(Node node) {
+            if (!_grid.ContainsKey(node.X)) {
+                _grid.Add(node.X, new Dictionary<int, Node>());
+            }
+            _grid[node.X].Add(node.Y, node);
+            _nodes.Add(node);
         }
 
         private class Node {
-            public Node() {
-                VisitDistance = new Visit();
-                VisitCheck = new Visit();
-            }
+            public enumNodeType NodeType { get; set; }
             public int X { get; set; }
             public int Y { get; set; }
             public int Distance { get; set; }
-            public enumSpot Spot { get; set; }
-            public Visit VisitDistance { get; set; }
-            public Visit VisitCheck { get; set; }
-        }
-
-        private class Visit {
-            private int _visits = 0;
-            public bool IsFullyVisited {
-                get {
-                    if (_visits == 15) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            }
-
-            public void ResetVisits() {
-                _visits = 0;
-            }
-
-            public bool VisitedFromUp {
-                get {
-                    if ((_visits & 1) == 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 1; }
-            }
-
-            public bool VisitedFromLeft {
-                get {
-                    if ((_visits & 2) == 2) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 2; }
-            }
-
-            public bool VisitedFromRight {
-                get {
-                    if ((_visits & 4) == 4) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 4; }
-            }
-
-            public bool VisitedFromDown {
-                get {
-                    if ((_visits & 8) == 8) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 8; }
-            }
+            public Node Prior { get; set; }
+            public bool HasOxygen { get; set; }
         }
     }
 }
