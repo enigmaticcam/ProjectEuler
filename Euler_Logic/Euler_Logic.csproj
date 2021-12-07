@@ -308,6 +308,7 @@
     <Compile Include="Problems\AdventOfCode\Y2021\Problem04.cs" />
     <Compile Include="Problems\AdventOfCode\Y2021\Problem05.cs" />
     <Compile Include="Problems\AdventOfCode\Y2021\Problem06.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2021\Problem07.cs" />
     <Compile Include="Problems\Google\ProblemGoogle1.cs" />
     <Compile Include="Problems\Google\GoogleBase.cs" />
     <Compile Include="Problems\Google\ProblemGoogle2.cs" />
