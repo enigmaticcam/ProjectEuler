@@ -8,66 +8,73 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             Output = new List<long>();
         }
 
+        private Dictionary<long, long> _codes;
+        private long _relativeBase = 0;
+        private long _index;
         public bool PerformFinish { get; set; }
         public List<long> Output { get; set; }
         public long LastOutput { get; set; }
         public bool SingleOutputOnly { get; set; }
-        private long _relativeBase = 0;
+        
 
-        public void Run(List<string> instructions, Func<int> input, Action outputCaller, IEnumerable<LineOverride> lineOverrides) {
-            var codes = GetCodes(instructions);
+        public void Run(List<string> instructions, Func<long> input, Action outputCaller, IEnumerable<LineOverride> lineOverrides) {
+            SetCodes(instructions);
             foreach (var over in lineOverrides) {
-                codes[over.Index] = over.Value;
+                _codes[over.Index] = over.Value;
             }
-            Run(codes, input, outputCaller);
+            Run(input, outputCaller);
         }
 
-        public void Run(List<string> instructions, Func<int> input, Action outputCaller) {
-            var codes = GetCodes(instructions);
-            Run(codes, input, outputCaller);
+        public void Run(List<string> instructions, Func<long> input, Action outputCaller) {
+            SetCodes(instructions);
+            Run(input, outputCaller);
         }
 
-        private void Run(Dictionary<long, long> codes, Func<int> input, Action outputCaller) {
-            long index = 0;
+        public void Continue(Func<long> input, Action outputCaller) {
+            PerformFinish = false;
+            Run(input, outputCaller);
+        }
+
+        private void Run(Func<long> input, Action outputCaller) {
             bool finish = false;
             int count = 0;
             do {
-                var next = GetRawValue(codes, index);
+                var next = GetRawValue(_codes, _index);
                 var op = next % 100;
                 switch ((int)op) {
                     case 1:
-                        index = Op1(codes, index);
+                        _index = Op1(_codes, _index);
                         break;
                     case 2:
-                        index = Op2(codes, index);
+                        _index = Op2(_codes, _index);
                         break;
                     case 3:
-                        index = Op3(codes, index, input());
+                        _index = Op3(_codes, _index, input());
                         if (PerformFinish) {
                             finish = true;
                         }
                         break;
                     case 4:
-                        index = Op4(codes, index);
+                        _index = Op4(_codes, _index);
                         outputCaller();
                         if (PerformFinish) {
                             finish = true;
                         }
                         break;
                     case 5:
-                        index = Op5(codes, index);
+                        _index = Op5(_codes, _index);
                         break;
                     case 6:
-                        index = Op6(codes, index);
+                        _index = Op6(_codes, _index);
                         break;
                     case 7:
-                        index = Op7(codes, index);
+                        _index = Op7(_codes, _index);
                         break;
                     case 8:
-                        index = Op8(codes, index);
+                        _index = Op8(_codes, _index);
                         break;
                     case 9:
-                        index = Op9(codes, index);
+                        _index = Op9(_codes, _index);
                         break;
                     case 99:
                         finish = true;
@@ -197,13 +204,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             return codes[index];
         }
 
-        private Dictionary<long, long> GetCodes(List<string> instructions) {
+        private void SetCodes(List<string> instructions) {
             var input = instructions.First().Split(',');
             var codes = new Dictionary<long, long>();
             for (int index = 0; index < input.Length; index++) {
                 codes.Add((long)index, (long)Convert.ToInt64(input[index]));
             }
-            return codes;
+            _codes = codes;
         }
 
         public class LineOverride {
