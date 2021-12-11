@@ -294,6 +294,8 @@
     <Compile Include="Problems\AdventOfCode\Y2019\Problem19.cs" />
     <Compile Include="Problems\AdventOfCode\Y2019\Problem20.cs" />
     <Compile Include="Problems\AdventOfCode\Y2019\Problem21.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem22.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2019\Problem23.cs" />
     <Compile Include="Problems\AdventOfCode\Y2020\Problem01.cs" />
     <Compile Include="Problems\AdventOfCode\Y2020\Problem02.cs" />
     <Compile Include="Problems\AdventOfCode\Y2020\Problem03.cs" />
