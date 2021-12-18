@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Euler_Logic.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         public override string GetAnswer() {
             //GetInstructions(Input_Test(3));
             //return Answer2(10).ToString();
-            GetInstructions(Input_Test(5));
+            GetInstructions(Input());
             return Answer2(119315717514047).ToString();
         }
 
@@ -44,24 +45,40 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         }
 
         private long Answer2(long maxValue) {
-            long zeroIndex = 0;
-            long count = 0;
-            do {
-                zeroIndex = FindResultIndex(maxValue, zeroIndex);
-                count++;
-            } while (zeroIndex != 0);
-            return count;
+            Coalesce(maxValue);
+            return 0;
+        }
+
+        private long _a;
+        private long _b;
+        private void Coalesce(long maxValue) {
+            _a = 1;
+            for (int index = _instructions.Count - 1; index >= 0; index--) {
+                var instruction = _instructions[index];
+                switch (instruction.InstructionType) {
+                    case enumInstructionType.CutCards:
+                        _b = (_b + instruction.Value) % maxValue;
+                        break;
+                    case enumInstructionType.DealNewStack:
+                        _a *= -1;
+                        _b = maxValue - _b - 1;
+                        break;
+                    case enumInstructionType.DealWithIncrement:
+                        var z = Power.Exp(instruction.Value, maxValue - 2, maxValue);
+                        _a = (_a * z) % maxValue;
+                        _b = (_b * z) % maxValue;
+                        break;
+                }
+            }
         }
 
         private long FindResultIndex(long maxValue, long index) {
             foreach (var instruction in _instructions) {
                 switch (instruction.InstructionType) {
                     case enumInstructionType.CutCards:
-                        index -= instruction.Value;
+                        index = (index - instruction.Value) % maxValue;
                         if (index < 0) {
-                            index = maxValue + index;
-                        } else {
-                            index %= maxValue;
+                            index += maxValue;
                         }
                         break;
                     case enumInstructionType.DealNewStack:
