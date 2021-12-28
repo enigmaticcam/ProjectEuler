@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
     public class Problem21 : AdventOfCodeBase {
         private int[] _positions;
+        private Dictionary<int, ulong> _combos;
 
         public override string ProblemName {
             get { return "Advent of Code 2021: 21"; }
         }
 
         public override string GetAnswer() {
-            GetPositions(Input_Test(1));
+            GetPositions(Input());
             return Answer2().ToString();
         }
 
@@ -22,37 +20,30 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         private ulong Answer2() {
-            var player1 = FindAll(_positions[0]);
-            var player2 = FindAll(_positions[1]);
-            for (int turn = 1; turn <= 21; turn++) {
-                
-            }
-
-            return 0;
+            _combos = GetDiceCombos();
+            int max = 21;
+            var wins = new ulong[2];
+            var turnWins = new ulong[2, 21];
+            Recurisve(_positions, new int[2], wins, 0, max, turnWins, 1, 1);
+            return Math.Max(wins[0], wins[1]);
         }
 
-        private ulong[,,] FindAll(int startPosition) {
-            var combos = GetDiceCombos();
-            var d = new ulong[21, 10, 22]; // turn, position, score
-            foreach (var combo in combos) {
-                int position = (combo.Key + startPosition) % 10;
-                d[0, position, position] = combo.Value;
-            }
-            for (int turn = 1; turn < 21; turn++) {
-                for (int position = 0; position < 10; position++) {
-                    for (int score = 1; score < 22; score++) {
-                        if (d[turn - 1, position, score] != 0) {
-                            foreach (var combo in combos) {
-                                int subPosition = (position + combo.Key) % 10;
-                                var subScore = Math.Min(21, score + subPosition);
-                                d[turn, subPosition, subScore] = d[turn - 1, position, score] * combo.Value;
-                            }
-                        }
-                        
-                    }
+        private void Recurisve(int[] position, int[] score, ulong[] wins, int player, int max, ulong[,] turnWins, int turn, ulong multiply) {
+            foreach (var keyValue in _combos) {
+                var result = keyValue.Key;
+                int oldPosition = position[player];
+                int oldScore = score[player];
+                position[player] = (position[player] + result) % 10;
+                score[player] += position[player] + 1;
+                if (score[player] >= max) {
+                    wins[player] += keyValue.Value * multiply;
+                    turnWins[player, turn] += keyValue.Value * multiply;
+                } else {
+                    Recurisve(position, score, wins, (player + 1) % 2, max, turnWins, turn + player, multiply * keyValue.Value);
                 }
+                position[player] = oldPosition;
+                score[player] = oldScore;
             }
-            return d;
         }
 
         private Dictionary<int, ulong> GetDiceCombos() {
@@ -70,19 +61,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 }
             }
             return combos;
-        }
-
-        private void FindValues(ulong[,,] d) {
-            var list = new List<Tuple<int, int, int, ulong>>();
-            for (int x = 0; x <= d.GetUpperBound(0); x++) {
-                for (int y = 0; y <= d.GetUpperBound(1); y++) {
-                    for (int z = 0; z <= d.GetUpperBound(2); z++) {
-                        if (d[x, y, z] != 0) {
-                            list.Add(new Tuple<int, int, int, ulong>(x, y, z, d[x, y, z]));
-                        }
-                    }
-                }
-            }
         }
 
         private int Simulate() {
