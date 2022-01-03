@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
     public class Problem19 : AdventOfCodeBase {
@@ -14,26 +12,21 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         public override string GetAnswer() {
+            _temp = new int[3];
+            _diff = new int[3];
             GetScanners(Input());
+            SetFinalHash(_scanners[0]);
+            _scanners[0].Offset = new int[3] { 0, 0, 0 };
+            SetCombos();
+            CompareAll();
             return Answer2().ToString();
         }
 
         private int Answer1() {
-            _temp = new int[3];
-            _diff = new int[3];
-            SetPointDiffs();
-            SetCombos();
-            CompareAll();
             return GetCount();
         }
 
         private int Answer2() {
-            _temp = new int[3];
-            _diff = new int[3];
-            SetPointDiffs();
-            SetCombos();
-            CompareAll();
-            _scanners[0].Offset = new int[3] { 0, 0, 0 };
             return GetHighestDistance();
         }
 
@@ -58,12 +51,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             do {
                 foreach (var scanner1 in _scanners) {
                     foreach (var scanner2 in _scanners) {
-                        if (scanner1 != scanner2 && scanner1.IsDone && !scanner2.IsDone) {
+                        if (scanner1 != scanner2 && scanner1.IsDone && !scanner2.IsDone && !scanner1.ComparedBefore.Contains(scanner2.Number)) {
                             var result = Compare(scanner1, scanner2);
                             if (result) {
                                 count++;
                                 scanner2.IsDone = true;
                             }
+                            scanner1.ComparedBefore.Add(scanner2.Number);
                         }
                     }
                 }
@@ -78,22 +72,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 }
             }
             return hash.Count;
-        }
-
-        private string Output() {
-            var hash = new HashSet<Tuple<int, int, int>>();
-            foreach (var scanner in _scanners) {
-                if (scanner.IsDone) {
-                    foreach (var point in scanner.Points) {
-                        hash.Add(new Tuple<int, int, int>(point[0], point[1], point[2]));
-                    }
-                }
-            }
-            var text = new StringBuilder();
-            foreach (var key in hash) {
-                text.AppendLine(key.Item1 + "," + key.Item2 + "," + key.Item3);
-            }
-            return text.ToString();
         }
 
         private void SetCombos() {
@@ -122,10 +100,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         private bool Compare(Scanner scanner1, Scanner scanner2) {
-            var counts = new Dictionary<Tuple<int, int, int>, int>();
-            foreach (var point in scanner1.Points) {
-                counts.Add(new Tuple<int, int, int>(point[0], point[1], point[2]), 1);
-            }
+            var counts = scanner1.FinalHash;
             foreach (var point1 in scanner1.Points) {
                 foreach (var point2 in scanner2.Points) {
                     foreach (var combo in _combos) {
@@ -143,69 +118,42 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
 
         private void Translate(Scanner scanner, Combo combo, int[] diff) {
             foreach (var point in scanner.Points) {
-                //var old = point.ToList();
                 _temp[0] = combo.NegOrPos[0] == -1 ? _diff[0] - point[combo.Vector[0]] : _diff[0] + point[combo.Vector[0]];
                 _temp[1] = combo.NegOrPos[1] == -1 ? _diff[1] - point[combo.Vector[1]] : _diff[1] + point[combo.Vector[1]];
                 _temp[2] = combo.NegOrPos[2] == -1 ? _diff[2] - point[combo.Vector[2]] : _diff[2] + point[combo.Vector[2]];
                 point[0] = _temp[0];
                 point[1] = _temp[1];
                 point[2] = _temp[2];
-                if (point[0] == -612 && point[1] == -1695 && point[2] == 449) {
-                    bool stop = true;
-                }
+            }
+            SetFinalHash(scanner);
+        }
+
+        private void SetFinalHash(Scanner scanner) {
+            scanner.FinalHash = new HashSet<Tuple<int, int, int>>();
+            foreach (var point in scanner.Points) {
+                scanner.FinalHash.Add(new Tuple<int, int, int>(point[0], point[1], point[2]));
             }
         }
 
         private int[] _temp;
         private int[] _diff;
-        private int TryCombo(Scanner scanner2, int[] point1, int[] point2, Combo combo, Dictionary<Tuple<int, int, int>, int> counts) {
+        private int TryCombo(Scanner scanner2, int[] point1, int[] point2, Combo combo, HashSet<Tuple<int, int, int>> counts) {
             int total = 0;
+            int remaining = scanner2.Points.Count;
             _diff[0] = point1[0] - (point2[combo.Vector[0]] * combo.NegOrPos[0]);
             _diff[1] = point1[1] - (point2[combo.Vector[1]] * combo.NegOrPos[1]);
             _diff[2] = point1[2] - (point2[combo.Vector[2]] * combo.NegOrPos[2]);
-            if (_diff[0] == -20 && _diff[1] == -1133 && _diff[2] == 1061) {
-                bool stop = true;
-            }
             foreach (var point in scanner2.Points) {
                 _temp[0] = combo.NegOrPos[0] == -1 ? _diff[0] - point[combo.Vector[0]] : _diff[0] + point[combo.Vector[0]];
                 _temp[1] = combo.NegOrPos[1] == -1 ? _diff[1] - point[combo.Vector[1]] : _diff[1] + point[combo.Vector[1]];
                 _temp[2] = combo.NegOrPos[2] == -1 ? _diff[2] - point[combo.Vector[2]] : _diff[2] + point[combo.Vector[2]];
-                if (counts.ContainsKey(new Tuple<int, int, int>(_temp[0], _temp[1], _temp[2]))) total++;
-            }
-            return total;
-        }
-
-        private void SetPointDiffs() {
-            foreach (var scanner in _scanners) {
-                SetPointDiffs(scanner);
-            }
-        }
-
-        private void SetPointDiffs(Scanner scanner) {
-            scanner.Diffs = new List<PointDiff>();
-            for (int index1 = 0; index1 < scanner.Points.Count; index1++) {
-                var point1 = scanner.Points[index1];
-                for (int index2 = index1 + 1; index2 < scanner.Points.Count; index2++) {
-                    var point2 = scanner.Points[index2];
-                    var diff = new PointDiff() {
-                        Point1 = point1,
-                        Point2 = point2,
-                        X = point1[0] - point2[0],
-                        Y = point1[1] - point2[1],
-                        Z = point1[2] - point2[2],
-                    };
-                    var abs = new List<int>() { Math.Abs(diff.X), Math.Abs(diff.Y), Math.Abs(diff.Z) }.OrderBy(x => x);
-                    diff.AbsX = abs.ElementAt(0);
-                    diff.AbsY = abs.ElementAt(1);
-                    diff.AbsZ = abs.ElementAt(2);
-                    scanner.Diffs.Add(diff);
-                    diff.NotOptimal = HasSameValues(point1) | HasSameValues(point2);
+                if (counts.Contains(new Tuple<int, int, int>(_temp[0], _temp[1], _temp[2]))) total++;
+                remaining--;
+                if (remaining + total < 12 || total == 12) {
+                    break;
                 }
             }
-        }
-
-        private bool HasSameValues(int[] vector) {
-            return vector[0] == vector[1] || vector[0] == vector[2] || vector[1] == vector[2];
+            return total;
         }
 
         private void GetScanners(List<string> input) {
@@ -215,7 +163,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 var scanSplit = input[index].Split(' ');
                 var scanner = new Scanner() {
                     Number = Convert.ToInt32(scanSplit[2]),
-                    Points = new List<int[]>()
+                    Points = new List<int[]>(),
+                    ComparedBefore = new HashSet<int>()
                 };
                 index++;
                 do {
@@ -233,24 +182,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             } while (index < input.Count);
         }
 
-        public class PointDiff {
-            public int[] Point1 { get; set; }
-            public int[] Point2 { get; set; }
-            public int X { get; set; }
-            public int Y { get; set; }
-            public int Z { get; set; }
-            public int AbsX { get; set; }
-            public int AbsY { get; set; }
-            public int AbsZ { get; set; }
-            public bool NotOptimal { get; set; }
-        }
-
         public class Scanner {
             public int Number { get; set; }
             public List<int[]> Points { get; set; }
-            public List<PointDiff> Diffs { get; set; }
             public bool IsDone { get; set; }
             public int[] Offset { get; set; }
+            public HashSet<Tuple<int, int, int>> FinalHash { get; set; }
+            public HashSet<int> ComparedBefore { get; set; }
         }
 
         private class Combo {
