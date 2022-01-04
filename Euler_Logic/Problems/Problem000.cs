@@ -36,7 +36,7 @@ namespace Euler_Logic.Problems {
         
         private void Recursive(ulong bits, int index, Item[] order) {
             foreach (var item in _items) {
-                if ((item.Bit & bits) == 0) {
+                if ((item.Bit & bits) == 0 && (item.Requirements & bits) == item.Requirements) {
                     order[index] = item;
                     var tempLCM = _lcm;
                     var tempMoney = _money;
@@ -101,7 +101,7 @@ namespace Euler_Logic.Problems {
             _items.Add(new Item() { Cash = 85, Cost = 5000, Hours = 1, Name = "Small Farm" });
             _items.Add(new Item() { Cash = 100, Cost = 6000, Hours = 2, Name = "Guard Tower" });
             _items.Add(new Item() { Cash = 550, Cost = 7500, Hours = 8, Name = "Blacksmith" });
-            _items.Add(new Item() { Cash = 900, Cost = 8000, Hours = 40, Name = "Longship" });
+            _items.Add(new Item() { Cash = 900, Cost = 8000, Hours = 16, Name = "Longship" });
             _items.Add(new Item() { Cash = 300, Cost = 14000, Hours = 2, Name = "Smokehouse" });
             _items.Add(new Item() { Cash = 500, Cost = 16500, Hours = 4, Name = "Barracks" });
             _items.Add(new Item() { Cash = 2500, Cost = 18500, Hours = 20, Name = "Alehouse" });
@@ -115,6 +115,14 @@ namespace Euler_Logic.Problems {
                 x.Bit = bit;
                 bit *= 2;
             });
+            _items[5].Requirements += _items[1].Bit;
+            _items[6].Requirements += _items[2].Bit;
+            _items[7].Requirements += _items[3].Bit;
+            _items[8].Requirements += _items[4].Bit;
+            _items[9].Requirements += _items[5].Bit;
+            _items[10].Requirements += _items[7].Bit;
+            _items[11].Requirements += _items[6].Bit;
+            _items[12].Requirements += _items[8].Bit;
         }
 
         private class Item {
@@ -124,6 +132,7 @@ namespace Euler_Logic.Problems {
             public int Hours { get; set; }
             public ulong Bit { get; set; }
             public int PurchaseOffset { get; set; }
+            public ulong Requirements { get; set; }
         }
     }
 

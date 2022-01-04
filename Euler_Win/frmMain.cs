@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Euler_Logic.Problems;
 
 namespace Euler_Win {
     public partial class frmMain : Form {
         private List<IProblem> _problems;
+        private IProblem _defaultProblem = new Euler_Logic.Problems.AdventOfCode.Y2021.Problem22();
 
         private void GetProblems() {
             _problems = new List<IProblem>();
@@ -36,6 +31,19 @@ namespace Euler_Win {
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem10());
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem11());
             _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem12());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem13());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem14());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem15());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem16());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem17());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem18());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem19());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem20());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem21());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem22());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem23());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem24());
+            _problems.Add(new Euler_Logic.Problems.AdventOfCode.Y2017.Problem25());
             _problems.Add(new Problem1());
             _problems.Add(new Problem2());
             _problems.Add(new Problem3());
@@ -222,31 +230,36 @@ namespace Euler_Win {
         private void frmMain_Load(object sender, EventArgs e) {
             GetProblems();
             PopulateProblems();
+            cmdDefault2.Enabled = _defaultProblem.HasAnswer2;
         }
 
         private void cmdGo_Click(object sender, EventArgs e) {
-            Go();
+            Go(1);
         }
 
         private void lstProblems_MouseDoubleClick(object sender, MouseEventArgs e) {
-            Go();
+            Go(1);
         }
 
-        private void Go() {
+        private void Go(int problemNumber) {
             if (lstProblems.SelectedIndex > -1) {
                 GetProblems();
                 IProblem problem = _problems[lstProblems.SelectedIndex];
-                Go(problem);
+                Go(problem, problemNumber);
             }
         }
 
-        private void Go(IProblem problem) {
+        private void Go(IProblem problem, int problemNumber) {
             Stopwatch watch = new Stopwatch();
             watch.Start();
             if (problem.RequiresInputFile) {
                 problem.UploadInputFile(txtFileInput.Text);
             }
-            txtAnswer.Text = problem.GetAnswer();
+            if (problemNumber == 1) {
+                txtAnswer.Text = problem.GetAnswer();
+            } else if (problemNumber == 2) {
+                txtAnswer.Text = problem.GetAnswer2();
+            }
             watch.Stop();
             lblTime.Text = watch.Elapsed.TotalSeconds.ToString() + " seconds";
         }
@@ -257,10 +270,9 @@ namespace Euler_Win {
             cmdGo.Enabled = false;
             if (lstProblems.SelectedIndex > -1) {
                 cmdGo.Enabled = true;
-                if (_problems[lstProblems.SelectedIndex].RequiresInputFile) {
-                    txtFileInput.Enabled = true;
-                    cmdFileInput.Enabled = true;
-                }
+                txtFileInput.Enabled = _problems[lstProblems.SelectedIndex].RequiresInputFile;
+                cmdFileInput.Enabled = _problems[lstProblems.SelectedIndex].RequiresInputFile;
+                cmdGo2.Enabled = _problems[lstProblems.SelectedIndex].HasAnswer2;
             }
         }
 
@@ -273,8 +285,15 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            //Go(new Euler_Logic.Problems.AdventOfCode.Y2021.Problem22());
-            Go(new Euler_Logic.Problems.Problem000_DiscordBot2());
+            Go(_defaultProblem, 1);
+        }
+
+        private void cmdGo2_Click(object sender, EventArgs e) {
+            Go(2);
+        }
+
+        private void cmdDefault2_Click(object sender, EventArgs e) {
+            Go(_defaultProblem, 2);
         }
     }
 }

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
-    public class Problem05 : ProblemBase {
+    public class Problem05 : AdventOfCodeBase {
         public override string ProblemName {
             get { return "Advent of Code 2017: 5"; }
         }
 
         public override string GetAnswer() {
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             return Answer2();
         }
 

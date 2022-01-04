@@ -3,6 +3,8 @@ using System.IO;
 
 namespace Euler_Logic.Problems.AdventOfCode {
     public abstract class AdventOfCodeBase : ProblemBase {
+        public override bool HasAnswer2 => true;
+
         public List<string> Input() {
             return LoadFile(@"c:\temp\input.txt");
         }

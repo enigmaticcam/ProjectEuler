@@ -11,8 +11,12 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         public override string GetAnswer() {
-            //Tests();
-            GetCuboids(Input_Test(1));
+            GetCuboids(Input());
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
+            GetCuboids(Input_Test(2));
             return Answer2().ToString();
         }
 
@@ -58,10 +62,81 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             //    }
             //}
             //return onlyOn;
-            return null;
+            var onlyOn = new List<Cuboid>();
+            onlyOn.Add(_cuboids[0]);
+            for (int index = 1; index < _cuboids.Count; index++) {
+                var current = _cuboids[index];
+                if (index == 5) {
+                    bool stop = true;
+                }
+                Converge(onlyOn, current);
+                onlyOn.AddRange(GetAllChildren(current).Where(x => x.On));
+                for (int sub = 0; sub < onlyOn.Count; sub++) {
+                    if (onlyOn[sub].Children != null) {
+                        onlyOn.RemoveAt(sub);
+                        sub--;
+                    }
+                }
+            }
+            return onlyOn;
+        }
+
+        private void Converge(List<Cuboid> onlyOn, Cuboid current) {
+            int count = 0;
+            foreach (var prior in onlyOn) {
+                var children = GetAllChildren(current).ToList();
+                foreach (var child in children) {
+                    if (count == 1087) {
+                        bool stop = true;
+                    }
+                    if (DoesOverlap(child, prior)) {
+                        if (OverlapAll(child, prior)) {
+                            prior.Children = new List<Cuboid>();
+                            if (child.On) prior.Children.Add(child);
+                        } else if (OverlapAll(prior, child)) {
+                            if (!child.On) {
+                                prior.Children = new List<Cuboid>();
+                                child.Children = Split(prior, child).ToList();
+                                if (!Validate(prior, child, child.Children)) {
+                                    bool stop = true;
+                                }
+                            }
+                        } else {
+                            prior.Children = new List<Cuboid>();
+                            child.Children = Split(prior, child).ToList();
+                            if (!Validate(prior, child, child.Children)) {
+                                bool stop = true;
+                            }
+                        }
+                    }
+                    count++;
+                }
+            }
+        }
+
+        private IEnumerable<Cuboid> GetAllChildren(Cuboid cuboid) {
+            if (cuboid.Children == null) {
+                yield return cuboid;
+            } else {
+                foreach (var next in cuboid.Children) {
+                    var children = GetAllChildren(next);
+                    foreach (var child in children) {
+                        yield return child;
+                    }
+                }
+            }
         }
 
         private IEnumerable<Cuboid> Split(Cuboid cuboid1, Cuboid cuboid2) {
+            cuboid1.HadLowestEndX = false;
+            cuboid1.HadLowestEndY = false;
+            cuboid1.HadLowestStartX = false;
+            cuboid1.HadLowestStartY = false;
+
+            cuboid2.HadLowestEndX = false;
+            cuboid2.HadLowestEndY = false;
+            cuboid2.HadLowestStartX = false;
+            cuboid2.HadLowestStartY = false;
             if (cuboid1.Start.X != cuboid2.Start.X) {
                 SetLowerHigher(cuboid1, cuboid2, x => x.Start.X);
                 _lower.HadLowestStartX = true;
@@ -101,7 +176,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 if (_higher.HadLowestStartX) startX = _lower.Start.X;
                 if (!_higher.HadLowestEndX) endX = _lower.End.X;
                 yield return new Cuboid() {
-                    Start = new Point(startX, _lower.End.X + 1, _higher.Start.Z),
+                    Start = new Point(startX, _lower.End.Y + 1, _higher.Start.Z),
                     End = new Point(endX, _higher.End.Y, _higher.End.Z),
                     On = _higher.On
                 };
@@ -156,6 +231,35 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             }
         }
 
+        private bool Validate(Cuboid cuboid1, Cuboid cuboid2, IEnumerable<Cuboid> result) {
+            var hash = new Dictionary<Tuple<long, long, long>, bool>();
+            for (long x = cuboid1.Start.X; x <= cuboid1.End.X; x++) {
+                for (long y = cuboid1.Start.Y; y <= cuboid1.End.Y; y++) {
+                    for (long z = cuboid1.Start.Z; z <= cuboid1.End.Z; z++) {
+                        var key = new Tuple<long, long, long>(x, y, z);
+                        hash.Add(key, cuboid1.On);
+                    }
+                }
+            }
+            for (long x = cuboid2.Start.X; x <= cuboid2.End.X; x++) {
+                for (long y = cuboid2.Start.Y; y <= cuboid2.End.Y; y++) {
+                    for (long z = cuboid2.Start.Z; z <= cuboid2.End.Z; z++) {
+                        var key = new Tuple<long, long, long>(x, y, z);
+                        if (hash.ContainsKey(key)) {
+                            hash[key] = cuboid2.On;
+                        } else {
+                            hash.Add(key, cuboid2.On);
+                        }
+                    }
+                }
+            }
+            long sum = 0;
+            foreach (var cuboid in result) {
+                sum += Math.Abs(cuboid.End.X - cuboid.Start.X + 1) * Math.Abs(cuboid.End.Y - cuboid.Start.Y + 1) * Math.Abs(cuboid.End.Z - cuboid.Start.Z + 1);
+            }
+            return hash.Select(x => x.Value).Count() == sum;
+        }
+
         private void Tests() {
             // Test TurnOffMiddle
             var large = new Cuboid() {
@@ -201,6 +305,9 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         private long Count(Cuboid cuboid) {
+            if (cuboid.Children != null || !cuboid.On) {
+                return 0;
+            }
             return Math.Abs(cuboid.End.X - cuboid.Start.X + 1) * Math.Abs(cuboid.End.Y - cuboid.Start.Y + 1) * Math.Abs(cuboid.End.Z - cuboid.Start.Z + 1);
         }
 
