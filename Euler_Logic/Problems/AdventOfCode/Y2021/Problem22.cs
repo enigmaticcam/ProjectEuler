@@ -16,115 +16,56 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         public override string GetAnswer2() {
-            GetCuboids(Input_Test(2));
+            GetCuboids(Input());
             return Answer2().ToString();
         }
 
         private long Answer2() {
-            var result = FindOverlaps();
-            return Count(result);
+            var result = GetCount();
+            return result;
         }
 
-        private List<Cuboid> FindOverlaps() {
-            //var onlyOn = new List<Cuboid>();
-            //onlyOn.Add(_cuboids[0]);
-            //for (int index = 1; index < _cuboids.Count; index++) {
-            //    var current = _cuboids[index];
-            //    var toAdd = new List<Cuboid>();
-            //    var toRemove = new List<Cuboid>();
-            //    bool didSplit = false;
-            //    for (int subIndex = 0; subIndex < onlyOn.Count; subIndex++) {
-            //        var sub = onlyOn[subIndex];
-            //        if (DoesOverlap(current, sub)) {
-            //            didSplit = true;
-            //            if (OverlapAll(current, sub)) {
-            //                toRemove.Add(sub);
-            //                if (current.On) toAdd.Add(current);
-            //            } else if (OverlapAll(sub, current)) {
-            //                if (!current.On) {
-            //                    toAdd.AddRange(Split(sub, current));
-            //                    toRemove.Add(sub);
-            //                }
-            //            } else {
-            //                var split = Split(sub, current);
-            //                toRemove.Add(sub);
-            //                toAdd.AddRange(split.Where(x => x.On));
-            //            }
-            //        }
-            //    }
-            //    // if we did split it, we need to immediately test split cuboids against prior cuboids to maintain on/off sequence order
-            //    if (!didSplit) {
-            //        onlyOn.Add(current);
-            //    } else {
-            //        toRemove.ForEach(x => onlyOn.Remove(x));
-            //        //onlyOn.AddRange(toAdd);
-            //        _cuboids.AddRange(toAdd);
-            //    }
-            //}
-            //return onlyOn;
-            var onlyOn = new List<Cuboid>();
-            onlyOn.Add(_cuboids[0]);
-            for (int index = 1; index < _cuboids.Count; index++) {
-                var current = _cuboids[index];
-                if (index == 5) {
-                    bool stop = true;
-                }
-                Converge(onlyOn, current);
-                onlyOn.AddRange(GetAllChildren(current).Where(x => x.On));
-                for (int sub = 0; sub < onlyOn.Count; sub++) {
-                    if (onlyOn[sub].Children != null) {
-                        onlyOn.RemoveAt(sub);
-                        sub--;
-                    }
+        private void RemoveOutside50() {
+            int index = 0;
+            while (index < _cuboids.Count) {
+                var cuboid = _cuboids[index];
+                if (cuboid.Start.X < -50 || cuboid.Start.Y < -50 || cuboid.Start.Z < -50
+                    || cuboid.End.X > 50 || cuboid.End.Y > 50 && cuboid.End.Z > 50) {
+                    _cuboids.RemoveAt(index);
+                } else {
+                    index++;
                 }
             }
-            return onlyOn;
         }
 
-        private void Converge(List<Cuboid> onlyOn, Cuboid current) {
-            int count = 0;
-            foreach (var prior in onlyOn) {
-                var children = GetAllChildren(current).ToList();
-                foreach (var child in children) {
-                    if (count == 1087) {
-                        bool stop = true;
-                    }
-                    if (DoesOverlap(child, prior)) {
-                        if (OverlapAll(child, prior)) {
-                            prior.Children = new List<Cuboid>();
-                            if (child.On) prior.Children.Add(child);
-                        } else if (OverlapAll(prior, child)) {
-                            if (!child.On) {
-                                prior.Children = new List<Cuboid>();
-                                child.Children = Split(prior, child).ToList();
-                                if (!Validate(prior, child, child.Children)) {
-                                    bool stop = true;
-                                }
-                            }
-                        } else {
-                            prior.Children = new List<Cuboid>();
-                            child.Children = Split(prior, child).ToList();
-                            if (!Validate(prior, child, child.Children)) {
-                                bool stop = true;
+       private long GetCount() {
+            long sum = 0;
+            for (int index1 = 0; index1 < _cuboids.Count; index1++) {
+                var cuboid1 = _cuboids[index1];
+                if (cuboid1.On) {
+                    var temp = new List<Cuboid>() { cuboid1 };
+                    for (int index2 = index1 + 1; index2 < _cuboids.Count; index2++) {
+                        var cuboid2 = _cuboids[index2];
+                        int subIndex = 0;
+                        while (subIndex < temp.Count) {
+                            var sub = temp[subIndex];
+                            if (OverlapAll(cuboid2, sub)) {
+                                temp.RemoveAt(subIndex);
+                            } else if (DoesOverlap(cuboid2, sub)) {
+                                var split = Split(sub, cuboid2);
+                                temp.RemoveAt(subIndex);
+                                var range = split.Where(x => x.On && x.SplitParent == sub).ToList();
+                                temp.InsertRange(subIndex, range);
+                                subIndex += range.Count();
+                            } else {
+                                subIndex++;
                             }
                         }
                     }
-                    count++;
+                    sum += Count(temp);
                 }
             }
-        }
-
-        private IEnumerable<Cuboid> GetAllChildren(Cuboid cuboid) {
-            if (cuboid.Children == null) {
-                yield return cuboid;
-            } else {
-                foreach (var next in cuboid.Children) {
-                    var children = GetAllChildren(next);
-                    foreach (var child in children) {
-                        yield return child;
-                    }
-                }
-            }
+            return sum;
         }
 
         private IEnumerable<Cuboid> Split(Cuboid cuboid1, Cuboid cuboid2) {
@@ -143,7 +84,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 yield return new Cuboid() {
                     Start = new Point(_lower.Start.X, _lower.Start.Y, _lower.Start.Z),
                     End = new Point(_higher.Start.X - 1, _lower.End.Y, _lower.End.Z),
-                    On = _lower.On
+                    On = _lower.On,
+                    SplitParent = _lower
                 };
             }
             if (cuboid1.End.X != cuboid2.End.X) {
@@ -152,7 +94,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 yield return new Cuboid() {
                     Start = new Point(_lower.End.X + 1, _higher.Start.Y, _higher.Start.Z),
                     End = new Point(_higher.End.X, _higher.End.Y, _higher.End.Z),
-                    On = _higher.On
+                    On = _higher.On,
+                    SplitParent = _higher
                 };
             }
             if (cuboid1.Start.Y != cuboid2.Start.Y) {
@@ -165,7 +108,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 yield return new Cuboid() {
                     Start = new Point(startX, _lower.Start.Y, _lower.Start.Z),
                     End = new Point(endX, _higher.Start.Y - 1, _lower.End.Z),
-                    On = _lower.On
+                    On = _lower.On,
+                    SplitParent = _lower
                 };
             }
             if (cuboid1.End.Y != cuboid2.End.Y) {
@@ -178,7 +122,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 yield return new Cuboid() {
                     Start = new Point(startX, _lower.End.Y + 1, _higher.Start.Z),
                     End = new Point(endX, _higher.End.Y, _higher.End.Z),
-                    On = _higher.On
+                    On = _higher.On,
+                    SplitParent = _higher
                 };
             }
             if (cuboid1.Start.Z != cuboid2.Start.Z) {
@@ -194,7 +139,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 yield return new Cuboid() {
                     Start = new Point(startX, startY, _lower.Start.Z),
                     End = new Point(endX, endY, _higher.Start.Z - 1),
-                    On = _lower.On
+                    On = _lower.On,
+                    SplitParent = _lower
                 };
             }
             if (cuboid1.End.Z != cuboid2.End.Z) {
@@ -210,14 +156,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 yield return new Cuboid() {
                     Start = new Point(startX, startY, _lower.End.Z + 1),
                     End = new Point(endX, endY, _higher.End.Z),
-                    On = _higher.On
+                    On = _higher.On,
+                    SplitParent = _higher
                 };
             }
-            yield return new Cuboid() {
-                Start = new Point(Math.Max(cuboid1.Start.X, cuboid2.Start.X), Math.Max(cuboid1.Start.Y, cuboid2.Start.Y), Math.Max(cuboid1.Start.Z, cuboid2.Start.Z)),
-                End = new Point(Math.Min(cuboid1.End.X, cuboid2.End.X), Math.Min(cuboid1.End.Y, cuboid2.End.Y), Math.Min(cuboid1.End.Z, cuboid2.End.Z)),
-                On = cuboid2.On
-            };
         }
 
         private Cuboid _lower;
@@ -229,52 +171,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 _lower = cuboid2;
                 _higher = cuboid1;
             }
-        }
-
-        private bool Validate(Cuboid cuboid1, Cuboid cuboid2, IEnumerable<Cuboid> result) {
-            var hash = new Dictionary<Tuple<long, long, long>, bool>();
-            for (long x = cuboid1.Start.X; x <= cuboid1.End.X; x++) {
-                for (long y = cuboid1.Start.Y; y <= cuboid1.End.Y; y++) {
-                    for (long z = cuboid1.Start.Z; z <= cuboid1.End.Z; z++) {
-                        var key = new Tuple<long, long, long>(x, y, z);
-                        hash.Add(key, cuboid1.On);
-                    }
-                }
-            }
-            for (long x = cuboid2.Start.X; x <= cuboid2.End.X; x++) {
-                for (long y = cuboid2.Start.Y; y <= cuboid2.End.Y; y++) {
-                    for (long z = cuboid2.Start.Z; z <= cuboid2.End.Z; z++) {
-                        var key = new Tuple<long, long, long>(x, y, z);
-                        if (hash.ContainsKey(key)) {
-                            hash[key] = cuboid2.On;
-                        } else {
-                            hash.Add(key, cuboid2.On);
-                        }
-                    }
-                }
-            }
-            long sum = 0;
-            foreach (var cuboid in result) {
-                sum += Math.Abs(cuboid.End.X - cuboid.Start.X + 1) * Math.Abs(cuboid.End.Y - cuboid.Start.Y + 1) * Math.Abs(cuboid.End.Z - cuboid.Start.Z + 1);
-            }
-            return hash.Select(x => x.Value).Count() == sum;
-        }
-
-        private void Tests() {
-            // Test TurnOffMiddle
-            var large = new Cuboid() {
-                Start = new Point(0, 0, 10),
-                End = new Point(5, 5, 12),
-                On = true
-            };
-            var small = new Cuboid() {
-                Start = new Point(2, 2, 11),
-                End = new Point(3, 3, 11)
-            };
-            var total = Count(large);
-            var result = Split(large, small).ToList();
-            var count = Count(result);
-            if (count != 104) throw new Exception();
         }
 
         private bool OverlapAll(Cuboid cuboid1, Cuboid cuboid2) {
@@ -305,52 +201,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         private long Count(Cuboid cuboid) {
-            if (cuboid.Children != null || !cuboid.On) {
-                return 0;
-            }
             return Math.Abs(cuboid.End.X - cuboid.Start.X + 1) * Math.Abs(cuboid.End.Y - cuboid.Start.Y + 1) * Math.Abs(cuboid.End.Z - cuboid.Start.Z + 1);
         }
 
-        private int Answer1() {
-            var grid = new Dictionary<long, Dictionary<long, Dictionary<long, bool>>>();
-            foreach (var cuboid in _cuboids) {
-                long startX = Math.Max(cuboid.Start.X, -50);
-                long endX = Math.Min(cuboid.End.X, 50);
-                for (long x = startX; x <= endX; x++) {
-                    if (!grid.ContainsKey(x)) {
-                        grid.Add(x, new Dictionary<long, Dictionary<long, bool>>());
-                    }
-                    long startY = Math.Max(cuboid.Start.Y, -50);
-                    long endY = Math.Min(cuboid.End.Y, 50);
-                    for (long y = startY; y <= endY; y++) {
-                        if (!grid[x].ContainsKey(y)) {
-                            grid[x].Add(y, new Dictionary<long, bool>());
-                        }
-                        long startZ = Math.Max(cuboid.Start.Z, -50);
-                        long endZ = Math.Min(cuboid.End.Z, 50);
-                        for (long z = startZ; z <= endZ; z++) {
-                            if (!grid[x][y].ContainsKey(z)) {
-                                grid[x][y].Add(z, cuboid.On);
-                            } else {
-                                grid[x][y][z] = cuboid.On;
-                            }
-                        }
-                    }
-                }
-            }
-            return Count(grid);
-        }
-
-        private int Count(Dictionary<long, Dictionary<long, Dictionary<long, bool>>> grid) {
-            int count = 0;
-            foreach (var x in grid) {
-                foreach (var y in x.Value) {
-                    foreach (var z in y.Value) {
-                        if (z.Value) count++;
-                    }
-                }
-            }
-            return count;
+        private long Answer1() {
+            RemoveOutside50();
+            var result = GetCount();
+            return result;
         }
 
         private void GetCuboids(List<string> input) {
@@ -388,12 +245,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             public Point Start { get; set; }
             public Point End { get; set; }
             public bool On { get; set; }
-            public bool IsDone { get; set; }
             public bool HadLowestStartX { get; set; }
             public bool HadLowestStartY { get; set; }
             public bool HadLowestEndX { get; set; }
             public bool HadLowestEndY { get; set; }
-            public List<Cuboid> Children { get; set; }
+            public Cuboid SplitParent { get; set; }
         }
 
         private class Point {
