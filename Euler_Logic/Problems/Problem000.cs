@@ -5,6 +5,57 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Euler_Logic.Problems {
+    public class Problem000_CFSimulation : ProblemBase {
+        public override string ProblemName => "Sandbox";
+
+        public override string GetAnswer() {
+            _100Count = 0;
+            long maxCount = 10000000;
+            long cash = 0;
+            var random = new Random();
+            for (long count = 1; count <= maxCount; count++) {
+                cash += Simulate(random, 300);
+            }
+            //return ((decimal)cash / (decimal)maxCount).ToString();
+            return _100Count.ToString();
+        }
+
+        private long _100Count;
+        private long Simulate(Random random, long bet) {
+            long cash = -50;
+            int win = 54;
+            do {
+                cash -= bet;
+                var next = random.Next(100);
+                if (next < win) {
+                    cash += bet * 2;
+                    win++;
+                    if (win == 100) {
+                        _100Count++;
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            } while (true);
+            return cash;
+        }
+    }
+
+    public class Problem000_Dictionary : ProblemBase {
+        public override string ProblemName => "Sandbox";
+        public override string GetAnswer() {
+            ulong count = 0;
+            using (var reader = new StreamReader(@"C:\Temp\Words.txt")) {
+                while (!reader.EndOfStream) {
+                    var line = reader.ReadLine();
+                    if (line.ToUpper().IndexOf("EE") > -1) count++;
+                }
+            }
+            return count.ToString();
+        }
+    }
+
     public class Problem000_DiscordBot2 : ProblemBase {
         private List<Item> _items;
         private int _bestValue = int.MaxValue;

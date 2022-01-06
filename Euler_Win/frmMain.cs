@@ -7,7 +7,7 @@ using Euler_Logic.Problems;
 namespace Euler_Win {
     public partial class frmMain : Form {
         private List<IProblem> _problems;
-        private IProblem _defaultProblem = new Euler_Logic.Problems.AdventOfCode.Y2021.Problem22();
+        private Type _defaultProblem = typeof(Euler_Logic.Problems.AdventOfCode.Y2021.Problem23);
 
         private void GetProblems() {
             _problems = new List<IProblem>();
@@ -230,7 +230,8 @@ namespace Euler_Win {
         private void frmMain_Load(object sender, EventArgs e) {
             GetProblems();
             PopulateProblems();
-            cmdDefault2.Enabled = _defaultProblem.HasAnswer2;
+            var problem = GetDefaultProblem();
+            cmdDefault2.Enabled = problem.HasAnswer2;
         }
 
         private void cmdGo_Click(object sender, EventArgs e) {
@@ -285,7 +286,8 @@ namespace Euler_Win {
         }
 
         private void cmdDefault_Click(object sender, EventArgs e) {
-            Go(_defaultProblem, 1);
+            var problem = GetDefaultProblem();
+            Go(problem, 1);
         }
 
         private void cmdGo2_Click(object sender, EventArgs e) {
@@ -293,7 +295,12 @@ namespace Euler_Win {
         }
 
         private void cmdDefault2_Click(object sender, EventArgs e) {
-            Go(_defaultProblem, 2);
+            var problem = GetDefaultProblem();
+            Go(problem, 2);
+        }
+
+        private IProblem GetDefaultProblem() {
+            return (IProblem)Activator.CreateInstance(_defaultProblem);
         }
     }
 }
