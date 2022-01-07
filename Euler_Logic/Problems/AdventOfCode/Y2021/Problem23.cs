@@ -7,10 +7,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
     public class Problem23 : AdventOfCodeBase {
         private List<Pod> _pods;
         private Pod[] _locations;
-        private Dictionary<ulong, ulong> _hash;
+        private Dictionary<string, ulong> _hash;
         private ulong _best = ulong.MaxValue;
         private HomeBucket[] _homeBuckets;
         private List<Route> _routes;
+        private char[] _key;
 
         private enum enumRouteType {
             HomeToHome,
@@ -23,19 +24,34 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
         }
 
         public override string GetAnswer() {
-            return Answer1(Input_Test(1)).ToString();
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
         }
 
         private ulong Answer1(List<string> input) {
             _locations = new Pod[7];
-            _hash = new Dictionary<ulong, ulong>();
+            _hash = new Dictionary<string, ulong>();
+            SetHomeBuckets(false);
+            GetPods(input, false);
+            SetRoutes2();
+            SetKey();
+            return GetRecursiveCount(new string(_key), 0, 1);
+        }
+
+        private ulong Answer2(List<string> input) {
+            _locations = new Pod[7];
+            _hash = new Dictionary<string, ulong>();
             SetHomeBuckets(true);
             GetPods(input, true);
             SetRoutes2();
-            return GetRecursiveCount2(BuildKey(), 0, 1);
+            SetKey();
+            return GetRecursiveCount(new string(_key), 0, 1);
         }
 
-        private ulong GetRecursiveCount2(ulong key, ulong prior, int moveCount) {
+        private ulong GetRecursiveCount(string key, ulong prior, int moveCount) {
             ulong best = ulong.MaxValue;
             _hash.Add(key, 0);
             foreach (var route in _routes) {
@@ -43,19 +59,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 bool didPerform = false;
                 Pod pod = null;
                 ulong additionalSteps = 0;
-                if (moveCount == 1 && route.RouteType == enumRouteType.HomeToHallway && route.Start == 3 && route.End == 6) {
-                    bool stop = true;
-                }
-                if (moveCount == 2 && route.RouteType == enumRouteType.HomeToHallway && route.Start == 3 && route.End == 0) {
-                    bool stop = true;
-                }
-                if (moveCount == 3 && route.RouteType == enumRouteType.HomeToHallway && route.Start == 2 && route.End == 5) {
-                    bool stop = true;
-                }
                 switch (route.RouteType) {
                     case enumRouteType.HallwayToHome:
                         if (CanPerformHallwayToHome(route)) {
-                            additionalSteps =  3 - (ulong)(_homeBuckets[route.End].NextOpen);
+                            additionalSteps = (ulong)_homeBuckets[route.End].MaxIndex - (ulong)(_homeBuckets[route.End].NextOpen);
                             didPerform = true;
                             pod = PerformHallwayToHome(route.Start, route.End);
                             undo = () => PerformHomeToHallway(route.End, route.Start);
@@ -63,7 +70,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                         break;
                     case enumRouteType.HomeToHallway:
                         if (CanPerformHomeToHallway(route)) {
-                            additionalSteps = 3 - (ulong)(_homeBuckets[route.Start].NextOpen - 1);
+                            additionalSteps = (ulong)_homeBuckets[route.Start].MaxIndex - (ulong)(_homeBuckets[route.Start].NextOpen - 1);
                             didPerform = true;
                             pod = PerformHomeToHallway(route.Start, route.End);
                             undo = () => PerformHallwayToHome(route.End, route.Start);
@@ -71,7 +78,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                         break;
                     case enumRouteType.HomeToHome:
                         if (CanPerformHomeToHome(route)) {
-                            additionalSteps = (3 - (ulong)(_homeBuckets[route.Start].NextOpen - 1)) + (3 - (ulong)(_homeBuckets[route.End].NextOpen));
+                            additionalSteps = ((ulong)_homeBuckets[route.Start].MaxIndex - (ulong)(_homeBuckets[route.Start].NextOpen - 1)) + ((ulong)_homeBuckets[route.Start].MaxIndex - (ulong)(_homeBuckets[route.End].NextOpen));
                             didPerform = true;
                             pod = PerformHomeToHome(route.Start, route.End);
                             undo = () => PerformHomeToHome(route.End, route.Start);
@@ -80,6 +87,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 }
                 if (didPerform) {
                     ulong sub = pod.Energy * (route.Steps + additionalSteps);
+                    var nextKey = new string(_key);
                     if (IsSolved()) {
                         if (sub < best) {
                             best = sub;
@@ -88,10 +96,9 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                             _best = sub + prior;
                         }
                     } else {
-                        var nextKey = BuildKey();
                         ulong next = 0;
                         if (!_hash.ContainsKey(nextKey)) {
-                            next = GetRecursiveCount2(nextKey, sub + prior, moveCount + 1);
+                            next = GetRecursiveCount(nextKey, sub + prior, moveCount + 1);
                         } else {
                             next = _hash[nextKey];
                         }
@@ -148,6 +155,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             // Start bucket is empty
             if (start.NextOpen == 0) return false;
 
+            // Start bucket is not complete, but has all home pods
+            int homeCount = 0;
+            foreach (var pod in start.Pods) {
+                if (pod != null && pod.HomeBucket == route.Start) homeCount++;
+            }
+            if (homeCount == start.NextOpen) return false;
+
             // route is blocked
             foreach (var space in route.SpacesCovered) {
                 if (_locations[space] != null) return false;
@@ -190,8 +204,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             _locations[hallwayStart] = null;
             end.Pods[end.NextOpen] = pod;
             end.NextOpen++;
-            end.IsComplete = end.NextOpen > end.MaxIndex && end.Pods[0].HomeBucket == homeEnd && end.Pods[1].HomeBucket == homeEnd && end.Pods[2].HomeBucket == homeEnd && end.Pods[3].HomeBucket == homeEnd;
+            end.IsComplete = IsComplete(end, homeEnd);
+            _key[pod.Position] = '-';
             pod.Position = end.Positions[end.NextOpen - 1];
+            _key[pod.Position] = pod.Name;
             return pod;
         }
 
@@ -203,8 +219,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             start.NextOpen--;
             start.Pods[start.NextOpen] = null;
             start.IsComplete = false;
-            end.IsComplete = end.NextOpen > end.MaxIndex && end.Pods[0].HomeBucket == homeEnd && end.Pods[1].HomeBucket == homeEnd && end.Pods[2].HomeBucket == homeEnd && end.Pods[3].HomeBucket == homeEnd;
+            end.IsComplete = IsComplete(end, homeEnd);
+            _key[end.Pods[end.NextOpen - 1].Position] = '-';
             end.Pods[end.NextOpen - 1].Position = end.Positions[end.NextOpen - 1];
+            _key[end.Pods[end.NextOpen - 1].Position] = end.Pods[end.NextOpen - 1].Name;
             return end.Pods[end.NextOpen - 1];
         }
 
@@ -213,9 +231,24 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             _locations[hallwayEnd] = start.Pods[start.NextOpen - 1];
             start.NextOpen--;
             start.Pods[start.NextOpen] = null;
+            _key[_locations[hallwayEnd].Position] = '-';
             _locations[hallwayEnd].Position = (ulong)hallwayEnd;
+            _key[_locations[hallwayEnd].Position] = _locations[hallwayEnd].Name;
             start.IsComplete = false;
             return _locations[hallwayEnd];
+        }
+
+        private bool IsComplete(HomeBucket bucket, int homeIndex) {
+            bool isComplete = bucket.NextOpen > bucket.MaxIndex;
+            if (isComplete) {
+                foreach (var pod in bucket.Pods) {
+                    if (pod.HomeBucket != homeIndex) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
         }
 
         private void SetRoutes2() {
@@ -266,7 +299,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 var routeToAdd = new Route() { RouteType = enumRouteType.HallwayToHome, Start = route.End, End = route.Start, SpacesCovered = new List<ulong>(route.SpacesCovered), Steps = route.Steps };
                 routeToAdd.SpacesCovered.Remove((ulong)routeToAdd.Start);
                 _routes.Add(routeToAdd);
-                //_routes.Add(new Route() { RouteType = enumRouteType.HallwayToHome, Start = route.End, End = route.Start, SpacesCovered = route.SpacesCovered, Steps = route.Steps });
             }
             for (int index = 0; index < _routes.Count; index++) {
                 _routes[index].Id = index;
@@ -279,7 +311,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                 } else {
                     return 2;
                 }
-            }).ThenBy(x => x.Steps).ToList();
+            }).ToList();
         }
 
         private void SetHomeBuckets(bool insertMiddle) {
@@ -336,27 +368,32 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
                         _homeBuckets[3].Positions[3 - (pod.Position - 19)] = pod.Position;
                     }
                 } else {
-                    throw new Exception();
+                    if (pod.Position <= 8) {
+                        _homeBuckets[0].Pods[1 - (pod.Position - 7)] = pod;
+                        _homeBuckets[0].Positions[1 - (pod.Position - 7)] = pod.Position;
+                    } else if (pod.Position <= 10) {
+                        _homeBuckets[1].Pods[1 - (pod.Position - 9)] = pod;
+                        _homeBuckets[1].Positions[1 - (pod.Position - 9)] = pod.Position;
+                    } else if (pod.Position <= 12) {
+                        _homeBuckets[2].Pods[1 - (pod.Position - 11)] = pod;
+                        _homeBuckets[2].Positions[1 - (pod.Position - 11)] = pod.Position;
+                    } else {
+                        _homeBuckets[3].Pods[1 - (pod.Position - 13)] = pod;
+                        _homeBuckets[3].Positions[1 - (pod.Position - 13)] = pod.Position;
+                    }
                 }
             }
         }
 
-        private class HomeBucket {
-            public Pod[] Pods { get; set; }
-            public ulong[] Positions { get; set; }
-            public int NextOpen { get; set; }
-            public bool IsComplete { get; set; }
-            public int MaxIndex { get; set; }
-        }
-
-        private ulong BuildKey() {
-            ulong key = 0;
-            foreach (var pod in _pods) {
-                var subKey = pod.Position;
-                subKey <<= pod.BitShift;
-                key += subKey;
+        private void SetKey() {
+            var max = _pods.Select(x => x.Position).Max();
+            _key = new char[max + 1];
+            for (ulong count = 0; count < max; count++) {
+                _key[count] = '-';
             }
-            return key;
+            foreach (var pod in _pods) {
+                _key[pod.Position] = pod.Name;
+            }
         }
 
         private void SetPodSpecifics(Pod pod) {
@@ -448,6 +485,14 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             }
             text.AppendLine("  #########");
             return text.ToString();
+        }
+
+        private class HomeBucket {
+            public Pod[] Pods { get; set; }
+            public ulong[] Positions { get; set; }
+            public int NextOpen { get; set; }
+            public bool IsComplete { get; set; }
+            public int MaxIndex { get; set; }
         }
 
         private class Pod {
