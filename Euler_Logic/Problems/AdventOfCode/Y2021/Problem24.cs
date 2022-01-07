@@ -1,106 +1,111 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
     public class Problem24 : AdventOfCodeBase {
-        private List<Instruction> _instructions;
-        private Dictionary<string, long> _variables;
+        private Variables _var = new Variables();
         private long[] _input;
-        private int _inputIndex;
-        private Random _random;
-
-        private enum enumInstructionType {
-            Inp,
-            Add,
-            Mul,
-            Div,
-            Mod,
-            Eql
-        }
+        private long[] _y;
+        private List<Tuple<int, int>> _set;
 
         public override string ProblemName {
             get { return "Advent of Code 2021: 24"; }
         }
 
         public override string GetAnswer() {
-            _variables = new Dictionary<string, long>();
-            GetInstructions(Input());
-            SetVariables();
             return Answer1().ToString();
         }
 
-        private List<string> _answers = new List<string>();
+        public override string GetAnswer2() {
+            return Answer2().ToString();
+        }
+
         private string Answer1() {
-            _random = new Random();
             _input = new long[14];
-            SetInitializeInput();
-            //SetAllTo1();
-            do {
-                _inputIndex = 0;
-                RandomizeInput();
-                //ResetVariables();
-                _var.Reset();
-                //RunInstructions();
-                RunManual();
-                //_var.Validate(_variables);
-                if (_var.Z == 0) {
-                    _answers.Add(ConvertToString());
-                }
-                //Subtract1FromInput(13);
-                //Add1ToInput(13);
-            } while (true);
+            _y = new long[14];
+            SetSets();
+            Recurisve(0, 4, 0, true);
             return ConvertToString();
         }
 
-        private void RandomizeInput() {
-            for (int index = 0; index < 14; index++) {
-                _input[index] = _random.Next(1, 10);
-            }
+        private string Answer2() {
+            _input = new long[14];
+            _y = new long[14];
+            SetSets();
+            Recurisve(0, 4, 0, false);
+            return ConvertToString();
         }
 
-        private void SetAllTo1() {
-            for (int index = 0; index < 14; index++) {
-                _input[index] = 1;
-            }
-        }
-
-        private class Variables {
-            public long X { get; set; }
-            public long Y { get; set; }
-            public long Z { get; set; }
-            public void Reset() {
-                X = 0;
-                Y = 0;
-                Z = 0;
-            }
-            public void Validate(Dictionary<string, long> variables) {
-                if (variables["x"] != X || variables["y"] != Y || variables["z"] != Z) {
-                    bool stop = true;
+        private bool Recurisve(int index, int last, int setIndex, bool findHighest) {
+            if (findHighest) {
+                for (long num = 9; num >= 1; num--) {
+                    _input[index] = num;
+                    var result = RecurisveTest(index, last, setIndex, findHighest);
+                    if (result) return true;
+                }
+            } else {
+                for (long num = 1; num <= 9; num++) {
+                    _input[index] = num;
+                    var result = RecurisveTest(index, last, setIndex, findHighest);
+                    if (result) return true;
                 }
             }
+            return false;
         }
 
-        private Variables _var = new Variables();
-        private void RunManual() {
-            Manual(_input[0], 1, 12, 6);
-            Manual(_input[1], 1, 11, 12);
-            Manual(_input[2], 1, 10, 5);
-            Manual(_input[3], 1, 10, 10);
-            Manual(_input[4], 26, -16, 7);
-            Manual(_input[5], 1, 14, 0);
-            Manual(_input[6], 1, 12, 4);
-            Manual(_input[7], 26, -4, 12);
-            Manual(_input[8], 1, 15, 14);
-            Manual(_input[9], 26, -7, 13);
-            Manual(_input[10], 26, -8, 10);
-            Manual(_input[11], 26, -4, 11);
-            Manual(_input[12], 26, -15, 9);
-            Manual(_input[13], 26, -8, 9);
+        private bool RecurisveTest(int index, int last, int setIndex, bool findHighest) {
+            if (index == last) {
+                _var.Reset();
+                RunManual();
+                if (_y[last] == 0) {
+                    if (setIndex == _set.Count - 1) {
+                        return true;
+                    } else {
+                        var nextSet = _set[setIndex + 1];
+                        var result = Recurisve(nextSet.Item1, nextSet.Item2, setIndex + 1, findHighest);
+                        if (result) return true;
+                    }
+                }
+            } else {
+                var result = Recurisve(index + 1, last, setIndex, findHighest);
+                if (result) return true;
+            }
+            return false;
         }
-        private void Manual(long w, long a, long b, long c) {
+
+        private void SetSets() {
+            _set = new List<Tuple<int, int>>();
+            _set.Add(new Tuple<int, int>(0, 4));
+            _set.Add(new Tuple<int, int>(5, 7));
+            _set.Add(new Tuple<int, int>(8, 9));
+            _set.Add(new Tuple<int, int>(10, 10));
+            _set.Add(new Tuple<int, int>(11, 11));
+            _set.Add(new Tuple<int, int>(12, 12));
+            _set.Add(new Tuple<int, int>(13, 13));
+        }
+
+        private string ConvertToString() {
+            return string.Join("", _input);
+        }
+
+        private void RunManual() {
+            Manual(_input[0], 1, 12, 6, 0);
+            Manual(_input[1], 1, 11, 12, 1);
+            Manual(_input[2], 1, 10, 5, 2);
+            Manual(_input[3], 1, 10, 10, 3);
+            Manual(_input[4], 26, -16, 7, 4);
+            Manual(_input[5], 1, 14, 0, 5);
+            Manual(_input[6], 1, 12, 4, 6);
+            Manual(_input[7], 26, -4, 12, 7);
+            Manual(_input[8], 1, 15, 14, 8);
+            Manual(_input[9], 26, -7, 13, 9);
+            Manual(_input[10], 26, -8, 10, 10);
+            Manual(_input[11], 26, -4, 11, 11);
+            Manual(_input[12], 26, -15, 9, 12);
+            Manual(_input[13], 26, -8, 9, 13);
+        }
+
+        private void Manual(long w, long a, long b, long c, int yIndex) {
             if ((_var.Z % 26) + b != w) {
                 _var.X = 1;
                 _var.Y = 26;
@@ -112,161 +117,18 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2021 {
             _var.Z *= _var.Y;
             _var.Y = (w + c) * _var.X;
             _var.Z += _var.Y;
+            _y[yIndex] = _var.Y;
         }
 
-        private string ConvertToString() {
-            return string.Join("", _input);
-        }
-
-        private void Subtract1FromInput(int index) {
-            if (_input[index] > 0) {
-                _input[index]--;
-            } else {
-                _input[index] = 9;
-                Subtract1FromInput(index - 1);
+        private class Variables {
+            public long X { get; set; }
+            public long Y { get; set; }
+            public long Z { get; set; }
+            public void Reset() {
+                X = 0;
+                Y = 0;
+                Z = 0;
             }
-        }
-
-        private void Add1ToInput(int index) {
-            if (_input[index] < 9) {
-                _input[index]++;
-            } else {
-                _input[index] = 0;
-                Add1ToInput(index - 1);
-            }
-        }
-
-        private void SetInitializeInput() {
-            for (int index = 0; index < 14; index++) {
-                _input[index] = 9;
-            }
-        }
-
-        private void ResetVariables() {
-            _variables["w"] = 0;
-            _variables["x"] = 0;
-            _variables["y"] = 0;
-            _variables["z"] = 0;
-        }
-
-        private void SetVariables() {
-            _variables.Add("w", 0);
-            _variables.Add("x", 0);
-            _variables.Add("y", 0);
-            _variables.Add("z", 0);
-        }
-
-        private void AddToInput(long num) {
-            for (int index = 13; index >= 0; index--) {
-                _input[index] = num % 10;
-                num /= 10;
-            }
-            _inputIndex = 0;
-        }
-
-        private void RunInstructions() {
-            foreach (var instruction in _instructions) {
-                RunInstruction(instruction);
-            }
-        }
-
-        private void RunInstruction(Instruction instruction) {
-            switch (instruction.InstructionType) {
-                case enumInstructionType.Inp:
-                    RunInstructionInput(instruction);
-                    break;
-                case enumInstructionType.Add:
-                    RunInstructionAdd(instruction);
-                    break;
-                case enumInstructionType.Mul:
-                    RunInstructionMultiply(instruction);
-                    break;
-                case enumInstructionType.Div:
-                    RunInstructionDivide(instruction);
-                    break;
-                case enumInstructionType.Eql:
-                    RunInstructionEqual(instruction);
-                    break;
-                case enumInstructionType.Mod:
-                    RunInstructionMod(instruction);
-                    break;
-            }
-        }
-
-        private void RunInstructionInput(Instruction instruction) {
-            _variables[instruction.Variable1] = _input[_inputIndex];
-            _inputIndex++;
-        }
-
-        private void RunInstructionAdd(Instruction instruction) {
-            var value = GetValue(instruction);
-            _variables[instruction.Variable1] += value;
-        }
-
-        private void RunInstructionMultiply(Instruction instruction) {
-            var value = GetValue(instruction);
-            _variables[instruction.Variable1] *= value;
-        }
-
-        private void RunInstructionDivide(Instruction instruction) {
-            var value = GetValue(instruction);
-            _variables[instruction.Variable1] /= value;
-        }
-
-        private void RunInstructionMod(Instruction instruction) {
-            var value = GetValue(instruction);
-            _variables[instruction.Variable1] %= value;
-        }
-
-        private void RunInstructionEqual(Instruction instruction) {
-            var value = GetValue(instruction);
-            _variables[instruction.Variable1] = value == _variables[instruction.Variable1] ? 1 : 0;
-        }
-
-        private long GetValue(Instruction instruction) {
-            long value = instruction.Value2;
-            if (instruction.IsValue2Variable) {
-                value = _variables[instruction.Variable2];
-            }
-            return value;
-        }
-
-        private void GetInstructions(List<string> input) {
-            _instructions = input.Select(x => {
-                var instruction = new Instruction();
-                var split = x.Split(' ');
-                if (x[0] == 'i') {
-                    instruction.InstructionType = enumInstructionType.Inp;
-                } else if (x[0] == 'a') {
-                    instruction.InstructionType = enumInstructionType.Add;
-                } else if (x[0] == 'm' && x[1] == 'u') {
-                    instruction.InstructionType = enumInstructionType.Mul;
-                } else if (x[0] == 'd') {
-                    instruction.InstructionType = enumInstructionType.Div;
-                } else if (x[0] == 'm' && x[1] == 'o') {
-                    instruction.InstructionType = enumInstructionType.Mod;
-                } else {
-                    instruction.InstructionType = enumInstructionType.Eql;
-                }
-                instruction.Variable1 = split[1];
-                if (instruction.InstructionType != enumInstructionType.Inp) {
-                    if ((int)split[2][0] <= 57) {
-                        instruction.Value2 = Convert.ToInt64(split[2]);
-                    } else {
-                        instruction.Variable2 = split[2];
-                        instruction.IsValue2Variable = true;
-                    }
-                }
-                return instruction;
-            }).ToList();
-        }
-
-        private class Instruction {
-            public enumInstructionType InstructionType { get; set; }
-            public string Variable1 { get; set; }
-            public long Value2 { get; set; }
-            public string Variable2 { get; set; }
-            public bool IsValue2Variable { get; set; }
         }
     }
 }
