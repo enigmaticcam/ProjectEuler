@@ -1,186 +1,280 @@
-﻿using Euler_Logic.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
     public class Problem20 : AdventOfCodeBase {
-        private PowerAll _powerOf2;
         private Dictionary<ulong, Tile> _tiles;
-        private Dictionary<ulong, List<Edge>> _edges;
-        private Dictionary<Tuple<int, int>, Image> _images;
-        private List<ulong> _corners;
+        private Dictionary<Tuple<int, int>, Tile> _grid;
+        private HashSet<ulong> _completed;
 
         public override string ProblemName => "Advent of Code 2020: 20";
 
         public override string GetAnswer() {
-            _powerOf2 = new PowerAll(2);
-            return Answer2(TestInput()).ToString();
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
         }
 
         private ulong Answer1(List<string> input) {
+            _grid = new Dictionary<Tuple<int, int>, Tile>();
+            _completed = new HashSet<ulong>();
             GetTiles(input);
-            PopulateTileBorders();
-            BuildEdges();
-            FindCorners();
-            return GetCornerProduct();
+            SetAllOrientations();
+            var start = _tiles.First().Value;
+            _grid.Add(new Tuple<int, int>(0, 0), start);
+            _completed.Add(start.Id);
+            BuildGrid(start, 0, 0);
+            return GetCorners();
         }
 
-        private ulong Answer2(List<string> input) {
+        private int Answer2(List<string> input) {
+            _grid = new Dictionary<Tuple<int, int>, Tile>();
+            _completed = new HashSet<ulong>();
             GetTiles(input);
-            PopulateTileBorders();
-            BuildEdges();
-            FindCorners();
-            BuildGrid();
-            return 0;
+            SetAllOrientations();
+            var start = _tiles.First().Value;
+            _grid.Add(new Tuple<int, int>(0, 0), start);
+            _completed.Add(start.Id);
+            BuildGrid(start, 0, 0);
+            return FindMonsters();
         }
 
-        private void BuildGrid() {
-            _images = new Dictionary<Tuple<int, int>, Image>();
-            _images.Add(new Tuple<int, int>(0, 0), new Image() {
-                HasImage = true,
-                ImageTile = _tiles[_corners[0]],
-                IsFlippedX = false,
-                IsFlippedY = false,
-                RotateCount = 0,
-                X = 0,
-                Y = 0
-            });
-            BuildGrid(new Tuple<int, int>(0, 0));
-        }
-
-        private void BuildGrid(Tuple<int, int> point) {
-            var image = _images[point];
-            FindEdges(image, image.ImageTile.Borders[0], 0, false);
-            FindEdges(image, image.ImageTile.Borders[1], 1, false);
-            FindEdges(image, image.ImageTile.Borders[2], 2, false);
-            FindEdges(image, image.ImageTile.Borders[3], 3, false);
-            FindEdges(image, image.ImageTile.BordersFlipped[0], 0, true);
-            FindEdges(image, image.ImageTile.BordersFlipped[1], 1, true);
-            FindEdges(image, image.ImageTile.BordersFlipped[2], 2, true);
-            FindEdges(image, image.ImageTile.BordersFlipped[3], 3, true);
-        }
-
-        private void FindEdges(Image image, ulong border, int borderSide, bool isBorderFlipped) {
-            foreach (var edge in _edges[border]) {
-                if (image.ImageTile.Id == 1427 && edge.EdgeTile.Id == 1489) {
-                    bool stop = true;
+        private int FindMonsters() {
+            int xMin = _grid.Keys.Select(x => x.Item1).Min();
+            int xMax = _grid.Keys.Select(x => x.Item1).Max();
+            int yMin = _grid.Keys.Select(x => x.Item2).Min();
+            int yMax = _grid.Keys.Select(x => x.Item2).Max();
+            var newSize = (_tiles.First().Value.Grid.GetUpperBound(0) - 1) * (xMax - xMin + 1);
+            var final = new bool[newSize, newSize];
+            for (int x = xMin; x <= xMax; x++) {
+                int finalX = (x - xMin) * 8;
+                for (int y = yMin; y <= yMax; y++) {
+                    int finalY = (y - yMin) * 8;
+                    AddToFinal(_grid[new Tuple<int, int>(x, y)], finalX, finalY, final);
                 }
-                if (edge.EdgeTile.Id != image.ImageTile.Id) {
-                    var rotateBy = ((borderSide + 2) % 4) - edge.Side;
-                    if (rotateBy < 0) {
-                        rotateBy += 4;
-                    }
-                    rotateBy = (rotateBy + image.RotateCount) % 4;
-                    var position = (borderSide + image.RotateCount) % 4;
-                    if (image.IsFlippedX && position % 2 == 1) {
-                        position = (position + 2) % 4;
-                    } else if (image.IsFlippedY && position % 2 == 0) {
-                        position = (position + 2) % 4;
-                    }
-                    var flippedX = false;
-                    var flippedY = false;
-                    int x = image.X;
-                    int y = image.Y;
-                    switch (position) {
-                        case 0:
-                            y++;
-                            flippedX = isBorderFlipped == image.IsFlippedX;
-                            break;
-                        case 1:
-                            x++;
-                            flippedY = isBorderFlipped == image.IsFlippedY;
-                            break;
-                        case 2:
-                            y--;
-                            flippedX = isBorderFlipped == image.IsFlippedX;
-                            break;
-                        case 3:
-                            x--;
-                            flippedY = isBorderFlipped == image.IsFlippedY;
-                            break;
-                    }
-                    var key = new Tuple<int, int>(x, y);
-                    if (!_images.ContainsKey(key)) {
-                        _images.Add(key, new Image() {
-                            HasImage = true,
-                            ImageTile = edge.EdgeTile,
-                            IsFlippedX = flippedX,
-                            IsFlippedY = flippedY,
-                            RotateCount = rotateBy,
-                            X = x,
-                            Y = y
-                        });
-                        BuildGrid(key);
-                    }
+            }
+            var count = CountMonster(final);
+            if (count == 0) {
+                final = Rotate(final);
+                count = CountMonster(final);
+            }
+            if (count == 0) {
+                final = Rotate(final);
+                count = CountMonster(final);
+            }
+            if (count == 0) {
+                final = Rotate(final);
+                count = CountMonster(final);
+            }
+            if (count == 0) {
+                final = Flip(final);
+                count = CountMonster(final);
+            }
+            if (count == 0) {
+                final = Rotate(final);
+                count = CountMonster(final);
+            }
+            if (count == 0) {
+                final = Rotate(final);
+                count = CountMonster(final);
+            }
+            if (count == 0) {
+                final = Rotate(final);
+                count = CountMonster(final);
+            }
+            return CountAll(final) - (count * 15);
+        }
+
+        private int CountAll(bool[,] final) {
+            int count = 0;
+            for (int x = 0; x <= final.GetUpperBound(0); x++) {
+                for (int y = 0; y <= final.GetUpperBound(0); y++) {
+                    if (final[x, y]) count++;
+                }
+            }
+            return count;
+        }
+
+        private int CountMonster(bool[,] final) {
+            int count = 0;
+            for (int x = 0; x <= final.GetUpperBound(1) - 20; x++) {
+                for (int y = 0; y <= final.GetUpperBound(1) - 2; y++) {
+                    if (IsMonster(x, y, final)) count++;
+                }
+            }
+            return count;
+        }
+
+        private bool IsMonster(int x, int y, bool[,] final) {
+            return final[y, x + 18]
+                && final[y + 1, x + 0]
+                && final[y + 1, x + 5]
+                && final[y + 1, x + 6]
+                && final[y + 1, x + 11]
+                && final[y + 1, x + 12]
+                && final[y + 1, x + 17]
+                && final[y + 1, x + 18]
+                && final[y + 1, x + 19]
+                && final[y + 2, x + 1]
+                && final[y + 2, x + 4]
+                && final[y + 2, x + 7]
+                && final[y + 2, x + 10]
+                && final[y + 2, x + 13]
+                && final[y + 2, x + 16];
+
+        }
+
+        private void AddToFinal(Tile toAdd, int x, int y, bool[,] final) {
+            for (int countX = 0; countX < 8; countX++) {
+                for (int countY = 0; countY < 8; countY++) {
+                    final[x + countX, y + countY] = toAdd.Grid[countX + 1, countY + 1];
                 }
             }
         }
 
-        private ulong GetCornerProduct() {
-            ulong result = 1;
-            foreach (var corner in _corners) {
-                result *= corner;
-            }
-            return result;
-        }
-
-        private void FindCorners() {
-            var hash = new Dictionary<ulong, int>();
-            foreach (var edgeSet in _edges.Values) {
-                if (edgeSet.Count > 1) {
-                    foreach (var edge in edgeSet) {
-                        if (!hash.ContainsKey(edge.EdgeTile.Id)) {
-                            hash.Add(edge.EdgeTile.Id, 1);
-                        } else {
-                            hash[edge.EdgeTile.Id]++;
+        private void BuildGrid(Tile tile, int x, int y) {
+            var tilesAdded = new List<Tile>();
+            var emptySide = new Tuple<int, int>(x + 1, y);
+            if (!_grid.ContainsKey(emptySide)) {
+                foreach (var next in _tiles.Values) {
+                    if (!_completed.Contains(next.Id)) {
+                        foreach (var orientation in next.AllOrientations) {
+                            if (DoesSideMatchOnY(orientation, tile.Grid)) {
+                                next.Grid = orientation;
+                                next.X = emptySide.Item1;
+                                next.Y = emptySide.Item2;
+                                _grid.Add(emptySide, next);
+                                tilesAdded.Add(next);
+                                _completed.Add(next.Id);
+                                break;
+                            }
                         }
                     }
                 }
             }
-            var min = hash.Values.Min();
-            _corners = hash.Where(x => x.Value == min).Select(x => x.Key).ToList();
-        }
 
-        private void BuildEdges() {
-            _edges = new Dictionary<ulong, List<Edge>>();
-            foreach (var tile in _tiles.Values) {
-                AddEdge(tile.Borders[0], new Edge() { EdgeTile = tile, IsFlipped = false, Side = 0 });
-                AddEdge(tile.Borders[1], new Edge() { EdgeTile = tile, IsFlipped = false, Side = 1 });
-                AddEdge(tile.Borders[2], new Edge() { EdgeTile = tile, IsFlipped = false, Side = 2 });
-                AddEdge(tile.Borders[3], new Edge() { EdgeTile = tile, IsFlipped = false, Side = 3 });
-                AddEdge(tile.BordersFlipped[0], new Edge() { EdgeTile = tile, IsFlipped = true, Side = 0 });
-                AddEdge(tile.BordersFlipped[1], new Edge() { EdgeTile = tile, IsFlipped = true, Side = 1 });
-                AddEdge(tile.BordersFlipped[2], new Edge() { EdgeTile = tile, IsFlipped = true, Side = 2 });
-                AddEdge(tile.BordersFlipped[3], new Edge() { EdgeTile = tile, IsFlipped = true, Side = 3 });
-            }
-        }
-
-        private void AddEdge(ulong key, Edge edge) {
-            if (!_edges.ContainsKey(key)) {
-                _edges.Add(key, new List<Edge>());
-            }
-            _edges[key].Add(edge);
-        }
-
-        private void PopulateTileBorders() {
-            foreach (var tile in _tiles.Values) {
-                tile.Borders = new ulong[4];
-                tile.BordersFlipped = new ulong[4];
-                for (int index = 0; index < 10; index++) {
-                    tile.Borders[0] += _powerOf2.GetPower(9 - index) * (tile.Grid[index, 0] ? (ulong)1 : 0);
-                    tile.Borders[1] += _powerOf2.GetPower(index) * (tile.Grid[9, index] ? (ulong)1 : 0);
-                    tile.Borders[2] += _powerOf2.GetPower(index) * (tile.Grid[index, 9] ? (ulong)1 : 0);
-                    tile.Borders[3] += _powerOf2.GetPower(9 - index) * (tile.Grid[0, index] ? (ulong)1 : 0);
-                    tile.BordersFlipped[0] += _powerOf2.GetPower(index) * (tile.Grid[index, 0] ? (ulong)1 : 0);
-                    tile.BordersFlipped[1] += _powerOf2.GetPower(9 - index) * (tile.Grid[9, index] ? (ulong)1 : 0);
-                    tile.BordersFlipped[2] += _powerOf2.GetPower(9 - index) * (tile.Grid[index, 9] ? (ulong)1 : 0);
-                    tile.BordersFlipped[3] += _powerOf2.GetPower(index) * (tile.Grid[0, index] ? (ulong)1 : 0);
+            emptySide = new Tuple<int, int>(x - 1, y);
+            if (!_grid.ContainsKey(emptySide)) {
+                foreach (var next in _tiles.Values) {
+                    if (!_completed.Contains(next.Id)) {
+                        foreach (var orientation in next.AllOrientations) {
+                            if (DoesSideMatchOnY(tile.Grid, orientation)) {
+                                next.Grid = orientation;
+                                next.X = emptySide.Item1;
+                                next.Y = emptySide.Item2;
+                                _grid.Add(emptySide, next);
+                                tilesAdded.Add(next);
+                                _completed.Add(next.Id);
+                                break;
+                            }
+                        }
+                    }
                 }
-                bool stop = true;
             }
+
+            emptySide = new Tuple<int, int>(x, y + 1);
+            if (!_grid.ContainsKey(emptySide)) {
+                foreach (var next in _tiles.Values) {
+                    if (!_completed.Contains(next.Id)) {
+                        foreach (var orientation in next.AllOrientations) {
+                            if (DoesSideMatchOnX(orientation, tile.Grid)) {
+                                next.Grid = orientation;
+                                next.X = emptySide.Item1;
+                                next.Y = emptySide.Item2;
+                                _grid.Add(emptySide, next);
+                                tilesAdded.Add(next);
+                                _completed.Add(next.Id);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            emptySide = new Tuple<int, int>(x, y - 1);
+            if (!_grid.ContainsKey(emptySide)) {
+                foreach (var next in _tiles.Values) {
+                    if (!_completed.Contains(next.Id)) {
+                        foreach (var orientation in next.AllOrientations) {
+                            if (DoesSideMatchOnX(tile.Grid, orientation)) {
+                                next.Grid = orientation;
+                                next.X = emptySide.Item1;
+                                next.Y = emptySide.Item2;
+                                _grid.Add(emptySide, next);
+                                tilesAdded.Add(next);
+                                _completed.Add(next.Id);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            foreach (var next in tilesAdded) {
+                BuildGrid(next, next.X, next.Y);
+            }
+        }
+
+        private bool DoesSideMatchOnX(bool[,] tile1, bool[,] tile2) {
+            for (int x = 0; x < 10; x++) {
+                if (tile1[x, 0] != tile2[x, 9]) return false;
+            }
+            return true;
+        }
+
+        private bool DoesSideMatchOnY(bool[,] tile1, bool[,] tile2) {
+            for (int y = 0; y < 10; y++) {
+                if (tile1[0, y] != tile2[9, y]) return false;
+            }
+            return true;
+        }
+
+        private void SetAllOrientations() {
+            foreach (var tile in _tiles.Values) {
+                var grid = tile.Grid;
+                tile.AllOrientations = new List<bool[,]>();
+                tile.AllOrientations.Add(grid);
+                grid = Rotate(grid);
+                tile.AllOrientations.Add(grid);
+                grid = Rotate(grid);
+                tile.AllOrientations.Add(grid);
+                grid = Rotate(grid);
+                tile.AllOrientations.Add(grid);
+                grid = Flip(grid);
+                tile.AllOrientations.Add(grid);
+                grid = Rotate(grid);
+                tile.AllOrientations.Add(grid);
+                grid = Rotate(grid);
+                tile.AllOrientations.Add(grid);
+                grid = Rotate(grid);
+                tile.AllOrientations.Add(grid);
+            }
+        }
+
+        private bool[,] Flip(bool[,] old) {
+            int size = old.GetUpperBound(0) + 1;
+            var grid = new bool[size, size];
+            for (int x = 0; x < size / 2; x++) {
+                for (int y = 0; y < size; y++) {
+                    grid[x, y] = old[size - 1 - x, y];
+                    grid[size - 1 - x, y] = old[x, y];
+                }
+            }
+            return grid;
+        }
+
+        private bool[,] Rotate(bool[,] old) {
+            int size = old.GetUpperBound(0) + 1;
+            var grid = new bool[size, size];
+            for (int x = 0; x < size; x++) {
+                for (int y = 0; y < size; y++) {
+                    grid[x, y] = old[y, size - 1 - x];
+                }
+            }
+            return grid;
         }
 
         private void GetTiles(List<string> input) {
@@ -201,139 +295,24 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
             _tiles = tiles.ToDictionary(tile => tile.Id, tile => tile);
         }
 
+        private ulong GetCorners() {
+            int xMin = _grid.Keys.Select(x => x.Item1).Min();
+            int xMax = _grid.Keys.Select(x => x.Item1).Max();
+            int yMin = _grid.Keys.Select(x => x.Item2).Min();
+            int yMax = _grid.Keys.Select(x => x.Item2).Max();
+            ulong total = _grid[new Tuple<int, int>(xMin, yMin)].Id;
+            total *= _grid[new Tuple<int, int>(xMin, yMax)].Id;
+            total *= _grid[new Tuple<int, int>(xMax, yMin)].Id;
+            total *= _grid[new Tuple<int, int>(xMax, yMax)].Id;
+            return total;
+        }
+
         private class Tile {
             public ulong Id { get; set; }
             public bool[,] Grid { get; set; }
-            public ulong[] Borders { get; set; }
-            public ulong[] BordersFlipped { get; set; }
-        }
-
-        private class Edge {
-            public Tile EdgeTile { get; set; }
-            public int Side { get; set; }
-            public bool IsFlipped { get; set; }
-        }
-
-        private class Image {
-            public bool HasImage { get; set; }
-            public Tile ImageTile { get; set; }
-            public bool IsFlippedX { get; set; }
-            public bool IsFlippedY { get; set; }
-            public int RotateCount { get; set; }
+            public List<bool[,]> AllOrientations { get; set; }
             public int X { get; set; }
             public int Y { get; set; }
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "Tile 2311:",
-                "..##.#..#.",
-                "##..#.....",
-                "#...##..#.",
-                "####.#...#",
-                "##.##.###.",
-                "##...#.###",
-                ".#.#.#..##",
-                "..#....#..",
-                "###...#.#.",
-                "..###..###",
-                "",
-                "Tile 1951:",
-                "#.##...##.",
-                "#.####...#",
-                ".....#..##",
-                "#...######",
-                ".##.#....#",
-                ".###.#####",
-                "###.##.##.",
-                ".###....#.",
-                "..#.#..#.#",
-                "#...##.#..",
-                "",
-                "Tile 1171:",
-                "####...##.",
-                "#..##.#..#",
-                "##.#..#.#.",
-                ".###.####.",
-                "..###.####",
-                ".##....##.",
-                ".#...####.",
-                "#.##.####.",
-                "####..#...",
-                ".....##...",
-                "",
-                "Tile 1427:",
-                "###.##.#..",
-                ".#..#.##..",
-                ".#.##.#..#",
-                "#.#.#.##.#",
-                "....#...##",
-                "...##..##.",
-                "...#.#####",
-                ".#.####.#.",
-                "..#..###.#",
-                "..##.#..#.",
-                "",
-                "Tile 1489:",
-                "##.#.#....",
-                "..##...#..",
-                ".##..##...",
-                "..#...#...",
-                "#####...#.",
-                "#..#.#.#.#",
-                "...#.#.#..",
-                "##.#...##.",
-                "..##.##.##",
-                "###.##.#..",
-                "",
-                "Tile 2473:",
-                "#....####.",
-                "#..#.##...",
-                "#.##..#...",
-                "######.#.#",
-                ".#...#.#.#",
-                ".#########",
-                ".###.#..#.",
-                "########.#",
-                "##...##.#.",
-                "..###.#.#.",
-                "",
-                "Tile 2971:",
-                "..#.#....#",
-                "#...###...",
-                "#.#.###...",
-                "##.##..#..",
-                ".#####..##",
-                ".#..####.#",
-                "#..#.#..#.",
-                "..####.###",
-                "..#.#.###.",
-                "...#.#.#.#",
-                "",
-                "Tile 2729:",
-                "...#.#.#.#",
-                "####.#....",
-                "..#.#.....",
-                "....#..#.#",
-                ".##..##.#.",
-                ".#.####...",
-                "####.#.#..",
-                "##.####...",
-                "##..#.##..",
-                "#.##...##.",
-                "",
-                "Tile 3079:",
-                "#.#.#####.",
-                ".#..######",
-                "..#.......",
-                "######....",
-                "####.#..#.",
-                ".#...#.##.",
-                "#.#####.##",
-                "..#.###...",
-                "..#.......",
-                "..#.###..."
-            };
         }
     }
 }
