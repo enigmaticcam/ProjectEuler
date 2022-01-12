@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Euler_Logic.Helpers {
     public class Power {
@@ -41,6 +42,19 @@ namespace Euler_Logic.Helpers {
 
         // Calculate x^y % z
         public static long Exp(long num, long exponent, long mod) {
+            if (exponent == 0) {
+                return 1;
+            } else if (exponent == 1) {
+                return num % mod;
+            } else if (exponent % 2 == 0) {
+                return Exp((num * num) % mod, exponent / 2, mod);
+            } else {
+                return (num * Exp((num * num) % mod, (exponent - 1) / 2, mod)) % mod;
+            }
+        }
+
+        // Calculate x^y % z
+        public static BigInteger Exp(BigInteger num, BigInteger exponent, BigInteger mod) {
             if (exponent == 0) {
                 return 1;
             } else if (exponent == 1) {
