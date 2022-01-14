@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
     public class Problem14 : AdventOfCodeBase {
         public override string ProblemName => "Advent of Code 2015: 14";
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -74,13 +76,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
                 deer.Rest = Convert.ToInt32(split[13]);
                 return deer;
             }).ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "Comet can fly 14 km/s for 10 seconds, but then must rest for 127 seconds.",
-                "Dancer can fly 16 km/s for 11 seconds, but then must rest for 162 seconds."
-            };
         }
 
         private class Deer {

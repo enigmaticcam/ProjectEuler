@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
     public class Problem13 : AdventOfCodeBase {
@@ -13,6 +11,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
         public override string ProblemName => "Advent of Code 2015: 13";
 
         public override string GetAnswer() {
+            _powerOf2 = new PowerAll(2);
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             _powerOf2 = new PowerAll(2);
             return Answer2(Input()).ToString();
         }
@@ -95,23 +98,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
                 }
                 return happ;
             }).ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "Alice would gain 54 happiness units by sitting next to Bob.",
-                "Alice would lose 79 happiness units by sitting next to Carol.",
-                "Alice would lose 2 happiness units by sitting next to David.",
-                "Bob would gain 83 happiness units by sitting next to Alice.",
-                "Bob would lose 7 happiness units by sitting next to Carol.",
-                "Bob would lose 63 happiness units by sitting next to David.",
-                "Carol would lose 62 happiness units by sitting next to Alice.",
-                "Carol would gain 60 happiness units by sitting next to Bob.",
-                "Carol would gain 55 happiness units by sitting next to David.",
-                "David would gain 46 happiness units by sitting next to Alice.",
-                "David would lose 7 happiness units by sitting next to Bob.",
-                "David would gain 41 happiness units by sitting next to Carol."
-            };
         }
 
         private class Happiness {

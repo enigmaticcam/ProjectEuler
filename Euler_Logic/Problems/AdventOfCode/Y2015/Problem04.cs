@@ -1,58 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
-    public class Problem04 : ProblemBase {
+    public class Problem04 : AdventOfCodeBase {
         public override string ProblemName {
             get { return "Advent of Code 2015: 4"; }
         }
 
         public override string GetAnswer() {
-            return Answer2();
+            return Answer1(Input()).ToString();
         }
 
-        public string Answer1() {
-            int num = 0;
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
+        }
+
+        private int Answer1(List<string> input) {
+            return FindMD5(input[0], 5);
+        }
+
+        private int Answer2(List<string> input) {
+            return FindMD5(input[0], 6);
+        }
+
+        private int FindMD5(string input, int zeroLength) {
+            int count = 1;
             do {
-                string md5 = CreateMD5(this.Input + num.ToString());
-                if (md5.Substring(0, 5) == "00000") {
-                    return num.ToString();
-                }
-                num++;
+                var text = input + count;
+                if (CreateMD5(text, zeroLength)) return count;
+                count++;
             } while (true);
         }
 
-        public string Answer2() {
-            int num = 0;
-            do {
-                string md5 = CreateMD5(this.Input + num.ToString());
-                if (md5.Substring(0, 6) == "000000") {
-                    return num.ToString();
-                }
-                num++;
-            } while (true);
-        }
-
-        public string Input {
-            get { return "ckczppom"; }
-        }
-
-        public string CreateMD5(string input) {
-
-            // Use input string to calculate MD5 hash
+        public bool CreateMD5(string input, int zeroLength) {
             using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
                 byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
                 byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-                // Convert the byte array to hexadecimal string
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++) {
-                    sb.Append(hashBytes[i].ToString("X2"));
-                }
-                return sb.ToString();
+                int inputIndex = 0;
+                int remainingZero = zeroLength;
+                do {
+                    var result = hashBytes[inputIndex].ToString("X2");
+                    if (result[0] != '0') return false;
+                    if (remainingZero > 1 && result[1] != '0') return false;
+                    inputIndex++;
+                    remainingZero -= 2;
+                } while (remainingZero > 0);
+                return true;
             }
         }
     }

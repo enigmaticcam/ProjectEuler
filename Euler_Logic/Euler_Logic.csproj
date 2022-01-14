@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Helpers\BigNumber.cs" />
     <Compile Include="Helpers\BinaryHeap.cs" />
+    <Compile Include="Helpers\ExtendedEuclidean.cs" />
     <Compile Include="Helpers\Factorial.cs" />
     <Compile Include="Helpers\Fraction.cs" />
     <Compile Include="Helpers\GCD.cs" />

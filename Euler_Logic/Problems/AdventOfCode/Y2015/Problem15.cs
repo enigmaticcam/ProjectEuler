@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
     public class Problem15 : AdventOfCodeBase {
@@ -15,7 +13,16 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
             return Answer1(Input()).ToString();
         }
 
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
+        }
+
         private long Answer1(List<string> input) {
+            GetIngredients(input);
+            return BruteForce();
+        }
+
+        private long Answer2(List<string> input) {
             GetIngredients(input);
             FindMaxes(100);
             FindBest(0, 100, new long[5]);
@@ -115,6 +122,26 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
             return max;
         }
 
+        private long BruteForce() {
+            long best = long.MinValue;
+            for (long count1 = 0; count1 <= 100; count1++) {
+                long max1 = 100 - count1;
+                for (long count2 = 0; count2 <= max1; count2++) {
+                    long max2 = 100 - count1 - count2;
+                    for (long count3 = 0; count3 <= max2; count3++) {
+                        long count4 = 100 - count1 - count2 - count3;
+                        long capacity = Math.Max(0, _ings[0].Capacity * count1 + _ings[1].Capacity * count2 + _ings[2].Capacity * count3 + _ings[3].Capacity * count4);
+                        long durability = Math.Max(0, _ings[0].Durability * count1 + _ings[1].Durability * count2 + _ings[2].Durability * count3 + _ings[3].Durability * count4);
+                        long flavor = Math.Max(0, _ings[0].Flavor * count1 + _ings[1].Flavor * count2 + _ings[2].Flavor * count3 + _ings[3].Flavor * count4);
+                        long texture = Math.Max(0, _ings[0].Texture * count1 + _ings[1].Texture * count2 + _ings[2].Texture * count3 + _ings[3].Texture * count4);
+                        long score = capacity * durability * flavor * texture;
+                        if (score > best) best = score;
+                    }
+                }
+            }
+            return best;
+        }
+
         private void GetIngredients(List<string> input) {
             _ings = input.Select(line => {
                 var ing = new Ingredient();
@@ -127,13 +154,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
                 ing.Calories = Convert.ToInt32(split[10].Replace(",", ""));
                 return ing;
             }).ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "Butterscotch: capacity -1, durability -2, flavor 6, texture 3, calories 8",
-                "Cinnamon: capacity 2, durability 3, flavor -2, texture -1, calories 3"
-            };
         }
 
         private class Ingredient {
