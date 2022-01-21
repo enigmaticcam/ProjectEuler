@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem01 : AdventOfCodeBase {
@@ -11,6 +9,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
         }
 
         public override string GetAnswer() {
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2().ToString();
         }
 
@@ -105,12 +107,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
                 move.Count = Convert.ToInt32(x.Substring(1, x.Length - 1));
                 return move;
             }).ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "R8, R4, R4, R8"
-            };
         }
 
         private class Velocity {

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
     public class Problem22 : AdventOfCodeBase {
@@ -22,6 +18,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
         public override string ProblemName => "Advent of Code 2015: 22";
 
         public override string GetAnswer() {
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2().ToString();
         }
 
@@ -269,32 +269,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
                 Armor = 0,
                 Damage = 8,
                 Hitpoints = 55
-            };
-        }
-
-        private void SetStartTest1() {
-            _playerStart = new Entity() {
-                Mana = 250,
-                Hitpoints = 10,
-                MaxHitpoints = 10
-            };
-            _bossStart = new Entity() {
-                Armor = 0,
-                Damage = 8,
-                Hitpoints = 13
-            };
-        }
-
-        private void SetStartTest2() {
-            _playerStart = new Entity() {
-                Mana = 250,
-                Hitpoints = 10,
-                MaxHitpoints = 10
-            };
-            _bossStart = new Entity() {
-                Armor = 0,
-                Damage = 8,
-                Hitpoints = 14
             };
         }
 

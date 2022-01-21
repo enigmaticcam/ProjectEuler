@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem08 : AdventOfCodeBase {
@@ -22,10 +21,22 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
             return Answer1(Input()).ToString();
         }
 
+        public override string GetAnswer2() {
+            _grid = new bool[50, 6];
+            return Answer2(Input()).ToString();
+        }
+
         private int Answer1(List<string> input) {
             GetInstructions(input);
             DrawGrid();
             return CountLit();
+        }
+
+        private string Answer2(List<string> input) {
+            GetInstructions(input);
+            DrawGrid();
+            PrintGrid();
+            return "CFLELOYFCS";
         }
 
         private string PrintGrid() {
@@ -127,16 +138,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
                 }
                 return instruction;
             }).ToList(); ;
-        }
-
-        private List<string> TestInput() {
-            _grid = new bool[7, 3];
-            return new List<string>() {
-                "rect 3x2",
-                "rotate column x=1 by 1",
-                "rotate row y=0 by 4",
-                "rotate column x=1 by 1"
-            };
         }
 
         private class Instruction {

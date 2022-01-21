@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
     public class Problem16 : AdventOfCodeBase {
@@ -15,7 +13,17 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
             return Answer1(Input()).ToString();
         }
 
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
+        }
+
         private int Answer1(List<string> input) {
+            GetAunts(input);
+            GetLookingFor();
+            return FindAunt();
+        }
+
+        private int Answer2(List<string> input) {
             GetAunts(input);
             GetLookingFor();
             return Reduce();
@@ -49,6 +57,30 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
             return reduced[0] + 1;
         }
 
+        private int FindAunt() {
+            for (int index = 0; index < _aunts.Count; index++) {
+                var aunt = _aunts[index];
+                bool isGood = true;
+                foreach (var item in aunt) {
+                    if (_lookingFor[item.Key] != item.Value) {
+                        isGood = false;
+                        break;
+                    }
+                }
+                if (isGood) return index + 1;
+            }
+            return -1;
+        }
+
+        private void GetLookingFor() {
+            var hash = new Dictionary<string, int>();
+            foreach (var line in LookingFor()) {
+                var split = line.Split(' ');
+                hash.Add(split[0].Replace(":", ""), Convert.ToInt32(split[1]));
+            }
+            _lookingFor = hash;
+        }
+
         private void GetAunts(List<string> input) {
             _aunts = input.Select(line => {
                 var keyValues = new Dictionary<string, int>();
@@ -62,15 +94,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
                 }
                 return keyValues;
             }).ToList();
-        }
-
-        private void GetLookingFor() {
-            var hash = new Dictionary<string, int>();
-            foreach (var line in LookingFor()) {
-                var split = line.Split(' ');
-                hash.Add(split[0].Replace(":", ""), Convert.ToInt32(split[1]));
-            }
-            _lookingFor = hash;
         }
 
         private List<string> LookingFor() {

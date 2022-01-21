@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem04 : AdventOfCodeBase {
@@ -11,6 +9,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
         }
 
         public override string GetAnswer() {
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2().ToString();
         }
 
@@ -100,15 +102,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
                 room.Checksum = x.Substring(openBracket + 1, x.Length - openBracket - 2);
                 return room;
             }).ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "aaaaa-bbb-z-y-x-123[abxyz]",
-                "a-b-c-d-e-f-g-h-987[abcde]",
-                "not-a-real-room-404[oarel]",
-                "totally-real-room-200[decoy]"
-            };
         }
 
         private class Room {

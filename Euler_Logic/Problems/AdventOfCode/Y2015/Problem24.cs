@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
     public class Problem24 : AdventOfCodeBase {
@@ -16,6 +14,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
         public override string ProblemName => "Advent of Code 2015: 24";
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -85,21 +87,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
                 }
             }
             return false;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "7",
-                "8",
-                "9",
-                "10",
-                "11"
-            };
         }
 
         private class Set {

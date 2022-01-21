@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem02 : AdventOfCodeBase {
@@ -11,6 +7,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
         }
 
         public override string GetAnswer() {
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2().ToString();
         }
 
@@ -85,15 +85,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
             keypad[3, 4] = '-';
             keypad[4, 4] = '-';
             return keypad;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "ULL",
-                "RRDDD",
-                "LURDL",
-                "UUUUD"
-            };
         }
     }
 }

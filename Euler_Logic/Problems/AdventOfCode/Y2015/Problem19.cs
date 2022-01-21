@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
     public class Problem19 : AdventOfCodeBase {
@@ -14,6 +12,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
         public override string ProblemName => "Advent of Code 2015: 19";
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -107,50 +109,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2015 {
                 _translation[split[0]].Add(split[2]);
             }
             _molecule = input.Last();
-        }
-
-        private List<string> Test1Input() {
-            return new List<string>() {
-                "H => HO",
-                "H => OH",
-                "O => HH",
-                "",
-                "HOH"
-            };
-        }
-
-        private List<string> Test2Input() {
-            return new List<string>() {
-                "H => HO",
-                "H => OH",
-                "O => HH",
-                "",
-                "HOHOHO"
-            };
-        }
-
-        private List<string> Test3Input() {
-            return new List<string>() {
-                "e => H",
-                "e => O",
-                "H => HO",
-                "H => OH",
-                "O => HH",
-                "",
-                "HOH"
-            };
-        }
-
-        private List<string> Test4Input() {
-            return new List<string>() {
-                "e => H",
-                "e => O",
-                "H => HO",
-                "H => OH",
-                "O => HH",
-                "",
-                "HOHOHO"
-            };
         }
     }
 }

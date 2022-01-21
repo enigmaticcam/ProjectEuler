@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem07 : AdventOfCodeBase {
         public override string ProblemName => "Advent of Code 2016: 7";
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -74,24 +75,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
                 }
             }
             return count;
-        }
-
-        private List<string> Test1Input() {
-            return new List<string>() {
-                "abba[mnop]qrst",
-                "abcd[bddb]xyyx",
-                "aaaa[qwer]tyui",
-                "ioxxoj[asdfgh]zxcvbn"
-            };
-        }
-
-        private List<string> Test2Input() {
-            return new List<string>() {
-                "aba[bab]xyz",
-                "xyx[xyx]xyx",
-                "aaa[kek]eke",
-                "zazbz[bzb]cdb"
-            };
         }
     }
 }
