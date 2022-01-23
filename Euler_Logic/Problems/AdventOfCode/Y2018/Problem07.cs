@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
@@ -9,6 +8,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
         }
 
         public override string GetAnswer() {
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             return Answer2();
         }
 
@@ -148,26 +151,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
                     Last = x[36]
                 };
             }).ToList();
-        }
-
-        private List<string> TestInput() {
-            var input = new List<string>() {
-                "Step C must be finished before step A can begin.",
-                "Step C must be finished before step F can begin.",
-                "Step A must be finished before step B can begin.",
-                "Step A must be finished before step D can begin.",
-                "Step B must be finished before step E can begin.",
-                "Step D must be finished before step E can begin.",
-                "Step F must be finished before step E can begin."
-            };
-            var random = new Random();
-            for (int index = 0; index < input.Count; index++) {
-                var swap = random.Next(0, index + 1);
-                var temp = input[index];
-                input[index] = input[swap];
-                input[swap] = temp;
-            }
-            return input;
         }
 
         private class StepOrder {

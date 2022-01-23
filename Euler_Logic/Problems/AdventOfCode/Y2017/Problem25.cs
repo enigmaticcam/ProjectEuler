@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem25 : AdventOfCodeBase {
@@ -61,33 +59,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                     _currentState = (!value ? nextStateIf0 : nextStateIf1);
                 });
             }
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "Begin in state A.",
-                "Perform a diagnostic checksum after 6 steps.",
-                "",
-                "In state A:",
-                "  If the current value is 0:",
-                "    - Write the value 1.",
-                "    - Move one slot to the right.",
-                "    - Continue with state B.",
-                "  If the current value is 1:",
-                "    - Write the value 0.",
-                "    - Move one slot to the left.",
-                "    - Continue with state B.",
-                "",
-                "In state B:",
-                "  If the current value is 0:",
-                "    - Write the value 1.",
-                "    - Move one slot to the left.",
-                "    - Continue with state A.",
-                "  If the current value is 1:",
-                "    - Write the value 1.",
-                "    - Move one slot to the right.",
-                "    - Continue with state A."
-            };
         }
     }
 }

@@ -8,6 +8,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
         }
 
         public override string GetAnswer() {
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             return Answer2();
         }
 

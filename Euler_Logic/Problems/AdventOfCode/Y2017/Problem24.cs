@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem24 : AdventOfCodeBase {
@@ -15,6 +12,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -145,19 +146,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                 _magnets.Add(magnet);
                 power *= 2;
             }
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "0/2",
-                "2/2",
-                "2/3",
-                "3/4",
-                "3/5",
-                "0/1",
-                "10/1",
-                "9/10"
-            };
         }
 
         private class Magnet {

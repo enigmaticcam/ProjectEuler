@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem21 : AdventOfCodeBase {
@@ -15,7 +11,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
-            //return Answer(TestInput(), 2).ToString();
+            return Answer(Input(), 5).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer(Input(), 18).ToString();
         }
 
@@ -168,13 +167,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                 }
             }
             return bits;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "../.# => ##./#../...",
-                ".#./..#/### => #..#/..../..../#..#"
-            };
         }
     }
 }

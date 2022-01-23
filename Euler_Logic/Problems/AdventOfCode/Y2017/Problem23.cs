@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem23 : AdventOfCodeBase {
@@ -23,13 +20,17 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
         private int Answer1(List<string> input) {
             GetInstructions(input);
             SetRegisters();
-            Perform();
+            Perform(false);
             return _mulCount;
         }
 
@@ -37,13 +38,13 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
             GetInstructions(input);
             SetRegisters();
             _registers["a"] = 1;
-            Perform();
+            Perform(true);
             return _registers["h"];
         }
 
-        private void Perform() {
+        private void Perform(bool optimized) {
             do {
-                if (_index == 11) {
+                if (optimized && _index == 11) {
                     _registers["e"] = _registers["b"];
                     _registers["g"] = 0;
                     if (_registers["b"] % _registers["d"] == 0) {

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem15 : AdventOfCodeBase {
@@ -13,6 +10,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
+            return Answer1(Input(), 40000000).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input(), 5000000).ToString();
         }
 
@@ -73,13 +74,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
             _generators = new ulong[2];
             _generators[0] = Convert.ToUInt64(input[0].Split(' ')[4]);
             _generators[1] = Convert.ToUInt64(input[1].Split(' ')[4]);
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "Generator A starts with 65",
-                "Generator B starts with 8921"
-            };
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem18 : AdventOfCodeBase {
@@ -32,6 +29,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -232,33 +233,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                 }
                 return instruction;
             }).ToList();
-        }
-
-        private List<string> Test1Input() {
-            return new List<string>() {
-                "set a 1",
-                "add a 2",
-                "mul a a",
-                "mod a 5",
-                "snd a",
-                "set a 0",
-                "rcv a",
-                "jgz a -1",
-                "set a 1",
-                "jgz a -2"
-            };
-        }
-
-        private List<string> Test2Input() {
-            return new List<string>() {
-                "snd 1",
-                "snd 2",
-                "snd p",
-                "rcv a",
-                "rcv b",
-                "rcv c",
-                "rcv d"
-            };
         }
 
         private class Instruction {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
     public class Problem05 : AdventOfCodeBase {
@@ -11,6 +9,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
         }
 
         public override string GetAnswer() {
+            BuildHash();
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             BuildHash();
             return Answer2();
         }
@@ -121,10 +124,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
                 poly = poly.Next;
             }
             return count;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() { "dabAcCaCBAcCcaDA" };
         }
 
         private class Poly {

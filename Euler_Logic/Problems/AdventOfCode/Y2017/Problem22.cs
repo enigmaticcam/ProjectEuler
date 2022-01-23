@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem22 : AdventOfCodeBase {
@@ -20,7 +17,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
-            //return Answer1(Input(), 10000).ToString();
+            return Answer1(Input(), 10000).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input(), 10000000).ToString();
         }
 
@@ -109,14 +109,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                     _grid[x].Add(y, input[y][x] == '#' ? enumNodeStatus.Infected : enumNodeStatus.Clean);
                 }
             }
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "..#",
-                "#..",
-                "..."
-            };
         }
     }
 }

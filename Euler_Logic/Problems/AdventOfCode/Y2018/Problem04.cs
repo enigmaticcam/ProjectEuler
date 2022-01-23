@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
     public class Problem04 : AdventOfCodeBase {
@@ -11,6 +9,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
         }
 
         public override string GetAnswer() {
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             return Answer2();
         }
 
@@ -108,28 +110,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
                     TimeStamp = DateTime.Parse(split[0].Replace("[", ""))
                 };
             }).OrderBy(x => x.TimeStamp).ToList();
-        }
-
-        private List<string> TestInput() {
-            var input = new List<string>();
-            input.Add("[1518-11-01 00:00] Guard #10 begins shift");
-            input.Add("[1518-11-01 00:05] falls asleep");
-            input.Add("[1518-11-01 00:25] wakes up");
-            input.Add("[1518-11-01 00:30] falls asleep");
-            input.Add("[1518-11-01 00:55] wakes up");
-            input.Add("[1518-11-01 23:58] Guard #99 begins shift");
-            input.Add("[1518-11-02 00:40] falls asleep");
-            input.Add("[1518-11-02 00:50] wakes up");
-            input.Add("[1518-11-03 00:05] Guard #10 begins shift");
-            input.Add("[1518-11-03 00:24] falls asleep");
-            input.Add("[1518-11-03 00:29] wakes up");
-            input.Add("[1518-11-04 00:02] Guard #99 begins shift");
-            input.Add("[1518-11-04 00:36] falls asleep");
-            input.Add("[1518-11-04 00:46] wakes up");
-            input.Add("[1518-11-05 00:03] Guard #99 begins shift");
-            input.Add("[1518-11-05 00:45] falls asleep");
-            input.Add("[1518-11-05 00:55] wakes up");
-            return input;
         }
 
         private class Entry {

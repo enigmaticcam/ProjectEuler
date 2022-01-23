@@ -101,30 +101,30 @@ namespace Euler_Logic.Problems {
             _attempts.Add(new DigitAttempt[5] {
                 new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'a' },
                 new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'd' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'i' },
-                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'e' },
+                new DigitAttempt() { Attempt = enumAttempt.WrongPlace, Digit = 'i' },
+                new DigitAttempt() { Attempt = enumAttempt.WrongPlace, Digit = 'e' },
                 new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'u' }
             });
             _attempts.Add(new DigitAttempt[5] {
-                new DigitAttempt() { Attempt = enumAttempt.WrongPlace, Digit = 'c' },
-                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'o' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'i' },
-                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'g' },
-                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'n' }
+                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 's' },
+                new DigitAttempt() { Attempt = enumAttempt.WrongPlace, Digit = 'e' },
+                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'r' },
+                new DigitAttempt() { Attempt = enumAttempt.WrongPlace, Digit = 'i' },
+                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'f' }
             });
             _attempts.Add(new DigitAttempt[5] {
-                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 's' },
+                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 't' },
+                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'i' },
+                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 't' },
+                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'h' },
+                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'e' }
+            });
+            _attempts.Add(new DigitAttempt[5] {
                 new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'l' },
                 new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'i' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'c' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'k' }
-            });
-            _attempts.Add(new DigitAttempt[5] {
-                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'b' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'r' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'i' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'c' },
-                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'k' }
+                new DigitAttempt() { Attempt = enumAttempt.WrongPlace, Digit = 'e' },
+                new DigitAttempt() { Attempt = enumAttempt.None, Digit = 'g' },
+                new DigitAttempt() { Attempt = enumAttempt.RightPlace, Digit = 'e' }
             });
         }
 

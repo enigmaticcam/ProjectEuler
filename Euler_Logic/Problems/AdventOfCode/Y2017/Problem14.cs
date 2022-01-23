@@ -13,6 +13,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
+            return Answer1("xlqgujun").ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2("xlqgujun").ToString();
         }
 

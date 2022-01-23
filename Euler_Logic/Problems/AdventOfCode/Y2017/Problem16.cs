@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem16 : AdventOfCodeBase {
@@ -15,7 +13,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
-            //return Answer1(TestInput(), "abcde").ToString();
+            return Answer1(Input(), "abcdefghijklmnop").ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input(), "abcdefghijklmnop").ToString();
         }
 
@@ -102,12 +103,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
 
         private void GetMoves(List<string> input) {
             _moves = input[0].Split(',').ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "s1,x3/4,pe/b"
-            };
         }
     }
 }

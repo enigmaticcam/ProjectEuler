@@ -9,6 +9,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
         }
 
         public override string GetAnswer() {
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             return Answer2();
         }
 
@@ -67,12 +71,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
 
         private List<int> GetData() {
             return Input().First().Split(' ').Select(x => Convert.ToInt32(x)).ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2"
-            };
         }
 
         private class Node {
