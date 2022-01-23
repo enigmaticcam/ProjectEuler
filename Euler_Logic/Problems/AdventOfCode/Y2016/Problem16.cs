@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem16 : AdventOfCodeBase {
         public override string ProblemName => "Advent of Code 2016: 16";
 
         public override string GetAnswer() {
+            return Answer1("10001110011110000", 272).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer1("10001110011110000", 35651584).ToString();
         }
 

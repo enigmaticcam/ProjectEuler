@@ -2,24 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
-    public class Problem10 : ProblemBase {
+    public class Problem10 : AdventOfCodeBase {
         public override string ProblemName {
             get { return "Advent of Code 2017: 10"; }
         }
 
         public override string GetAnswer() {
-            return Answer2();
+            return Answer1(Input());
+        }
+
+        public override string GetAnswer2() {
+            return Answer2(Input());
         }
         
-        private string Answer1() {
+        private string Answer1(List<string> input2) {
             int totalLength = 256;
             int[] numbers = Initialize(totalLength);
             int position = 0;
             int skipSize = 0;
-            foreach (int length in this.Input) {
+            var input = new List<string>(input2[0].Split(','));
+            foreach (int length in input.Select(x => Convert.ToInt32(x))) {
                 for (int index = 0; index < length / 2; index++) {
                     int swapAPosition = (position + index) % totalLength;
                     int swapBPosition = (position + length - index - 1) % totalLength;
@@ -33,11 +37,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
             return (numbers[0] * numbers[1]).ToString();
         }
 
-        private string Answer2() {
+        private string Answer2(List<string> input2) {
             int totalLength = 256;
             int position = 0;
             int skipSize = 0;
-            string input = string.Join(",", this.Input);
+            string input = string.Join(",", input2);
             int[] numbers = Initialize(totalLength);
 
             // Get lengths
@@ -92,13 +96,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                 numbers[number] = number;
             }
             return numbers;
-        }
-
-        public List<int> Input {
-            get {
-                //return new List<int>() { 3, 4, 1, 5 };
-                return new List<int>() { 157,222,1,2,177,254,0,228,159,140,249,187,255,51,76,30 };
-            }
         }
     }
 }

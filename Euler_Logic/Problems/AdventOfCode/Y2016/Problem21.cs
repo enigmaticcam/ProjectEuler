@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem21 : AdventOfCodeBase {
@@ -23,6 +21,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
         public override string ProblemName => "Advent of Code 2016: 21";
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -205,20 +207,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
                 }
                 return instruction;
             }).ToList();
-        }
-
-        private List<string> TestInput() {
-            _password = "abcde".ToCharArray();
-            return new List<string>() {
-                "swap position 4 with position 0",
-                "swap letter d with letter b",
-                "reverse positions 0 through 4",
-                "rotate left 1 step",
-                "move position 1 to position 4",
-                "move position 3 to position 0",
-                "rotate based on position of letter b",
-                "rotate based on position of letter d"
-            };
         }
 
         private class Instruction {

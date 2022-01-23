@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
     public class Problem17 : AdventOfCodeBase {
@@ -14,6 +11,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
         public override string ProblemName => "Advent of Code 2016: 17";
 
         public override string GetAnswer() {
+            return Answer1("pslxynzg").ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2("pslxynzg").ToString();
         }
 
@@ -116,20 +117,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
             // up
             if (_bestPathLength > path.Length && y > 0 && _open.Contains(roomSet1[0])) {
                 FindShortest(path + "U", md5, x, y - 1);
-            }
-        }
-
-        private string GetMD5(string key) {
-            using (System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create()) {
-                byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(key);
-                byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-                // Convert the byte array to hexadecimal string
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < hashBytes.Length; i++) {
-                    sb.Append(hashBytes[i].ToString("X2").ToLower());
-                }
-                return sb.ToString();
             }
         }
     }

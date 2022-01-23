@@ -9,15 +9,15 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
         }
 
         public override string GetAnswer() {
-            return Answer1();
+            return Answer1(Input());
         }
 
         public override string GetAnswer2() {
-            return Answer2();
+            return Answer2(Input());
         }
 
-        private string Answer1() {
-            List<int> banks = this.Input.Split(' ').Select(x => Convert.ToInt32(x)).ToList();
+        private string Answer1(List<string> input) {
+            var banks = input[0].Split('\t').Select(x => Convert.ToInt32(x)).ToList();
             HashSet<string> hash = new HashSet<string>();
             int count = 0;
             do {
@@ -45,8 +45,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
             } while (true);
         }
 
-        private string Answer2() {
-            List<int> banks = this.Input.Split(' ').Select(x => Convert.ToInt32(x)).ToList();
+        private string Answer2(List<string> input) {
+            var banks = input[0].Split('\t').Select(x => Convert.ToInt32(x)).ToList();
             Dictionary<string, int> hash = new Dictionary<string, int>();
             int count = 0;
             do {
@@ -84,11 +84,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                 }
             }
             return highestIndex;
-        }
-
-        private string Input {
-            //get { return "0 2 7 0"; }
-            get { return "4 1 15 12 0 9 9 5 5 8 7 3 14 5 12 3"; }
         }
     }
 }

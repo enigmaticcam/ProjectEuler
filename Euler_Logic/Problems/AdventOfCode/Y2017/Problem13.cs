@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
     public class Problem13 : AdventOfCodeBase {
         private Dictionary<int, Layer> _layers;
-        private Dictionary<int, Tuple<int, int>> _last;
+        private List<Offset> _offsets;
 
         public override string ProblemName {
             get { return "Advent of Code 2017: 13"; }
         }
 
         public override string GetAnswer() {
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2(Input()).ToString();
         }
 
@@ -24,43 +26,33 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
 
         private int Answer2(List<string> input) {
             GetLayers(input);
-            return FindDelay();
+            SetOffsets();
+            return FindLowest();
         }
 
-        private int FindDelay() {
-            InitializeLast();
+        private int FindLowest() {
             int delay = 1;
-            int max = _layers.Keys.Max();
+            bool isGood;
             do {
-                LoadLast();
-                SimulateNext(0, max);
-                SaveLast();
-                if (SimulateNoOverlap()) {
-                    return delay;
+                isGood = true;
+                foreach (var offset in _offsets) {
+                    if ((delay - offset.Start) % offset.Cycle == 0) {
+                        isGood = false;
+                        break;
+                    }
                 }
+                if (isGood) return delay;
                 delay++;
             } while (true);
         }
 
-        private void InitializeLast() {
-            _last = new Dictionary<int, Tuple<int, int>>();
-            foreach (var kv in _layers) {
-                _last.Add(kv.Key, new Tuple<int, int>(kv.Value.Direction, kv.Value.Position));
-            }
-        }
-
-        private void SaveLast() {
-            foreach (var kv in _layers) {
-                _last[kv.Key] = new Tuple<int, int>(kv.Value.Direction, kv.Value.Position);
-            }
-        }
-
-        private void LoadLast() {
-            foreach (var kv in _last) {
-                var layer = _layers[kv.Key];
-                layer.Direction = kv.Value.Item1;
-                layer.Position = kv.Value.Item2;
-            }
+        private void SetOffsets() {
+            _offsets = _layers.Values.Select(x => new Offset() {
+                Cycle = (x.Length == 2 ? 2 : (x.Length - 2) * 2 + 2),
+                Position = x.Number
+            }).ToList();
+            _offsets.ForEach(x => x.Start = x.Cycle - x.Position);
+            _offsets.Where(x => x.Position == 0).First().Start = 0;
         }
 
         private int Simulate() {
@@ -78,19 +70,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
             return severity;
         }
 
-        private bool SimulateNoOverlap() {
-            var max = _layers.Keys.Max();
-            for (int index = 0; index <= max; index++) {
-                if (_layers.ContainsKey(index)) {
-                    if (_layers[index].Position == 1) {
-                        return false;
-                    }
-                }
-                SimulateNext(index, max);
-            }
-            return true;
-        }
-
         private void SimulateNext(int startIndex, int max) {
             for (int next = startIndex; next <= max; next++) {
                 if (_layers.ContainsKey(next)) {
@@ -102,13 +81,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
                     }
                     layer.Position += layer.Direction;
                 }
-            }
-        }
-
-        private void Reset() {
-            foreach (var layer in _layers.Values) {
-                layer.Direction = 1;
-                layer.Position = 1;
             }
         }
 
@@ -124,13 +96,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2017 {
             }).ToDictionary(x => x.Number, x => x);
         }
 
-        private List<string> TestInput() {
-            return new List<string>() {
-                "0: 3",
-                "1: 2",
-                "4: 4",
-                "6: 4"
-            };
+        private class Offset {
+            public int Start { get; set; }
+            public int Cycle { get; set; }
+            public int Position { get; set; }
         }
 
         private class Layer {
