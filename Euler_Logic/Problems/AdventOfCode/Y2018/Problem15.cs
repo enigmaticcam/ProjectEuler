@@ -1,564 +1,299 @@
-﻿using System;
+﻿using Euler_Logic.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
     public class Problem15 : AdventOfCodeBase {
-        private int _maxValue;
-        private bool _noTargets;
+        private BinaryHeap_Min _heap;
+        private Node[,] _grid;
+        private List<Node> _nodes;
+        private List<Unit> _units;
+        private int[] _unitCounts;
 
         public override string ProblemName {
             get { return "Advent of Code 2018: 15"; }
         }
 
         public override string GetAnswer() {
-            _maxValue = int.MaxValue - 100;
-            return Answer2();
+            return Answer1(Input()).ToString();
         }
 
-        private GridNodeLists _gridNodes;
-        public string Answer1() {
-            _gridNodes = GetGridNodes(Input(), 3);
-            return PerformFight().ToString();
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
         }
 
-        public string Answer2() {
-            return FindBestAttackPower().ToString();
+        private int Answer1(List<string> input) {
+            GetGrid(input);
+            SetEdges();
+            ResetUnits(3);
+            SetUnitCounts();
+            return Perform(false);
         }
 
-        private int FindBestAttackPower() {
-            int attack = 100;
-            int nextAttack = 50;
-            int count = 0;
-            int totalElfCount = GetGridNodes(Input(), 0).ElvesByList.Count;
-            int result = 0;
+        private int Answer2(List<string> input) {
+            GetGrid(input);
+            SetEdges();
+            ResetUnits(3);
+            SetUnitCounts();
+            return FindPower();
+        }
+
+        private int FindPower() {
+            int power = 4;
             do {
-                _gridNodes = GetGridNodes(Input(), attack);
-                result = PerformFight();
-                count = _gridNodes.ElvesByList.Where(x => x.HP > 0).Count();
-                if (count < totalElfCount) {
-                    attack += nextAttack;
-                } else {
-                    attack -= nextAttack;
-                }
-                nextAttack /= 2;
-            } while (nextAttack > 1);
-            if (count < totalElfCount) {
-                nextAttack = 1;
-            } else {
-                nextAttack = -1;
-            }
-            int lastResult = result;
-            do {
-                attack += nextAttack;
-                _gridNodes = GetGridNodes(Input(), attack);
-                result = PerformFight();
-                count = _gridNodes.ElvesByList.Where(x => x.HP > 0).Count();
-                if (nextAttack == 1 && count == totalElfCount) {
-                    return result;
-                } else if (nextAttack == -1 && count < totalElfCount) {
-                    return lastResult;
-                }
-                lastResult = result;
+                ResetUnits(power);
+                SetUnitCounts();
+                var result = Perform(true);
+                if (result != 0) return result;
+                power++;
             } while (true);
         }
 
-        private int PerformFight() {
-            int rounds = -1;
-            var finish = false;
-            do {
-                finish = PerformUnitAction();
-                rounds++;
-            } while (!finish);
+        private int Perform(bool stopAfterDeath) {
             int count = 0;
-            _gridNodes.ElvesByList.ForEach(x => count += Math.Max(0, x.HP));
-            _gridNodes.GoblinsByList.ForEach(x => count += Math.Max(0, x.HP));
-            return count * rounds;
+            int start = _unitCounts[0];
+            do {
+                count++;
+                if (!PerformRound()) break;
+                if (stopAfterDeath && _unitCounts[0] != start) return 0;
+            } while (true);
+            count--;
+            var unitSum = _units.Where(x => x.HP > 0).Select(x => x.HP).Sum();
+            return count * unitSum;
         }
 
-        private bool PerformUnitAction() {
-            var units = _gridNodes.ElvesByList.Union(_gridNodes.GoblinsByList).OrderBy(x => x.Y).ThenBy(x => x.X);
-            foreach (var unit in units) {
+        private bool PerformRound() {
+            var units = _units.OrderBy(x => x.Point[1]).ThenBy(x => x.Point[0]).ToList();
+            for (int index = 0; index < units.Count; index++) {
+                var unit = units[index];
                 if (unit.HP > 0) {
-                    var canMove = FindMovingTargets(unit, (_gridNodes.ByPosition[unit.X, unit.Y].GridNodeType == enumGridNodeType.Elf ? _gridNodes.GoblinsByList : _gridNodes.ElvesByList));
-                    if (_noTargets) {
-                        return true;
+                    Move(unit);
+                    Attack(unit);
+                    if (_unitCounts[0] == 0 || _unitCounts[1] == 0) {
+                        for (int next = index + 1; next < units.Count; next++) {
+                            if (units[next].HP > 0) {
+                                return false;
+                            }
+                        }
                     }
-                    if (canMove) {
-                        MoveUnit(unit);
+                }
+            }
+            return true;
+        }
+
+        private bool Move(Unit unit) {
+            var targets = FindTargets(unit);
+            if (targets.Where(x => x.Num == 1).Count() > 0) return false;
+            var edges = targets.SelectMany(x => x.Edges)
+                .Where(x => x.OccupiedUnit == null)
+                .OrderBy(x => x.Num)
+                .ThenBy(x => x.Point[1])
+                .ThenBy(x => x.Point[0]);
+            if (edges.Count() > 0) {
+                var target = edges.First();
+                var start = _grid[unit.Point[0], unit.Point[1]];
+                Node bestEdge = null;
+                int bestDistance = int.MaxValue;
+                foreach (var edge in start.Edges) {
+                    if (edge.OccupiedUnit == null) {
+                        var distance = FindDistance(edge.Point, target.Point);
+                        if (bestEdge == null) {
+                            bestEdge = edge;
+                            bestDistance = distance;
+                        } else {
+                            if (distance < bestDistance) {
+                                bestEdge = edge;
+                                bestDistance = distance;
+                            } else if (distance == bestDistance && edge.Point[1] < bestEdge.Point[1]) {
+                                bestEdge = edge;
+                                bestDistance = distance;
+                            } else if (distance == bestDistance && edge.Point[1] == bestEdge.Point[1] && edge.Point[0] < bestEdge.Point[0]) {
+
+                                bestEdge = edge;
+                                bestDistance = distance;
+                            }
+                        }
                     }
-                    if (unit.TargetDistance <= 1) {
-                        UnitAttack(unit);
-                    }
+                }
+                if (bestEdge != null && bestDistance != int.MaxValue) {
+                    Move(unit, bestEdge);
+                    return true;
+                } else {
+                    return false;
                 }
             }
             return false;
         }
 
-        private bool UnitAttack(Unit unit) {
-            _bestX = _maxValue;
-            _bestY = _maxValue;
-            _bestHp = _maxValue;
-            _smallestHp = (unit.GridNodeType == enumGridNodeType.Goblin ? _gridNodes.ElvesByPosition : _gridNodes.GoblinsByPosition);
-            if (_smallestHp[unit.X + 1, unit.Y] != null && _smallestHp[unit.X + 1, unit.Y].HP > 0) {
-                IsBestAttack(unit.X + 1, unit.Y);
+        private void Move(Unit unit, Node node) {
+            _grid[unit.Point[0], unit.Point[1]].OccupiedUnit = null;
+            unit.Point = node.Point;
+            node.OccupiedUnit = unit;
+        }
+
+        private int FindDistance(int[] start, int[] end) {
+            _heap.Reset();
+            _nodes.ForEach(x => x.Num = int.MaxValue);
+            _grid[start[0], start[1]].Num = 0;
+            _heap.Adjust(_grid[start[0], start[1]]);
+            for (int count = 1; count <= _nodes.Count; count++) {
+                var current = (Node)_heap.Top;
+                if (current.Num == int.MaxValue) return int.MaxValue;
+                if (current.Point[0] == end[0] && current.Point[1] == end[1]) return current.Num;
+                if (current.OccupiedUnit == null) {
+                    foreach (var edge in current.Edges) {
+                        if (edge.Num > current.Num + 1) {
+                            edge.Num = current.Num + 1;
+                            _heap.Adjust(edge);
+                        }
+                    }
+                }
+                _heap.Remove(current);
             }
-            if (_smallestHp[unit.X - 1, unit.Y] != null && _smallestHp[unit.X - 1, unit.Y].HP > 0) {
-                IsBestAttack(unit.X - 1, unit.Y);
+            return int.MaxValue;
+        }
+
+        private List<Node> FindTargets(Unit unit) {
+            var targets = new List<Node>();
+            _heap.Reset();
+            _nodes.ForEach(x => x.Num = int.MaxValue);
+            var start = _grid[unit.Point[0], unit.Point[1]];
+            start.Num = 0;
+            _heap.Adjust(start);
+            for (int count = 1; count <= _nodes.Count; count++) {
+                var current = (Node)_heap.Top;
+                if (current.Num == int.MaxValue) break;
+                if (current.OccupiedUnit != null && current.OccupiedUnit.IsGoblin != unit.IsGoblin) targets.Add(current);
+                if (current.OccupiedUnit == null || current == start) {
+                    foreach (var edge in current.Edges) {
+                        if (edge.Num > current.Num + 1) {
+                            edge.Num = current.Num + 1;
+                            _heap.Adjust(edge);
+                        }
+                    }
+                }
+                _heap.Remove(current);
             }
-            if (_smallestHp[unit.X, unit.Y + 1] != null && _smallestHp[unit.X, unit.Y + 1].HP > 0) {
-                IsBestAttack(unit.X, unit.Y + 1);
-            }
-            if (_smallestHp[unit.X, unit.Y - 1] != null && _smallestHp[unit.X, unit.Y - 1].HP > 0) {
-                IsBestAttack(unit.X, unit.Y - 1);
-            }
-            _smallestHp[_bestX, _bestY].HP -= unit.AttackPower;
-            if (_smallestHp[_bestX, _bestY].HP <= 0) {
-                _gridNodes.ByPosition[_bestX, _bestY].GridNodeType = enumGridNodeType.Blank;
+            return targets;
+        }
+
+        private bool Attack(Unit attacker) {
+            var node = _grid[attacker.Point[0], attacker.Point[1]];
+            var edges = node.Edges
+                .Where(x => x.OccupiedUnit != null && x.OccupiedUnit.IsGoblin != attacker.IsGoblin)
+                .OrderBy(x => x.OccupiedUnit.HP)
+                .ThenBy(x => x.OccupiedUnit.Point[1])
+                .ThenBy(x => x.OccupiedUnit.Point[0]);
+            if (edges.Count() > 0) {
+                PerformAttack(attacker, edges.First().OccupiedUnit);
                 return true;
             }
             return false;
         }
-        
-        private void MoveUnit(Unit unit) {
-            _bestDistance = _maxValue;
-            _bestX = _maxValue;
-            _bestY = _maxValue;
-            _shortest = FindShortestDistances(_gridNodes.ByPosition[unit.TargetX, unit.TargetY].Key);
-            if (_gridNodes.ByPosition[unit.X + 1, unit.Y].GridNodeType == enumGridNodeType.Blank) {
-                IsBestDistance(unit.X + 1, unit.Y);
-            }
-            if (_gridNodes.ByPosition[unit.X - 1, unit.Y].GridNodeType == enumGridNodeType.Blank) {
-                IsBestDistance(unit.X - 1, unit.Y);
-            }
-            if (_gridNodes.ByPosition[unit.X, unit.Y + 1].GridNodeType == enumGridNodeType.Blank) {
-                IsBestDistance(unit.X, unit.Y + 1);
-            }
-            if (_gridNodes.ByPosition[unit.X, unit.Y - 1].GridNodeType == enumGridNodeType.Blank) {
-                IsBestDistance(unit.X, unit.Y - 1);
-            }
-            if (_gridNodes.ByPosition[unit.X, unit.Y].GridNodeType == enumGridNodeType.Elf) {
-                _gridNodes.ElvesByPosition[_bestX, _bestY] = _gridNodes.ElvesByPosition[unit.X, unit.Y];
-                _gridNodes.ElvesByPosition[unit.X, unit.Y] = null;
-            } else {
-                _gridNodes.GoblinsByPosition[_bestX, _bestY] = _gridNodes.GoblinsByPosition[unit.X, unit.Y];
-                _gridNodes.GoblinsByPosition[unit.X, unit.Y] = null;
-            }
-            _gridNodes.ByPosition[_bestX, _bestY].GridNodeType = _gridNodes.ByPosition[unit.X, unit.Y].GridNodeType;
-            _gridNodes.ByPosition[unit.X, unit.Y].GridNodeType = enumGridNodeType.Blank;
-            unit.X = _bestX;
-            unit.Y = _bestY;
-        }
-        
-        private bool FindMovingTargets(Unit current, List<Unit> targets) {
-            _noTargets = true;
-            bool canMove = false;
-            _bestX = _maxValue;
-            _bestY = _maxValue;
-            _bestDistance = _maxValue;
-            _shortest = FindShortestDistances(_gridNodes.ByPosition[current.X, current.Y].Key);
-            foreach (var target in targets) {
-                if (target.HP > 0) {
-                    _noTargets = false;
-                    if (IsTargetInRange(current, target)) {
-                        return false;
-                    }
-                    if (_gridNodes.ByPosition[target.X + 1, target.Y].GridNodeType == enumGridNodeType.Blank && _shortest[target.X + 1, target.Y] != _maxValue) {
-                        canMove = true;
-                        IsBestDistance(target.X + 1, target.Y);
-                    }
-                    if (_gridNodes.ByPosition[target.X - 1, target.Y].GridNodeType == enumGridNodeType.Blank && _shortest[target.X - 1, target.Y] != _maxValue) {
-                        canMove = true;
-                        IsBestDistance(target.X - 1, target.Y);
-                    }
-                    if (_gridNodes.ByPosition[target.X, target.Y + 1].GridNodeType == enumGridNodeType.Blank && _shortest[target.X, target.Y + 1] != _maxValue) {
-                        canMove = true;
-                        IsBestDistance(target.X, target.Y + 1);
-                    }
-                    if (_gridNodes.ByPosition[target.X, target.Y - 1].GridNodeType == enumGridNodeType.Blank && _shortest[target.X, target.Y - 1] != _maxValue) {
-                        canMove = true;
-                        IsBestDistance(target.X, target.Y - 1);
-                    }
-                }
-            }
-            current.TargetX = _bestX;
-            current.TargetY = _bestY;
-            current.TargetDistance = _bestDistance;
-            return canMove;
-        }
 
-        private bool IsTargetInRange(Unit current, Unit target) {
-            if (target.X == current.X) {
-                var distance = Math.Abs(current.Y - target.Y);
-                if (distance <= 1) {
-                    current.TargetDistance = distance;
-                    return true;
-                }
-            }
-            if (target.Y == current.Y) {
-                var distance = Math.Abs(current.X - target.X);
-                if (distance <= 1) {
-                    current.TargetDistance = distance;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private int _bestX;
-        private int _bestY;
-        private int _bestDistance;
-        private int[,] _shortest;
-        private void IsBestDistance(int x, int y) {
-            var distance = _shortest[x, y];
-            if (distance < _bestDistance) {
-                _bestDistance = distance;
-                _bestX = x;
-                _bestY = y;
-            } else if (distance == _bestDistance) {
-                if (y < _bestY) {
-                    _bestX = x;
-                    _bestY = y;
-                } else if (y == _bestY && x < _bestX) {
-                    _bestX = x;
-                }
+        private void PerformAttack(Unit attacker, Unit defender) {
+            defender.HP -= attacker.AttackPower;
+            if (defender.HP <= 0) {
+                _grid[defender.Point[0], defender.Point[1]].OccupiedUnit = null;
+                _unitCounts[defender.IsGoblin ? 1 : 0]--;
             }
         }
 
-        private int _bestHp;
-        private Unit[,] _smallestHp;
-        private void IsBestAttack(int x, int y) {
-            var hp = _smallestHp[x, y].HP;
-            if (hp < _bestHp) {
-                _bestHp = hp;
-                _bestX = x;
-                _bestY = y;
-            } else if (hp == _bestHp) {
-                if (y < _bestY) {
-                    _bestX = x;
-                    _bestY = y;
-                } else if (y == _bestY && x < _bestX) {
-                    _bestX = x;
-                }
+        private void SetUnitCounts() {
+            _unitCounts = new int[2];
+            foreach (var unit in _units) {
+                _unitCounts[unit.IsGoblin ? 1 : 0]++;
             }
         }
 
-        private int[,] FindShortestDistances(Tuple<int, int> start) {
-            var distanceNodes = GetDistanceNodes(start);
-            var unvisited = new List<DistanceNode>();
-            distanceNodes[start.Item1, start.Item2].Distance = 0;
-            for (int x = 0; x <= distanceNodes.GetUpperBound(0); x++) {
-                for (int y = 0; y <= distanceNodes.GetUpperBound(1); y++) {
-                    if (distanceNodes[x, y] != null) {
-                        unvisited.Add(distanceNodes[x, y]);
-                    }
+        private void ResetUnits(int elftAttackPower) {
+            foreach (var unit in _units) {
+                if (unit.IsGoblin) {
+                    unit.AttackPower = 3;
+                } else {
+                    unit.AttackPower = elftAttackPower;
                 }
-            }
-            FindShortestDistances(distanceNodes, unvisited);
-            var shortest = new int[distanceNodes.GetUpperBound(0) + 1, distanceNodes.GetUpperBound(1) + 1];
-            for (int x = 0; x <= distanceNodes.GetUpperBound(0); x++) {
-                for (int y = 0; y <= distanceNodes.GetUpperBound(1); y++) {
-                    if (distanceNodes[x, y] != null) {
-                        shortest[x, y] = distanceNodes[x, y].Distance;
-                    }
+                unit.HP = 200;
+                if (_grid[unit.Point[0], unit.Point[1]].OccupiedUnit == unit) {
+                    _grid[unit.Point[0], unit.Point[1]].OccupiedUnit = null;
                 }
-            }
-            return shortest;
-        }
-
-        private void FindShortestDistances(DistanceNode[,] distanceNodes, List<DistanceNode> unvisited) {
-            while (unvisited.Count > 0) {
-                var current = GetShortest(unvisited);
-                if (!current.VisitedFromDown) {
-                    if (distanceNodes[current.X, current.Y + 1] != null) {
-                        if (_gridNodes.ByPosition[current.X, current.Y + 1].GridNodeType == enumGridNodeType.Blank) {
-                            distanceNodes[current.X, current.Y + 1].Distance = Math.Min(distanceNodes[current.X, current.Y + 1].Distance, current.Distance + 1);
-                        }
-                        distanceNodes[current.X, current.Y + 1].VisitedFromUp = true;
-                    }
-                    current.VisitedFromDown = true;
-                }
-                if (!current.VisitedFromUp) {
-                    if (distanceNodes[current.X, current.Y - 1] != null) {
-                        if (_gridNodes.ByPosition[current.X, current.Y - 1].GridNodeType == enumGridNodeType.Blank) {
-                            distanceNodes[current.X, current.Y - 1].Distance = Math.Min(distanceNodes[current.X, current.Y - 1].Distance, current.Distance + 1);
-                        }
-                        distanceNodes[current.X, current.Y - 1].VisitedFromDown = true;
-                    }
-                    current.VisitedFromUp = true;
-                }
-                if (!current.VisitedFromLeft) {
-                    if (distanceNodes[current.X - 1, current.Y] != null) {
-                        if (_gridNodes.ByPosition[current.X - 1, current.Y].GridNodeType == enumGridNodeType.Blank) {
-                            distanceNodes[current.X - 1, current.Y].Distance = Math.Min(distanceNodes[current.X - 1, current.Y].Distance, current.Distance + 1);
-                        }
-                        distanceNodes[current.X - 1, current.Y].VisitedFromRight = true;
-                    }
-                    current.VisitedFromLeft = true;
-                }
-                if (!current.VisitedFromRight) {
-                    if (distanceNodes[current.X + 1, current.Y] != null) {
-                        if (_gridNodes.ByPosition[current.X + 1, current.Y].GridNodeType == enumGridNodeType.Blank) {
-                            distanceNodes[current.X + 1, current.Y].Distance = Math.Min(distanceNodes[current.X + 1, current.Y].Distance, current.Distance + 1);
-                        }
-                        distanceNodes[current.X + 1, current.Y].VisitedFromLeft = true;
-                    }
-                    current.VisitedFromRight = true;
-                }
-                unvisited.Remove(current);
+                unit.Start.OccupiedUnit = unit;
+                unit.Point = unit.Start.Point;
             }
         }
 
-        private DistanceNode GetShortest(List<DistanceNode> unvisited) {
-            DistanceNode shortest = unvisited[0];
-            foreach (var next in unvisited) {
-                if (next.Distance < shortest.Distance) {
-                    shortest = next;
-                }
+        private void SetEdges() {
+            foreach (var node in _nodes) {
+                node.Edges = new List<Node>();
+                if (_grid[node.Point[0] - 1, node.Point[1]] != null) node.Edges.Add(_grid[node.Point[0] - 1, node.Point[1]]);
+                if (_grid[node.Point[0] + 1, node.Point[1]] != null) node.Edges.Add(_grid[node.Point[0] + 1, node.Point[1]]);
+                if (_grid[node.Point[0], node.Point[1] - 1] != null) node.Edges.Add(_grid[node.Point[0], node.Point[1] - 1]);
+                if (_grid[node.Point[0], node.Point[1] + 1] != null) node.Edges.Add(_grid[node.Point[0], node.Point[1] + 1]);
             }
-            return shortest;
         }
 
-        private DistanceNode[,] GetDistanceNodes(Tuple<int, int> start) {
-            var nodes = new DistanceNode[_gridNodes.ByPosition.GetUpperBound(0) + 1, _gridNodes.ByPosition.GetUpperBound(1) + 1];
-            foreach (var gridNode in _gridNodes.ByList) {
-                if (gridNode.GridNodeType != enumGridNodeType.Wall) {
-                    var distanceNode = new DistanceNode() {
-                        Distance = (gridNode.X == start.Item1 && gridNode.Y == start.Item2 ? 0 : _maxValue),
-                        Key = gridNode.Key,
-                        X = gridNode.X,
-                        Y = gridNode.Y
-                    };
-                    if (gridNode.X == 0) {
-                        distanceNode.VisitedFromLeft = true;
-                    }
-                    if (gridNode.X == _gridNodes.ByPosition.GetUpperBound(0)) {
-                        distanceNode.VisitedFromRight = true;
-                    }
-                    if (gridNode.Y == 0) {
-                        distanceNode.VisitedFromUp = true;
-                    }
-                    if (gridNode.Y == _gridNodes.ByPosition.GetUpperBound(1)) {
-                        distanceNode.VisitedFromDown = true;
-                    }
-                    nodes[gridNode.X, gridNode.Y] = distanceNode;
-                }
-            }
-            return nodes;
-        }
-
-
-        private GridNodeLists GetGridNodes(List<string> input, int elfAttackPower) {
-            var grid = new GridNodeLists();
-            grid.ByList = new List<GridNode>();
-            grid.ByPosition = new GridNode[input[0].Length, input.Count];
-            grid.ElvesByList = new List<Unit>();
-            grid.GoblinsByList = new List<Unit>();
-            grid.ElvesByPosition = new Unit[input[0].Length, input.Count];
-            grid.GoblinsByPosition = new Unit[input[0].Length, input.Count];
+        private void GetGrid(List<string> input) {
+            _heap = new BinaryHeap_Min();
+            _grid = new Node[input[0].Length + 1, input.Count + 1];
+            _nodes = new List<Node>();
+            _units = new List<Unit>();
             for (int y = 0; y < input.Count; y++) {
-                var line = input[y];
-                for (int x = 0; x < line.Length; x++) {
-                    var node = new GridNode();
-                    Unit unit = null;
-                    switch (line[x]) {
-                        case '#':
-                            node.GridNodeType = enumGridNodeType.Wall;
-                            break;
-                        case 'E':
-                            node.GridNodeType = enumGridNodeType.Elf;
-                            unit = new Unit(x, y);
-                            unit.GridNodeType = enumGridNodeType.Elf;
-                            unit.AttackPower = elfAttackPower;
-                            unit.HP = 200;
-                            grid.ElvesByList.Add(unit);
-                            grid.ElvesByPosition[x, y] = unit;
-                            break;
-                        case 'G':
-                            node.GridNodeType = enumGridNodeType.Goblin;
-                            unit = new Unit(x, y);
-                            unit.GridNodeType = enumGridNodeType.Goblin;
-                            unit.AttackPower = 3;
-                            unit.HP = 200;
-                            grid.GoblinsByList.Add(unit);
-                            grid.GoblinsByPosition[x, y] = unit;
-                            break;
-                        case '.':
-                            node.GridNodeType = enumGridNodeType.Blank;
-                            break;
+                for (int x = 0; x < input[y].Length; x++) {
+                    var digit = input[y][x];
+                    if (digit != '#') {
+                        var node = new Node() { Point = new int[2] { x + 1, y + 1 } };
+                        _grid[x + 1, y + 1] = node;
+                        _nodes.Add(node);
+                        _heap.Add(node);
+                        if (digit == 'E') {
+                            node.OccupiedUnit = new Unit() { Point = node.Point };
+                        } else if (digit == 'G') {
+                            node.OccupiedUnit = new Unit() { Point = node.Point, IsGoblin = true };
+                        }
+                        if (node.OccupiedUnit != null) {
+                            _units.Add(node.OccupiedUnit);
+                            node.OccupiedUnit.Start = node;
+                        }
                     }
-                    node.Key = new Tuple<int, int>(x, y);
-                    node.X = x;
-                    node.Y = y;
-                    grid.ByPosition[x, y] = node;
-                    grid.ByList.Add(node);
                 }
             }
-            return grid;
         }
 
-        private string PrintGrid() {
-            StringBuilder text = new StringBuilder();
-            for (int y = 0; y <= _gridNodes.ByPosition.GetUpperBound(0); y++) {
-                string line = "";
-                for (int x = 0; x <= _gridNodes.ByPosition.GetUpperBound(1); x++) {
-                    switch (_gridNodes.ByPosition[x, y].GridNodeType) {
-                        case enumGridNodeType.Blank:
-                            line += ".";
-                            break;
-                        case enumGridNodeType.Elf:
-                            line += "E";
-                            break;
-                        case enumGridNodeType.Goblin:
-                            line += "G";
-                            break;
-                        case enumGridNodeType.Wall:
-                            line += "#";
-                            break;
+        private string Output() {
+            var text = new StringBuilder();
+            for (int y = 1; y <= _grid.GetUpperBound(1); y++) {
+                for (int x = 1; x <= _grid.GetUpperBound(0); x++) {
+                    if (_grid[x, y] == null) {
+                        text.Append("#");
+                    } else {
+                        var node = _grid[x, y];
+                        if (node.OccupiedUnit == null) {
+                            text.Append(".");
+                        } else if (node.OccupiedUnit.IsGoblin) {
+                            text.Append("G");
+                        } else {
+                            text.Append("E");
+                        }
                     }
                 }
-                text.AppendLine(line);
+                text.AppendLine();
             }
             return text.ToString();
         }
 
-        private List<string> TestInput1() {
-            return new List<string>() {
-                "#######",
-                "#E..G.#",
-                "#...#.#",
-                "#.G.#G#",
-                "#######"
-            };
-        }
-
-        private List<string> TestInput2() {
-            return new List<string>() {
-                "#########",
-                "#G..G..G#",
-                "#.......#",
-                "#.......#",
-                "#G..E..G#",
-                "#.......#",
-                "#.......#",
-                "#G..G..G#",
-                "#########"
-            };
-        }
-
-        private List<string> TestInput3() {
-            return new List<string>() {
-                "#######",
-                "#.G...#",
-                "#...EG#",
-                "#.#.#G#",
-                "#..G#E#",
-                "#.....#",
-                "#######"
-            };
-        }
-
-        private enum enumGridNodeType {
-            Goblin,
-            Elf,
-            Wall,
-            Blank
+        private class Node : BinaryHeap_Min.Node {
+            public int[] Point { get; set; }
+            public List<Node> Edges { get; set; }
+            public Unit OccupiedUnit { get; set; }
         }
 
         private class Unit {
-            public Unit() { }
-            public Unit(int x, int y) {
-                X = x;
-                Y = y;
-            }
-            public int X { get; set; }
-            public int Y { get; set; }
-            public int TargetX { get; set; }
-            public int TargetY { get; set; }
-            public int TargetDistance { get; set; }
+            public bool IsGoblin { get; set; }
             public int HP { get; set; }
-            public enumGridNodeType GridNodeType { get; set; }
             public int AttackPower { get; set; }
-        }
-
-        private class GridNode {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public Tuple<int, int> Key { get; set; }
-            public enumGridNodeType GridNodeType { get; set; }
-        }
-
-        private class DistanceNode {
-            public int X { get; set; }
-            public int Y { get; set; }
-            public Tuple<int, int> Key { get; set; }
-            public int Distance { get; set; }
-
-            private int _visits = 0;
-            public bool IsFullyVisited {
-                get {
-                    if (_visits == 15) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            }
-
-            public bool VisitedFromUp {
-                get {
-                    if ((_visits & 1) == 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 1; }
-            }
-
-            public bool VisitedFromLeft {
-                get {
-                    if ((_visits & 2) == 2) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 2; }
-            }
-
-            public bool VisitedFromRight {
-                get {
-                    if ((_visits & 4) == 4) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 4; }
-            }
-
-            public bool VisitedFromDown {
-                get {
-                    if ((_visits & 8) == 8) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                set { _visits += 8; }
-            }
-        }
-
-        private class GridNodeLists {
-            public GridNode[,] ByPosition { get; set; }
-            public List<GridNode> ByList { get; set; }
-            public List<Unit> ElvesByList { get; set; }
-            public List<Unit> GoblinsByList { get; set; }
-            public Unit[,] ElvesByPosition { get; set; }
-            public Unit[,] GoblinsByPosition { get; set; }
+            public int[] Point { get; set; }
+            public Node Start { get; set; }
         }
     }
 }

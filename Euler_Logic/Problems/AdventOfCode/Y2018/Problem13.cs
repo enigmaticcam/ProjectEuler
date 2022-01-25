@@ -4,12 +4,22 @@ using System.Linq;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
     public class Problem13 : AdventOfCodeBase {
+        private Grid _grid;
+
         public override string ProblemName {
             get { return "Advent of Code 2018: 13"; }
         }
 
-        private Grid _grid;
         public override string GetAnswer() {
+            _grid = new Grid();
+            MakeVelocity();
+            _grid.Points = GetPoints().ToDictionary(x => x.XY, x => x);
+            MakeGrid();
+            GetCartVelocities();
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             _grid = new Grid();
             MakeVelocity();
             _grid.Points = GetPoints().ToDictionary(x => x.XY, x => x);
@@ -303,17 +313,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
                 y++;
             }
             return points;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                @"/->-\        ",
-                @"|   |  /----\",
-                @"| /-+--+-\  |",
-                @"| | |  | v  |",
-                @"\-+-/  \-+--/",
-                @"  \------/   "
-            };
         }
 
         private enum enumPointType {

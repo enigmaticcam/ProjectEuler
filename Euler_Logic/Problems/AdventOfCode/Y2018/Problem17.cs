@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
     public class Problem17 : AdventOfCodeBase {
@@ -25,6 +24,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
 
         public override string GetAnswer() {
             return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
         }
 
         private int Answer1(List<string> input) {
@@ -62,15 +65,12 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
             int y = startY;
             while (y <= _highestY && GetNode(x, y) == enumNodeType.Empty) {
                 SetNode(x, y, enumNodeType.WaterFlowing);
-                if (y == 39) {
-                    bool stop = true;
-                }
                 y++;
             }
             if (y <= _highestY) {
                 y--;
-                bool left = false;
-                bool right = false;
+                bool left;
+                bool right;
                 bool foundFlowing = LookForFlowing(x - 1, y, -1);
                 foundFlowing = foundFlowing || LookForFlowing(x + 1, y, 1);
                 if (!foundFlowing) {
@@ -214,50 +214,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
             } else {
                 _grid[x][y] = node;
             }
-            if (x > _highestX) {
-                bool stop = true;
-            }
-        }
-
-        private string Output() {
-            return Output(0, 0);
-        }
-
-        private string Output(int currentX, int currentY) {
-            var text = new StringBuilder();
-            for (int y = _lowestY; y <= _highestY; y++) {
-                for (int x = _lowestX; x <= _highestX; x++) {
-                    if (x == currentX && y == currentY) {
-                        text.Append("x");
-                    } else {
-                        var node = GetNode(x, y);
-                        if (node == enumNodeType.Empty) {
-                            text.Append(".");
-                        } else if (node == enumNodeType.Wall) {
-                            text.Append("#");
-                        } else if (node == enumNodeType.WaterStagnant) {
-                            text.Append("~");
-                        } else {
-                            text.Append("|");
-                        }
-                    }
-                }
-                text.AppendLine();
-            }
-            return text.ToString();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "x=495, y=2..7",
-                "y=7, x=495..501",
-                "x=501, y=3..7",
-                "x=498, y=2..4",
-                "x=506, y=1..2",
-                "x=498, y=10..13",
-                "x=504, y=10..13",
-                "y=13, x=498..504"
-            };
         }
     }
 }

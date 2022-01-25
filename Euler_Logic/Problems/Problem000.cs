@@ -5,6 +5,62 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Euler_Logic.Problems {
+    public class Problem000_Herm : ProblemBase {
+        public override string ProblemName => "herm";
+        private List<int> _numbers;
+
+        public override string GetAnswer() {
+            Initialize(100000);
+            return LookForDupes1().ToString();
+        }
+
+        private int LookForDupes1() {
+            int count = 0;
+            var sorted = _numbers.OrderBy(x => x).ToList();
+            var hash = new HashSet<int>(_numbers);
+            var highest = sorted.Last();
+            for (int index1 = 0; index1 < sorted.Count; index1++) {
+                for (int index2 = index1 + 1; index2 < sorted.Count; index2++) {
+                    var sum = sorted[index1] + sorted[index2];
+                    if (sum > highest) break;
+                    if (hash.Contains(sum)) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        private int LookForDupes2() {
+            int count = 0;
+            var sorted = new SortedList<int, int>();
+            _numbers.ForEach(x => {
+                if (!sorted.ContainsKey(x)) sorted.Add(x, x);
+            });
+            var highest = sorted.Last().Key;
+            for (int index1 = 0; index1 < sorted.Count; index1++) {
+                var num1 = sorted.Keys[index1];
+                for (int index2 = index1 + 1; index2 < sorted.Count; index2++) {
+                    var num2 = sorted.Keys[index2];
+                    var sum = num1 + num2;
+                    if (sum > highest) break;
+                    if (sorted.ContainsKey(sum)) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        private void Initialize(int size) {
+            _numbers = new List<int>(size);
+            var random = new Random();
+            for (int count = 1; count <= size; count++) {
+                _numbers.Add((int)random.Next(0, 10000000));
+            }
+        }
+    }
+
     public class Problem000_Wordle : ProblemBase {
         private List<Word> _words;
         private List<DigitAttempt[]> _attempts;

@@ -8,6 +8,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
         }
 
         public override string GetAnswer() {
+            return Answer1();
+        }
+
+        public override string GetAnswer2() {
             return Answer2();
         }
 
@@ -192,27 +196,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2018 {
                 PotObjects = potObjects.ToDictionary(x => x.Id, x => x),
                 LowestId = potObjects.Select(x => x.Id).Min(),
                 HighestId = potObjects.Select(x => x.Id).Max()
-            };
-        }
-
-        public List<string> TestInput() {
-            return new List<string>() {
-                "initial state: #..#.#..##......###...###",
-                "",
-                "...## => #",
-                "..#.. => #",
-                ".#... => #",
-                ".#.#. => #",
-                ".#.## => #",
-                ".##.. => #",
-                ".#### => #",
-                "#.#.# => #",
-                "#.### => #",
-                "##.#. => #",
-                "##.## => #",
-                "###.. => #",
-                "###.# => #",
-                "####. => #",
             };
         }
 
