@@ -3,11 +3,18 @@ using System.Collections.Generic;
 
 namespace Euler_Logic.Helpers {
     public class BinaryHeap_Min {
-        private List<Node> _nums = new List<Node>();
+        private List<Node> _nums;
         private int _lastDeletedIndex;
 
         public Node Top => _nums[0];
         public int LastDeletedIndex => _lastDeletedIndex;
+
+        public BinaryHeap_Min() {
+            _nums = new List<Node>();
+        }
+        public BinaryHeap_Min(int capacity) {
+            _nums = new List<Node>(capacity);
+        }
 
         public void Reset() {
             _lastDeletedIndex = _nums.Count;
