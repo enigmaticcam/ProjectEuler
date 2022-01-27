@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
     public class Problem13 : AdventOfCodeBase {
@@ -11,6 +9,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         }
 
         public override string GetAnswer() {
+            _tiles = new Dictionary<long, Dictionary<long, enumTile>>();
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
             _tiles = new Dictionary<long, Dictionary<long, enumTile>>();
             return Answer2(Input()).ToString();
         }

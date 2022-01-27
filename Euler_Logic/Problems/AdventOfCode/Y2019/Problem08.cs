@@ -8,6 +8,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         }
 
         public override string GetAnswer() {
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2().ToString();
         }
 
@@ -125,12 +129,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                 }
             }
             return layers;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "0222112222120000"
-            };
         }
 
         private enum enumColor {

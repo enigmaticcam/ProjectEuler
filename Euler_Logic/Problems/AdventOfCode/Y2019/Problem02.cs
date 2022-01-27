@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
     public class Problem02 : AdventOfCodeBase {
@@ -11,6 +9,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         }
 
         public override string GetAnswer() {
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             return Answer2().ToString();
         }
 
@@ -66,12 +68,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                 codes[index] = Convert.ToUInt64(input[index]);
             }
             return codes;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "1,9,10,3,2,3,11,0,99,30,40,50"
-            };
         }
     }
 }

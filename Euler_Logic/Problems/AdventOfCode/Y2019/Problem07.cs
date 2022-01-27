@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
     public class Problem07 : AdventOfCodeBase {
@@ -12,6 +10,12 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         }
 
         public override string GetAnswer() {
+            _powerOf2 = new PowerAll(2);
+            _outputs = new List<int>();
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             _powerOf2 = new PowerAll(2);
             _outputs = new List<int>();
             return Answer2().ToString();
@@ -286,12 +290,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                 codes[index] = Convert.ToInt32(input[index]);
             }
             return codes;
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5"
-            };
         }
 
         private class Amp {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
     public class Problem11 : AdventOfCodeBase {
@@ -11,6 +9,14 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         }
 
         public override string GetAnswer() {
+            _velocities = GetVelocities();
+            _grid = new Grid();
+            _grid.Location = new Point(0, 0);
+            _grid.Direction = 0;
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
             _velocities = GetVelocities();
             _grid = new Grid();
             _grid.Location = new Point(0, 0);

@@ -9,6 +9,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
 
         public override string GetAnswer() {
             _counts = new Dictionary<string, int>();
+            return Answer1().ToString();
+        }
+
+        public override string GetAnswer2() {
+            _counts = new Dictionary<string, int>();
             return Answer2().ToString();
         }
 
@@ -84,24 +89,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
                 child.PrimeOrbit = parent;
             }
             return orbits.Values.ToList();
-        }
-
-        private List<string> TestInput() {
-            return new List<string>() {
-                "COM)B",
-                "B)C",
-                "C)D",
-                "D)E",
-                "E)F",
-                "B)G",
-                "G)H",
-                "D)I",
-                "E)J",
-                "J)K",
-                "K)L",
-                "K)YOU",
-                "I)SAN"
-            };
         }
 
         private class Orbit {
