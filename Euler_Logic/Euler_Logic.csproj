@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Euler_Logic</RootNamespace>
     <AssemblyName>Euler_Logic</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -124,6 +125,7 @@
     <Compile Include="Problems\131-140\Problem140.cs" />
     <Compile Include="Problems\141-150\Problem143.cs" />
     <Compile Include="Problems\141-150\Problem145.cs" />
+    <Compile Include="Problems\141-150\Problem148.cs" />
     <Compile Include="Problems\141-150\Problem150.cs" />
     <Compile Include="Problems\151-160\Problem151.cs" />
     <Compile Include="Problems\151-160\Problem152.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Problems\271-280\Problem276.cs" />
     <Compile Include="Problems\291-300\Problem291.cs" />
     <Compile Include="Problems\291-300\Problem293.cs" />
+    <Compile Include="Problems\301-310\Problem302.cs" />
     <Compile Include="Problems\311-320\Problem315.cs" />
     <Compile Include="Problems\321-329\Problem322.cs" />
     <Compile Include="Problems\321-329\Problem323.cs" />
@@ -172,6 +175,7 @@
     <Compile Include="Problems\621-630\Problem628.cs" />
     <Compile Include="Problems\641-650\Problem643.cs" />
     <Compile Include="Problems\681-690\Problem684.cs" />
+    <Compile Include="Problems\711-720\Problem719.cs" />
     <Compile Include="Problems\AdventOfCode\AdventOfCodeBase.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem01.cs" />
     <Compile Include="Problems\AdventOfCode\Y2015\Problem06.cs" />

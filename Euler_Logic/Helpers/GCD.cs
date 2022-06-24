@@ -92,8 +92,8 @@ namespace Euler_Logic.Helpers {
         }
     }
 
-    public class GCDULong {
-        public ulong GCD(ulong num1, ulong num2) {
+    public static class GCDULong {
+        public static ulong GCD(ulong num1, ulong num2) {
             while (num1 != 0 && num2 != 0) {
                 if (num1 > num2) {
                     num1 %= num2;
@@ -119,10 +119,8 @@ namespace Euler_Logic.Helpers {
     }
 
     public class LCMULong {
-        private GCDULong _gcd = new GCDULong();
-
         public ulong LCM(ulong num1, ulong num2) {
-            return (num1 / _gcd.GCD(num1, num2)) * num2;
+            return (num1 / GCDULong.GCD(num1, num2)) * num2;
         }
     }
 }

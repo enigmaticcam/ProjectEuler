@@ -5,7 +5,6 @@ using System.Collections.Generic;
 namespace Euler_Logic.Problems {
     public class Problem329 : ProblemBase {
         private PrimeSieveSimple _primes = new PrimeSieveSimple();
-        private GCDULong _gcd = new GCDULong();
         private LCMULong _lcm = new LCMULong();
         private Dictionary<bool, ulong[]> _numerators = new Dictionary<bool, ulong[]>();
         private Dictionary<bool, ulong[]> _denominators = new Dictionary<bool, ulong[]>();
@@ -99,7 +98,7 @@ namespace Euler_Logic.Problems {
                         denominator *= 3;
 
                         // Simplify the fraction
-                        ulong gcd = _gcd.GCD(numerator, denominator);
+                        ulong gcd = GCDULong.GCD(numerator, denominator);
                         numerator /= gcd;
                         denominator /= gcd;
                         _numerators[!set][spot - 1] = numerator;
@@ -121,7 +120,7 @@ namespace Euler_Logic.Problems {
                 denominator = lcm;
             }
 
-            ulong gcd = _gcd.GCD(numerator, denominator);
+            ulong gcd = GCDULong.GCD(numerator, denominator);
             numerator /= gcd;
             denominator /= gcd;
             return numerator.ToString() + "/" + denominator.ToString();

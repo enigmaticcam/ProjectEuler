@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Euler_Logic.Problems {
     public class Problem108 : ProblemBase {
-        private GCDULong _gcd = new GCDULong();
 
         /*
             For any number n, the distinct solutions for x and y is the sum of the number of coprime pairs of all divisors of n.
@@ -39,7 +38,7 @@ namespace Euler_Logic.Problems {
                 if (num % div == 0) {
                     divisors.Add(div);
                     foreach (ulong next in divisors) {
-                        if (_gcd.GCD(next, div) == 1) {
+                        if (GCDULong.GCD(next, div) == 1) {
                             count++;
                         }
                     }

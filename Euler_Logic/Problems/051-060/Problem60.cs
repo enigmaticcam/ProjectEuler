@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem60 : ProblemBase {
@@ -87,17 +84,20 @@ namespace Euler_Logic.Problems {
 
         private bool CanPair(int num, int prime) {
             if (prime != num) {
-                string primeAsString = prime.ToString();
-                string numAsString = num.ToString();
-                int leftPrime = Convert.ToInt32(primeAsString + numAsString);
-                if (IsPrime(leftPrime)) {
-                    int rightPrime = Convert.ToInt32(numAsString + primeAsString);
-                    if (IsPrime(rightPrime)) {
-                        return true;
-                    }
+                var append = Append(num, prime);
+                 if (IsPrime(append)) {
+                    append = Append(prime, num);
+                    if (IsPrime(append)) return true;
                 }
             }
             return false;
+        }
+
+        private int Append(int num1, int num2) {
+            var log = (int)Math.Log10(num2);
+            var ten = (int)Math.Pow(10, log);
+            if (ten != num2) ten *= 10;
+            return (ten * num1) + num2;
         }
 
         private bool IsPrime(int num) {
@@ -110,7 +110,8 @@ namespace Euler_Logic.Problems {
                 _primes.Add(num, false);
                 return false;
             } else {
-                for (int factor = 3; factor <= Math.Sqrt((double)num); factor += 2) {
+                int max = (int)Math.Sqrt(num);
+                for (int factor = 3; factor <= max; factor += 2) {
                     if (num % factor == 0) {
                         _primes.Add(num, false);
                         return false;

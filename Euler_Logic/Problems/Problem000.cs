@@ -5,6 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Euler_Logic.Problems {
+    public class Problem000_LargestPrimeFactor : ProblemBase {
+        public override string ProblemName => "Prime Factor";
+        public override string GetAnswer() {
+            var max = (ulong)Math.Sqrt(600851475143);
+            for (ulong num = max; num >= 2; num--) {
+                if (600851475143 % num == 0) return num.ToString();
+            }
+            return "";
+        }
+    }
+
     public class Problem000_Herm : ProblemBase {
         public override string ProblemName => "herm";
         private List<int> _numbers;
