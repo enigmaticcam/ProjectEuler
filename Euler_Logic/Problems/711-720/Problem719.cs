@@ -2,6 +2,12 @@
 
 namespace Euler_Logic.Problems {
     public class Problem719 : ProblemBase {
+
+        /*
+            Basically bruteforce. Loop through all numbers from 2 to the square root of n. For each number, recurively
+            test if there is a way to sum the digits of the square of the num to equal the num.
+         */
+
         public override string ProblemName => "719: Number Splitting";
 
         public override string GetAnswer() {
