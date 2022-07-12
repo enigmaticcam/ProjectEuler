@@ -8,7 +8,8 @@ namespace Euler_Win {
     public partial class frmMain : Form {
         private List<IProblem> _problems;
         //private Type _defaultProblem = typeof(Euler_Logic.Problems.AdventOfCode.Y2019.Problem16);
-        private Type _defaultProblem = typeof(Problem700);
+        //private Type _defaultProblem = typeof(Problem457);
+        private Type _defaultProblem = typeof(Euler_Logic.Problems.Rosalind.FIB);
 
         private void GetProblems() {
             _problems = new List<IProblem>();

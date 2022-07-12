@@ -14,18 +14,16 @@ namespace Euler_Logic.Problems {
             return CountEvenFibs(4000000).ToString();
         }
 
-        private int CountEvenFibs(int terms) {
-            int current = 2;
-            int previous = 1;
-            int count = 0;
-            while (current <= terms) {
-                if (current % 2 == 0) {
-                    count += current;
-                }
-                current = current += previous;
-                previous = current - previous;
-            }
-            return count;
+        private ulong CountEvenFibs(ulong terms) {
+            ulong sum = 0;
+            ulong last = 1;
+            ulong current = 2;
+            do {
+                if (current % 2 == 0) sum += current;
+                current += last;
+                last = current - last;
+            } while (current <= terms);
+            return sum;
         }
     }
 }

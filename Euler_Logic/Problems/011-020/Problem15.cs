@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems {
     public class Problem15 : ProblemBase {
-        ulong[][] _paths;
 
         public override string ProblemName {
             get { return "15: Lattice paths"; }
@@ -16,23 +15,22 @@ namespace Euler_Logic.Problems {
             return GetLatticePaths(20).ToString();
         }
 
-        private ulong GetLatticePaths(ulong gridSize) {
-            _paths = new ulong[gridSize + 1][];
-            for (ulong a = 0; a <= gridSize; a++) {
-                _paths[a] = new ulong[gridSize + 1];
-                for (ulong b = 0; b <= gridSize; b++) {
-                    if (a == 0) {
-                        _paths[a][b] = 1;
-                    } else {
-                        ulong sum = 0;
-                        for (ulong c = 0; c <= b; c++) {
-                            sum += _paths[a - 1][c];
+        private ulong GetLatticePaths(int size) {
+            var grid = new ulong[size + 1, size + 1];
+            for (int x = size; x >= 0; x--) {
+                for (int y = size; y >= 0; y--) {
+                    if (x != size || y != size) {
+                        if (x == size) {
+                            grid[x, y] = 1;
+                        } else if (y == size) {
+                            grid[x, y] = 1;
+                        } else {
+                            grid[x, y] = grid[x + 1, y] + grid[x, y + 1];
                         }
-                        _paths[a][b] = sum;
                     }
                 }
             }
-            return _paths[gridSize][gridSize];
+            return grid[0, 0];
         }
     }
 }

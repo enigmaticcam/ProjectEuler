@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Euler_Logic.Helpers;
+using System;
 
 namespace Euler_Logic.Problems {
     public class Problem12 : ProblemBase {
@@ -11,37 +8,36 @@ namespace Euler_Logic.Problems {
         }
 
         public override string GetAnswer() {
-            return FindMostFactors(500).ToString();
+            return Solve().ToString();
         }
 
-        private double FindMostFactors(double factorCount) {
-            double num = 0;
-            double count = 0;
+        private ulong Solve() {
+            ulong num = 3;
+            ulong next = 2;
+            var primes = new PrimeSieve(50000);
             do {
-                num += 1;
-                count += num;
-                double numFactorCount = GetFactorCount(count);
-                if (numFactorCount > factorCount) {
-                    return count;
-                }
+                var count = DivisorCount(num, primes);
+                if (count > 500) return num;
+                next++;
+                num += next;
             } while (true);
         }
 
-        private double GetFactorCount(double num) {
-            if (num == 36) {
-                bool stophere = true;
-            }
-            double count = 0;
-            for (double i = 1; i <= Math.Sqrt(num); i++) {
-                if (num % i == 0) {
-                    if (i == Math.Sqrt(num)) {
-                        count += 1;
-                    } else {
-                        count += 2;
-                    }
+        private int DivisorCount(ulong num, PrimeSieve primes) {
+            int total = 1;
+            ulong max = (ulong)Math.Sqrt(num);
+            foreach (var prime in primes.Enumerate) {
+                if (prime > max) break;
+                if (num % prime == 0) {
+                    int count = 1;
+                    do {
+                        num /= prime;
+                        count++;
+                    } while (num % prime == 0);
+                    total *= count;
                 }
             }
-            return count;
+            return total;
         }
     }
 }

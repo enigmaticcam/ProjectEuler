@@ -16,24 +16,21 @@ namespace Euler_Logic.Problems {
 
         private int FindLargestPalindrome(int digits) {
             int min = (int)Math.Pow(10, digits - 1);
-            int max = (int)Math.Pow(10, digits);
-            int best = 0;
-            for (int a = min; a < max; a++) {
-                for (int b = a; b < max; b++) {
-                    int num = a * b;
-                    if (IsPalindrome(num.ToString()) && num > best) {
-                        best = num;
+            int max = (int)Math.Pow(10, digits) - 1;
+            for (int num = max * max; num >= min * min; num--) {
+                if (IsPalindrome(num.ToString())) {
+                    int subMax = (int)Math.Sqrt(num);
+                    for (int sub = min; sub <= subMax; sub++) {
+                        if (num % sub == 0 && num / sub >= min && num / sub <= max) return num;
                     }
                 }
             }
-            return best;
+            return 0;
         }
 
         private bool IsPalindrome(string text) {
-            for (int i = 0; i < text.Length / 2; i++) {
-                if (text.Substring(i, 1) != text.Substring(text.Length - i - 1, 1)) {
-                    return false;
-                }
+            for (int index = 0; index < text.Length / 2; index++) {
+                if (text[index] != text[text.Length - index - 1]) return false;
             }
             return true;
         }

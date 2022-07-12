@@ -166,6 +166,7 @@
     <Compile Include="Problems\381-390\Problem387.cs" />
     <Compile Include="Problems\401-410\Problem407.cs" />
     <Compile Include="Problems\411-420\Problem417.cs" />
+    <Compile Include="Problems\451-460\Problem457.cs" />
     <Compile Include="Problems\491-500\Problem491.cs" />
     <Compile Include="Problems\491-500\Problem493.cs" />
     <Compile Include="Problems\491-500\Problem500.cs" />
@@ -429,6 +430,12 @@
     <Compile Include="Problems\071-080\Problem72.cs" />
     <Compile Include="Problems\071-080\Problem73.cs" />
     <Compile Include="Problems\Problem000.cs" />
+    <Compile Include="Problems\ProblemAny.cs" />
+    <Compile Include="Problems\Rosalind\DNA.cs" />
+    <Compile Include="Problems\Rosalind\FIB.cs" />
+    <Compile Include="Problems\Rosalind\REVC.cs" />
+    <Compile Include="Problems\Rosalind\RNA.cs" />
+    <Compile Include="Problems\Rosalind\RosalindBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
