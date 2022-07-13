@@ -9,7 +9,7 @@ namespace Euler_Win {
         private List<IProblem> _problems;
         //private Type _defaultProblem = typeof(Euler_Logic.Problems.AdventOfCode.Y2019.Problem16);
         //private Type _defaultProblem = typeof(Problem457);
-        private Type _defaultProblem = typeof(Euler_Logic.Problems.Rosalind.PROT);
+        private Type _defaultProblem = typeof(Euler_Logic.Problems.Rosalind.IEV);
 
         private void GetProblems() {
             _problems = new List<IProblem>();
