@@ -433,6 +433,10 @@
     <Compile Include="Problems\ProblemAny.cs" />
     <Compile Include="Problems\Rosalind\DNA.cs" />
     <Compile Include="Problems\Rosalind\FIB.cs" />
+    <Compile Include="Problems\Rosalind\GC.cs" />
+    <Compile Include="Problems\Rosalind\HAMM.cs" />
+    <Compile Include="Problems\Rosalind\IPRB.cs" />
+    <Compile Include="Problems\Rosalind\PROT.cs" />
     <Compile Include="Problems\Rosalind\REVC.cs" />
     <Compile Include="Problems\Rosalind\RNA.cs" />
     <Compile Include="Problems\Rosalind\RosalindBase.cs" />
