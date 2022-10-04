@@ -5,6 +5,67 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Euler_Logic.Problems {
+    public class Problem000_4sum : ProblemBase {
+        public override string ProblemName => "";
+        public override string GetAnswer() {
+            Solve(new int[] { 1000000000, 1000000000, 1000000000, 1000000000 }, -294967296);
+            return "";
+        }
+
+        private IList<IList<int>> Solve(int[] nums, int target) {
+            nums = nums.OrderBy(x => x).ToArray();
+            var hash = new HashSet<string>();
+            var list = new List<IList<int>>();
+            int lastA = int.MinValue;
+            int lastB = int.MinValue;
+            int lastC = int.MinValue;
+            int lastD = int.MinValue;
+            for (int a = 0; a < nums.Length; a++) {
+                if (nums[a] != lastA) {
+                    lastA = nums[a];
+                    for (int b = a + 1; b < nums.Length; b++) {
+                        if (nums[b] != lastB) {
+                            lastB = nums[b];
+                            for (int c = b + 1; c < nums.Length; c++) {
+                                if (nums[c] != lastC) {
+                                    lastC = nums[c];
+                                    for (int d = c + 1; d < nums.Length; d++) {
+                                        if (nums[d] != lastD) {
+                                            lastD = nums[d];
+                                            if (nums[a] + nums[b] + nums[c] + nums[d] == target) {
+                                                var key = $"{nums[a]},{nums[b]},{nums[c]},{nums[d]}";
+                                                if (!hash.Contains(key)) {
+                                                    hash.Add(key);
+                                                    list.Add(new List<int>() { nums[a], nums[b], nums[c], nums[d] });
+                                                }
+                                            }
+                                        }
+                                    }
+                                    lastD = int.MinValue;
+                                }
+                            }
+                            lastC = int.MinValue;
+                        }
+                    }
+                    lastB = int.MinValue;
+                }
+                lastA = int.MinValue;
+            }
+            return list;
+        }
+
+        private void Recursive(int[] nums, int targetRemaining, int startIndex, int currentIndex) {
+            int last = int.MinValue;
+            for (int index = startIndex; index < nums.Length; index++) {
+                var value = nums[index];
+                if (value != last && value ) {
+                    last = value;
+
+                }
+            }
+        }
+    }
+
     public class Problem000_LargestPrimeFactor : ProblemBase {
         public override string ProblemName => "Prime Factor";
         public override string GetAnswer() {

@@ -356,6 +356,9 @@
     <Compile Include="Problems\AdventOfCode\Y2021\Problem23.cs" />
     <Compile Include="Problems\AdventOfCode\Y2021\Problem24.cs" />
     <Compile Include="Problems\AdventOfCode\Y2021\Problem25.cs" />
+    <Compile Include="Problems\AquaQ\AquaQBase.cs" />
+    <Compile Include="Problems\AquaQ\Problem000.cs" />
+    <Compile Include="Problems\AquaQ\Problem001.cs" />
     <Compile Include="Problems\Google\ProblemGoogle1.cs" />
     <Compile Include="Problems\Google\GoogleBase.cs" />
     <Compile Include="Problems\Google\ProblemGoogle2.cs" />
@@ -440,6 +443,7 @@
     <Compile Include="Problems\Rosalind\HAMM.cs" />
     <Compile Include="Problems\Rosalind\IEV.cs" />
     <Compile Include="Problems\Rosalind\IPRB.cs" />
+    <Compile Include="Problems\Rosalind\LCSM.cs" />
     <Compile Include="Problems\Rosalind\PROT.cs" />
     <Compile Include="Problems\Rosalind\REVC.cs" />
     <Compile Include="Problems\Rosalind\RNA.cs" />
