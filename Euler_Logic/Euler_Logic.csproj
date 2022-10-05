@@ -363,6 +363,17 @@
     <Compile Include="Problems\Google\GoogleBase.cs" />
     <Compile Include="Problems\Google\ProblemGoogle2.cs" />
     <Compile Include="Problems\Google\ProblemGoogle3.cs" />
+    <Compile Include="Problems\LeetCode\LeetCodeBase.cs" />
+    <Compile Include="Problems\LeetCode\Problem001.cs" />
+    <Compile Include="Problems\LeetCode\Problem002.cs" />
+    <Compile Include="Problems\LeetCode\Problem003.cs" />
+    <Compile Include="Problems\LeetCode\Problem004.cs" />
+    <Compile Include="Problems\LeetCode\Problem005.cs" />
+    <Compile Include="Problems\LeetCode\Problem006.cs" />
+    <Compile Include="Problems\LeetCode\Problem007.cs" />
+    <Compile Include="Problems\LeetCode\Problem008.cs" />
+    <Compile Include="Problems\LeetCode\Problem009.cs" />
+    <Compile Include="Problems\LeetCode\Problem010.cs" />
     <Compile Include="Problems\Problem.cs" />
     <Compile Include="Problems\001-010\Problem1.cs" />
     <Compile Include="Problems\001-010\Problem10.cs" />

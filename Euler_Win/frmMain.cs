@@ -7,9 +7,7 @@ using Euler_Logic.Problems;
 namespace Euler_Win {
     public partial class frmMain : Form {
         private List<IProblem> _problems;
-        //private Type _defaultProblem = typeof(Euler_Logic.Problems.AdventOfCode.Y2019.Problem16);
-        private Type _defaultProblem = typeof(Problem000_4sum);
-        //private Type _defaultProblem = typeof(Euler_Logic.Problems.AquaQ.Problem001);
+        private Type _defaultProblem = typeof(Euler_Logic.Problems.LeetCode.Problem010);
 
         private void GetProblems() {
             _problems = new List<IProblem>();

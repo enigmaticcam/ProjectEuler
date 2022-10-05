@@ -58,10 +58,10 @@ namespace Euler_Logic.Problems {
             int last = int.MinValue;
             for (int index = startIndex; index < nums.Length; index++) {
                 var value = nums[index];
-                if (value != last && value ) {
-                    last = value;
+                //if (value != last && value ) {
+                //    last = value;
 
-                }
+                //}
             }
         }
     }
