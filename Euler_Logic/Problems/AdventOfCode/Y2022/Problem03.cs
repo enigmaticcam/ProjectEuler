@@ -100,7 +100,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
         }
 
         private List<Rucksack> GetRucksacks(List<string> input) {
-
             return input.Select(x => {
                 var len = x.Length / 2;
                 var set1 = x.Substring(0, len);
