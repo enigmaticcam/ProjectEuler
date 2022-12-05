@@ -35,12 +35,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
         }
 
         private bool DoesOverlap(Range[] pair) {
-            if (pair[0].Start > pair[1].End || pair[0].End < pair[0].Start) {
-                return false;
-            } else if (pair[1].Start > pair[0].End || pair[1].End < pair[0].Start) {
-                return false;
-            }
-            return true;
+            return pair[0].Start <= pair[1].End && pair[0].End >= pair[1].Start;
         }
 
         private bool DoesFullContain(Range[] pair) {
