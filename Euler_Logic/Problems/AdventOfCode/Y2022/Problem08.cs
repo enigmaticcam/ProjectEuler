@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
     public class Problem08 : AdventOfCodeBase {
         public override string ProblemName => "Advent of Code 2022: 8";
 
         public override string GetAnswer() {
-            //return Answer1(Input_Test(1)).ToString();
             return Answer1(Input()).ToString();
         }
 
         public override string GetAnswer2() {
             return Answer2(Input()).ToString();
-            //return Answer2(Input_Test(1)).ToString();
         }
 
         private int Answer1(List<string> input) {
@@ -85,9 +80,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             for (int y = 0; y <= trees.GetUpperBound(1); y++) {
                 trees[0, y].BlockedDistance = 1;
                 for (int x = 1; x <= trees.GetUpperBound(0); x++) {
-                    if (x == 2 && y == 3) {
-                        bool stop = true;
-                    }
                     var tree = trees[x, y];
                     var prior = trees[x - 1, y];
                     if (tree.Height <= prior.Height) {
@@ -101,9 +93,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
                 }
                 trees[trees.GetUpperBound(0), y].BlockedDistance = 1;
                 for (int x = trees.GetUpperBound(0) - 1; x >= 0; x--) {
-                    if (x == 2 && y == 3) {
-                        bool stop = true;
-                    }
                     var tree = trees[x, y];
                     var prior = trees[x + 1, y];
                     if (tree.Height <= prior.Height) {
@@ -119,9 +108,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             for (int x = 0; x <= trees.GetUpperBound(0); x++) {
                 trees[x, 0].BlockedDistance = 1;
                 for (int y = 1; y <= trees.GetUpperBound(1); y++) {
-                    if (x == 2 && y == 3) {
-                        bool stop = true;
-                    }
                     var tree = trees[x, y];
                     var prior = trees[x, y - 1];
                     if (tree.Height <= prior.Height) {
@@ -135,9 +121,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
                 }
                 trees[x, trees.GetUpperBound(1)].BlockedDistance = 1;
                 for (int y = trees.GetUpperBound(1) - 1; y >= 0; y--) {
-                    if (x == 2 && y == 3) {
-                        bool stop = true;
-                    }
                     var tree = trees[x, y];
                     var prior = trees[x, y + 1];
                     if (tree.Height <= prior.Height) {
