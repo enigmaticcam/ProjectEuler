@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
     public class Problem06 : AdventOfCodeBase {
@@ -21,24 +22,28 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
         }
 
         private int Find(string text, int length) {
-            for (int index = 0; index < text.Length - length; index++) {
-                if (IsUnique(text, index, length)) {
-                    return index + length;
+            int moreThanOneCount = 0;
+            var hash = new Dictionary<char, int>();
+            for (int index = 0; index < length; index++) {
+                var digit = text[index];
+                if (!hash.ContainsKey(digit)) {
+                    hash.Add(digit, 1);
+                } else {
+                    hash[digit]++;
+                    if (hash[digit] == 2) moreThanOneCount++;
                 }
+            }
+            for (int index = length; index < text.Length; index++) {
+                var toRemove = text[index - length];
+                var toAdd = text[index];
+                if (hash[toRemove] == 2) moreThanOneCount--;
+                hash[toRemove]--;
+                if (!hash.ContainsKey(toAdd)) hash.Add(toAdd, 0);
+                if (hash[toAdd] == 1) moreThanOneCount++;
+                hash[toAdd]++;
+                if (moreThanOneCount == 0) return index + 1;
             }
             return -1;
-        }
-
-        private bool IsUnique(string text, int start, int length) {
-            var hash = new HashSet<char>();
-            for (int count = 1; count <= length; count++) {
-                var digit = text[start + count - 1];
-                if (hash.Contains(digit)) {
-                    return false;
-                }
-                hash.Add(digit);
-            }
-            return true;
         }
     }
 }
