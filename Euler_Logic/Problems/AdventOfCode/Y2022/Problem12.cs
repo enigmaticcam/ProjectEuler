@@ -24,18 +24,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             return FindShortestFromAny(state);
         }
 
-        //private int FindShortestFromAny(State state) {
-        //    int best = int.MaxValue;
-        //    foreach (var node in state.AnyStart) {
-        //        state.Start = node;
-        //        node.Num = 0;
-        //        SetHeap(state);
-        //        var next = FindShortest(state);
-        //        if (next < best && next > 0) best = next;
-        //    }
-        //    return best;
-        //}
-
         private int FindShortestFromAny(State state) {
             state.Start = state.End;
             SetHeap(state);
@@ -122,6 +110,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             public char Digit { get; set; }
             public int X { get; set; }
             public int Y { get; set; }
+            public bool Explored { get; set; }
         }
 
         private class State {
