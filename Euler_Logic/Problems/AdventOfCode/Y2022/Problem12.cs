@@ -16,7 +16,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
         private int Answer1(List<string> input) {
             var state = GetState(input);
             SetHeap(state);
-            return FindShortest(state);
+            return FindShortest(state, false);
         }
 
         private int Answer2(List<string> input) {
@@ -24,47 +24,61 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             return FindShortestFromAny(state);
         }
 
+        //private int FindShortestFromAny(State state) {
+        //    int best = int.MaxValue;
+        //    foreach (var node in state.AnyStart) {
+        //        state.Start = node;
+        //        node.Num = 0;
+        //        SetHeap(state);
+        //        var next = FindShortest(state);
+        //        if (next < best && next > 0) best = next;
+        //    }
+        //    return best;
+        //}
+
         private int FindShortestFromAny(State state) {
-            int best = int.MaxValue;
-            foreach (var node in state.AnyStart) {
-                state.Start = node;
-                node.Num = 0;
-                SetHeap(state);
-                var next = FindShortest(state);
-                if (next < best && next > 0) best = next;
-            }
-            return best;
+            state.Start = state.End;
+            SetHeap(state);
+            return FindShortest(state, true);
         }
 
-        private int FindShortest(State state) {
+        private int FindShortest(State state, bool lookForAny) {
             state.Heap.Reset();
             do {
                 var current = (Node)state.Heap.Top;
                 if (current.Num == int.MaxValue) return -1;
-                if (current == state.End) break;
+                if (lookForAny && current.Elevation == 1) {
+                    return current.Num;
+                } else if (!lookForAny && current == state.End) {
+                    return current.Num;
+                }
                 if (current.X > 0) {
                     var next = state.Grid[current.X - 1, current.Y];
-                    IsBetter(current, next, state);
+                    IsBetter(current, next, state, lookForAny);
                 }
                 if (current.X < state.Grid.GetUpperBound(0)) {
                     var next = state.Grid[current.X + 1, current.Y];
-                    IsBetter(current, next, state);
+                    IsBetter(current, next, state, lookForAny);
                 }
                 if (current.Y > 0) {
                     var next = state.Grid[current.X, current.Y - 1];
-                    IsBetter(current, next, state);
+                    IsBetter(current, next, state, lookForAny);
                 }
                 if (current.Y < state.Grid.GetUpperBound(1)) {
                     var next = state.Grid[current.X, current.Y + 1];
-                    IsBetter(current, next, state);
+                    IsBetter(current, next, state, lookForAny);
                 }
                 state.Heap.Remove(current);
             } while (true);
-            return state.End.Num;
         }
 
-        private void IsBetter(Node current, Node next, State state) {
-            if (next.Elevation - current.Elevation <= 1 && next.Num > current.Num + 1) {
+        private void IsBetter(Node current, Node next, State state, bool isReverse) {
+            if (isReverse) {
+                if (current.Elevation - next.Elevation <= 1 && next.Num > current.Num + 1) {
+                    next.Num = current.Num + 1;
+                    state.Heap.Adjust(next);
+                }
+            } else if (next.Elevation - current.Elevation <= 1 && next.Num > current.Num + 1) {
                 next.Num = current.Num + 1;
                 state.Heap.Adjust(next);
             }
