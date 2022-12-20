@@ -9,12 +9,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
         public override string ProblemName => "Advent of Code 2022: 15";
 
         public override string GetAnswer() {
-            //return Answer1(Input_Test(1), 10).ToString();
             return Answer1(Input(), 2000000).ToString();
         }
 
         public override string GetAnswer2() {
-            //return Answer2(Input_Test(1), 20).ToString();
             return Answer2(Input(), 4000000).ToString();
         }
 
