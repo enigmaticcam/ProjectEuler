@@ -2,22 +2,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
     public class Problem16 : AdventOfCodeBase {
         public override string ProblemName => "Advent of Code 2022: 16";
 
         public override string GetAnswer() {
-            //return Answer1(Input_Test(1)).ToString();
             return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
         }
 
         private int Answer1(List<string> input) {
             var state = new State() { 
                 WhereYouAre = "AA",
-                MinutesLeft = 30
+                MinutesLeft = 30,
+                Key = new LinkedList<string>(),
+                Hash = new Dictionary<string, HashSave>()
             };
             SetValves(input, state);
             SetDistances(state);
@@ -25,42 +28,44 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             return state.Best;
         }
 
-        //public override string GetAnswer2() {
-        //    return Answer2(Input_Test(1)).ToString();
-        //    return Answer2(Input()).ToString();
-        //}
+        private int Answer2(List<string> input) {
+            var state = new State() {
+                WhereYouAre = "AA",
+                MinutesLeft = 26,
+                Key = new LinkedList<string>(),
+                Hash = new Dictionary<string, HashSave>()
+            };
+            SetValves(input, state);
+            SetDistances(state);
+            Recursive(state);
+            return FindBest(state);
+        }
 
-        //private int Answer2(List<string> input) {
-        //    var state = new State() {
-        //        WhereYouAre = "AA",
-        //        WhereElephantIs = "AA",
-        //        MinutesLeft = 26
-        //    };
-        //    SetValves(input, state);
-        //    SetDistances(state);
-        //    Recursive(state);
-        //    return state.Best;
-        //}
+        private int FindBest(State state) {
+            int best = 0;
+            var values = state.Hash.ToList();
+            for (int index1 = 0; index1 < values.Count; index1++) {
+                var hash1 = values[index1];
+                for (int index2 = index1 + 1; index2 < values.Count; index2++) {
+                    var hash2 = values[index2];
+                    if ((hash1.Value.Bits & hash2.Value.Bits) == 0) {
+                        var next = hash1.Value.Released + hash2.Value.Released;
+                        if (next > best) best = next;
+                    }
+                }
+            }
+            return best;
+        }
 
-        //private void Recursive2(State state) {
-        //    if (state.AllReleased == state.ReleasedBits || state.MinutesLeft == 0) {
-        //        Recursive_CheckFinal(state);
-        //    } else if (Recursive_CanKeepGoing(state)) {
-
-        //    }
-        //}
-
-        private int _count;
         private void Recursive(State state) {
             if (state.AllReleased == state.ReleasedBits || state.MinutesLeft == 0) {
                 Recursive_CheckFinal(state);
-            } else if (Recursive_CanKeepGoing(state)) {
-                _count++;
+            } else {
                 var current = state.Valves[state.WhereYouAre];
                 foreach (var next in state.DistanceOrder) {
                     if (current != next && !next.IsReleased) {
                         var distance = current.Distances[next.Name];
-                        if (distance < state.MinutesLeft - 2) {
+                        if (distance < state.MinutesLeft - 1) {
                             Recursive_Next(state, next, distance);
                         }
                     }
@@ -78,7 +83,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             var prior = state.WhereYouAre;
             state.WhereYouAre = valve.Name;
             valve.IsReleased = true;
+            state.Key.AddLast(valve.Name);
+            SaveToHash(state);
             Recursive(state);
+            state.Key.RemoveLast();
             valve.IsReleased = false;
             state.WhereYouAre = prior;
             state.UnreleasedFlow += valve.Flow;
@@ -88,9 +96,15 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             state.MinutesLeft += distance + 1;
         }
 
-        private bool Recursive_CanKeepGoing(State state) {
-            var final = state.Released + ((state.UnreleasedFlow + state.Flow) * state.MinutesLeft);
-            return final > state.Best;
+        private void SaveToHash(State state) {
+            var final = state.Released + (state.Flow * state.MinutesLeft);
+            var key = string.Join("", state.Key);
+            if (!state.Hash.ContainsKey(key)) {
+                state.Hash.Add(key, new HashSave() {
+                    Bits = state.ReleasedBits,
+                    Released = final
+                });
+            }
         }
 
         private void Recursive_CheckFinal(State state) {
@@ -177,6 +191,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             public ulong AllReleased { get; set; }
             public int Best { get; set; }
             public int UnreleasedFlow { get; set; }
+            public Dictionary<string, HashSave> Hash { get; set; }
+            public LinkedList<string> Key { get; set; }
         }
 
         private class Valve : BinaryHeap_Min.Node {
@@ -186,6 +202,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             public List<string> Valves { get; set; }
             public ulong Bit { get; set; }
             public bool IsReleased { get; set; }
+        }
+
+        private class HashSave {
+            public ulong Bits { get; set; }
+            public int Released { get; set; }
         }
     }
 }
