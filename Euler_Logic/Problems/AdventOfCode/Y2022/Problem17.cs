@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
     public class Problem17 : AdventOfCodeBase {
         public override string ProblemName => "Advent of Code 2022: 17";
-        // 1554118925380 - too high
+        /*
+            1554117647080 - too high
+            1554117647067 - not right
+            1554117647066 - not right
+         */
 
         public override string GetAnswer() {
             //return Answer1(Input_Test(1)).ToString();
@@ -27,14 +29,50 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             return state.Grid.Count;
         }
 
-        private int Answer2(List<string> input) {
+        private ulong Answer2(List<string> input) {
             var state = new State() { JetIndex = -1 };
             SetState(state, input);
-            Test(state, input);
-            return 0;
+            FindCycle(state, input);
+            state.ShapeCountCycleStart = ShapeCountForKey(state, state.GridKeyToCycleStart);
+            state.ShapeCountCycleEnd = ShapeCountForKey(state, state.GridKeyToCycleEnd);
+            var jetIndex = state.JetIndex;
+            var shapeIndex = state.ShapeIndex;
+
+            var shapesPerCycle = state.ShapeCountCycleEnd - state.ShapeCountCycleStart;
+            var cycleCount = ((ulong)1000000000000 - (ulong)state.ShapeCountCycleStart) / (ulong)shapesPerCycle;
+            var remaining = (int)(1000000000000 - (cycleCount * (ulong)shapesPerCycle) - (ulong)state.ShapeCountCycleStart);
+            state.Grid = new List<int>(state.GridKeyToCycleEnd);
+            state.JetIndex = jetIndex;
+            state.ShapeIndex = shapeIndex;
+            Simulate(state, remaining);
+
+            var heightPerCycle = state.GridKeyToCycleEnd.Count - state.GridKeyToCycleStart.Count;
+            var heightForAllCycles = (ulong)heightPerCycle * cycleCount;
+            var final = (ulong)state.Grid.Count - (ulong)state.GridKeyToCycleEnd.Count + heightForAllCycles + (ulong)state.GridKeyToCycleStart.Count;
+            return final;
         }
 
-        private void Test(State state, List<string> input) {
+        private int ShapeCountForKey(State state, List<int> key) {
+            state.Grid = new List<int>();
+            state.JetIndex = -1;
+            state.ShapeIndex = 0;
+            int count = 0;
+            do {
+                count++;
+                AddShape(state);
+                if (DoesMatch(key, state.Grid)) return count;
+            } while (true);
+        }
+
+        private bool DoesMatch(List<int> key, List<int> grid) {
+            if (grid.Count < key.Count) return false;
+            for (int index = 0; index < key.Count; index++) {
+                if (key[index] != grid[index]) return false;
+            }
+            return true;
+        }
+
+        private bool FindCycle(State state, List<string> input) {
             Simulate(state, state.Shapes.Count * input[0].Length);
             var hash = new Dictionary<int, List<int>>();
             for (int index = 0; index < state.Grid.Count; index++) {
@@ -43,24 +81,36 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
                 hash[line].Add(index);
             }
             for (int index = 0; index < state.Grid.Count; index++) {
-                var others = hash[state.Grid[index]];
-                var list = new List<int>();
                 foreach (var start in hash[state.Grid[index]]) {
-                    if (start < index - 100) {
-                        int count = 1;
-                        bool isGood = true;
-                        for (int next = start + 1; next < index; next++) {
-                            if (state.Grid[next] != state.Grid[index + count]) {
-                                isGood = false;
-                                break;
+                    if (start > index + 100) {
+                        var vector = new int[3] { index, start, (start - index) + start };
+                        if (vector[2] < state.Grid.Count) {
+                            bool isGood = true;
+                            do {
+                                if (state.Grid[vector[0]] != state.Grid[vector[1]] || state.Grid[vector[1]] != state.Grid[vector[2]]) {
+                                    isGood = false;
+                                    break;
+                                }
+                                vector[0]++;
+                                vector[1]++;
+                                vector[2]++;
+                                if (vector[2] >= state.Grid.Count) {
+                                    isGood = false;
+                                    break;
+                                }
+                            } while (start > vector[0]);
+                            if (isGood) {
+                                state.CycleStart = index;
+                                state.CycleEnd = start - 1;
+                                state.GridKeyToCycleStart = state.Grid.Take(index).ToList();
+                                state.GridKeyToCycleEnd = state.Grid.Take(start).ToList();
+                                return false;
                             }
-                        }
-                        if (isGood) {
-                            bool stop = true;
                         }
                     }
                 }
             }
+            return false;
         }
 
         private void Simulate(State state, int totalPieces) {
@@ -153,13 +203,21 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
         }
 
         private void OutputToFile(State state) {
-            var text = Output(state);
+            var text = Output(state, true);
             File.WriteAllText(@"C:\temp\output.txt", text);
         }
 
-        private string Output(State state) {
+        private string Output(State state, bool reverse) {
             var text = new StringBuilder();
-            for (int index = state.Grid.Count - 1; index >= 0; index--) {
+            int index = 0;
+            int direction = 1;
+            int stop = state.Grid.Count;
+            if (!reverse) {
+                index = state.Grid.Count - 1;
+                direction = -1;
+                stop = -1;
+            }
+            while (index != stop) {
                 var line = state.Grid[index];
                 int powerOf2 = 64;
                 do {
@@ -171,6 +229,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
                     powerOf2 /= 2;
                 } while (powerOf2 >= 1);
                 text.AppendLine("");
+                index += direction;
             }
             return text.ToString();
         }
@@ -181,6 +240,12 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             public int ShapeIndex { get; set; }
             public string Jet { get; set; }
             public int JetIndex { get; set; }
+            public int CycleStart { get; set; }
+            public int CycleEnd { get; set; }
+            public List<int> GridKeyToCycleStart { get; set; }
+            public List<int> GridKeyToCycleEnd { get; set; }
+            public int ShapeCountCycleStart { get; set; }
+            public int ShapeCountCycleEnd { get; set; }
         }
     }
 }
