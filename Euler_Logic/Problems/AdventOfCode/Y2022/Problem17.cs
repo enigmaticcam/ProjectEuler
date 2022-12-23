@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
     public class Problem17 : AdventOfCodeBase {
         public override string ProblemName => "Advent of Code 2022: 17";
+        // 1554118925380 - too high
 
         public override string GetAnswer() {
             //return Answer1(Input_Test(1)).ToString();
