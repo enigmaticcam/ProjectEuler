@@ -10,6 +10,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             1554117647080 - too high
             1554117647067 - not right
             1554117647066 - not right
+            1554117646867 - not right
          */
 
         public override string GetAnswer() {
@@ -82,7 +83,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             }
             for (int index = 0; index < state.Grid.Count; index++) {
                 foreach (var start in hash[state.Grid[index]]) {
-                    if (start > index + 100) {
+                    if (start > index + 10) {
                         var vector = new int[3] { index, start, (start - index) + start };
                         if (vector[2] < state.Grid.Count) {
                             bool isGood = true;
