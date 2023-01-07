@@ -1,105 +1,145 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
     public class Problem24 : AdventOfCodeBase {
-        /*
-         * 375 - too high
-         * 220 - too low
-         */
         public override string ProblemName => "Advent of Code 2022: 24";
 
         public override string GetAnswer() {
-            //return Answer1(Input_Test(1)).ToString();
             return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2() {
+            return Answer2(Input()).ToString();
         }
 
         private int Answer1(List<string> input) {
             var state = new State();
             var recursive = new RecursiveData() {
                 Best = int.MaxValue,
-                X = 1,
-                Y = 0
+                Hash = new Dictionary<int, Dictionary<int, HashSet<int>>>()
             };
             SetGrid(state, input);
+            SetStart(state, recursive, false);
             SetEmptyMinutes(state);
-            Recursive(state, recursive, true);
+            Recursive(state, recursive, true, false);
             return recursive.Best;
-            //return BFS(state);
         }
 
-        private int BFS(State state) {
-            var list = new LinkedList<Node>();
-            list.AddLast(new Node() { Minutes = 0, X = 1, Y = 0, Start = true });
-            int count = 1;
-            do {
-                var next = list.First.Value;
-                if (next.X == state.MaxX - 1 && next.Y == state.MaxY) return next.Minutes;
-                if (CanMove(state, next.X + 1, next.Y, next.Minutes + 1, next.Start)) {
-                    list.AddLast(new Node() { Minutes = next.Minutes + 1, X = next.X + 1, Y = next.Y });
-                }
-                if (CanMove(state, next.X, next.Y + 1, next.Minutes + 1, next.Start)) {
-                    list.AddLast(new Node() { Minutes = next.Minutes + 1, X = next.X, Y = next.Y + 1 });
-                }
-                if (CanMove(state, next.X - 1, next.Y, next.Minutes + 1, next.Start)) {
-                    list.AddLast(new Node() { Minutes = next.Minutes + 1, X = next.X - 1, Y = next.Y });
-                }
-                if (CanMove(state, next.X, next.Y - 1, next.Minutes + 1, next.Start)) {
-                    list.AddLast(new Node() { Minutes = next.Minutes + 1, X = next.X, Y = next.Y - 1 });
-                }
-                if (CanMove(state, next.X, next.Y, next.Minutes + 1, next.Start)) {
-                    list.AddLast(new Node() { Minutes = next.Minutes + 1, X = next.X, Y = next.Y, Start = next.Start });
-                }
-                list.RemoveFirst();
-                count++;
-            } while (true);
+        private int Answer2(List<string> input) {
+            var state = new State();
+            SetGrid(state, input);
+            SetEmptyMinutes(state);
+            return ReverseRecursive(state);
         }
 
-        private void Recursive(State state, RecursiveData data, bool start) {
-            if (data.X == state.MaxX - 1 && data.Y == state.MaxY) {
+        private int ReverseRecursive(State state) {
+            var data = new RecursiveData() { Best = int.MaxValue, Hash = new Dictionary<int, Dictionary<int, HashSet<int>>>() };
+            SetStart(state, data, false);
+            Recursive(state, data, true, false);
+
+            data.Hash = new Dictionary<int, Dictionary<int, HashSet<int>>>();
+            data.Minutes = data.Best;
+            data.Best = int.MaxValue;
+            SetStart(state, data, true);
+            Recursive(state, data, true, true);
+
+            data.Hash = new Dictionary<int, Dictionary<int, HashSet<int>>>();
+            data.Minutes = data.Best;
+            data.Best = int.MaxValue;
+            SetStart(state, data, false);
+            Recursive(state, data, true, false);
+            return data.Best;
+        }
+
+        private void SetStart(State state, RecursiveData data, bool isReverse) {
+            if (!isReverse) {
+                data.X = 1;
+                data.Y = 0;
+                data.EndX = state.MaxX - 1;
+                data.EndY = state.MaxY;
+            } else {
+                data.X = state.MaxX - 1;
+                data.Y = state.MaxY;
+                data.EndX = 1;
+                data.EndY = 0;
+            }
+            data.StartX = data.X;
+            data.StartY = data.Y;
+        }
+
+        private void Recursive(State state, RecursiveData data, bool start, bool isReverse) {
+            if (data.X == data.EndX && data.Y == data.EndY) {
                 if (data.Minutes < data.Best) {
                     data.Best = data.Minutes;
                 }
-            } else if (data.Minutes < data.Best - 1 && Continue(state, data)) {
-                if (CanMove(state, data.X + 1, data.Y, data.Minutes + 1, start)) {
-                    RecursiveNext(state, data, 1, 0, false);
+            } else if (data.Minutes < data.Best - 1 && Continue(data) && CheckHash(state, data)) {
+                if (!isReverse) {
+                    if (CanMove(state, data, data.X + 1, data.Y, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 1, 0, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X, data.Y + 1, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 0, 1, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X - 1, data.Y, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, -1, 0, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X, data.Y - 1, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 0, -1, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X, data.Y, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 0, 0, start, isReverse);
+                    }
+                } else {
+                    if (CanMove(state, data, data.X - 1, data.Y, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, -1, 0, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X, data.Y - 1, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 0, -1, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X + 1, data.Y, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 1, 0, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X, data.Y + 1, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 0, 1, false, isReverse);
+                    }
+                    if (CanMove(state, data, data.X, data.Y, data.Minutes + 1, start)) {
+                        RecursiveNext(state, data, 0, 0, start, isReverse);
+                    }
                 }
-                if (CanMove(state, data.X, data.Y + 1, data.Minutes + 1, start)) {
-                    RecursiveNext(state, data, 0, 1, false);
-                }
-                if (CanMove(state, data.X - 1, data.Y, data.Minutes + 1, start)) {
-                    RecursiveNext(state, data, -1, 0, false);
-                }
-                if (CanMove(state, data.X, data.Y - 1, data.Minutes + 1, start)) {
-                    RecursiveNext(state, data, 0, -1, false);
-                }
-                if (CanMove(state, data.X, data.Y, data.Minutes + 1, start)) {
-                    RecursiveNext(state, data, 0, 0, start);
-                }
+                
             }
         }
 
-        private bool Continue(State state, RecursiveData data) {
-            int distance = Math.Abs(state.MaxX - 1 - data.X) + Math.Abs(state.MaxY - data.Y);
+        private bool CheckHash(State state, RecursiveData data) {
+            if (!data.Hash.ContainsKey(data.X)) data.Hash.Add(data.X, new Dictionary<int, HashSet<int>>());
+            if (!data.Hash[data.X].ContainsKey(data.Y)) data.Hash[data.X].Add(data.Y, new HashSet<int>());
+            if (data.Hash[data.X][data.Y].Contains(data.Minutes)) {
+                return false;
+            } else {
+                data.Hash[data.X][data.Y].Add(data.Minutes);
+                return true;
+            }
+        }
+
+        private bool Continue(RecursiveData data) {
+            int distance = Math.Abs(data.EndX - data.X) + Math.Abs(data.EndY - data.Y);
             return distance + data.Minutes < data.Best;
         }
 
-        private void RecursiveNext(State state, RecursiveData data, int xDiff, int yDiff, bool start) {
+        private void RecursiveNext(State state, RecursiveData data, int xDiff, int yDiff, bool start, bool isReverse) {
             data.X += xDiff;
             data.Y += yDiff;
             data.Minutes++;
-            Recursive(state, data, start);
+            Recursive(state, data, start, isReverse);
             data.Minutes--;
             data.Y -= yDiff;
             data.X -= xDiff;
         }
 
-        private bool CanMove(State state, int x, int y, int minutes, bool start) {
-            if (x == state.MaxX - 1 && y == state.MaxY) return true;
-            if (x == 1 && y == 0 && start) return true;
+        private bool CanMove(State state, RecursiveData data, int x, int y, int minutes, bool start) {
+            if (x == data.EndX && y == data.EndY) return true;
+            if (x == data.StartX && y == data.StartY && start) return true;
             if (x >= state.MaxX || x <= 0 || y >= state.MaxY || y <= 0) return false;
             if (state.BlizzardMinutes[x, y, 0] != null) {
                 var mod = minutes % (state.MaxX - 1);
@@ -181,6 +221,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2022 {
             public int X { get; set; }
             public int Y { get; set; }
             public int Minutes { get; set; }
+            public Dictionary<int, Dictionary<int, HashSet<int>>> Hash { get; set; }
+            public int EndX { get; set; }
+            public int EndY { get; set; }
+            public int StartX { get; set; }
+            public int StartY { get; set; }
         }
 
         private class Node {
