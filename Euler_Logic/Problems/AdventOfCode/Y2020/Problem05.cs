@@ -4,12 +4,17 @@ using System.Linq;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
     public class Problem05 : AdventOfCodeBase {
-        // This actually don't return the correct answer for Answer 2, and I have no idea why
 
         private PowerAll _powerOf2;
         public override string ProblemName => "Advent of Code 2020: 5";
 
         public override string GetAnswer() {
+            _powerOf2 = new PowerAll(2);
+            return Answer1(Input()).ToString();
+        }
+
+        public override string GetAnswer2()
+        {
             _powerOf2 = new PowerAll(2);
             return Answer2(Input()).ToString();
         }
@@ -33,11 +38,8 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2020 {
             var filled = new HashSet<ulong>();
             foreach (var position in positions) {
                 var row = GetPoint(position.Row, 'B', 'F');
-                var seat = GetPoint(position.Seat, 'L', 'R');
+                var seat = GetPoint(position.Seat, 'R', 'L');
                 var next = row * 8 + seat;
-                if (filled.Contains(next)) {
-                    bool stop = true;
-                }
                 filled.Add(next);
             }
             var ordered = filled.OrderBy(x => x);

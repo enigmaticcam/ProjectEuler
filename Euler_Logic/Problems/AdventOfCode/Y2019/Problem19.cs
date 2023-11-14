@@ -11,7 +11,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
         public override string GetAnswer() {
             _computer = new IntComputer();
             _computer.SingleOutputOnly = true;
-            return Answer2(100).ToString();
+            return Answer1().ToString();
         }
 
         private long Answer1() {

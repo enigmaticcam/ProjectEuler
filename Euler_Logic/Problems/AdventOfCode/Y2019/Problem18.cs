@@ -33,7 +33,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2019 {
             _best = int.MaxValue;
             SetCharToBit();
             GetGrid(Input());
-            return Answer2().ToString();
+            return Answer1().ToString();
         }
 
         private string Answer1() {
