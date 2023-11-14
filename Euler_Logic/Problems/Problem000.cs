@@ -5,6 +5,89 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Euler_Logic.Problems {
+
+    public abstract class EventSequence {
+        public int Count() {
+            return Count(1);
+        }
+        protected abstract int Count(int depth);
+    }
+
+    public class EventSequence_Sequences : EventSequence {
+        private LinkedList<EventSequence> Sequences { get; set; }
+
+        protected override int Count(int depth) {
+            if (depth >= 1000) throw new Exception("Infinite loop detected in Count");
+            int sum = 0;
+            foreach (var sequence in Sequences) {
+                //sum += sequence.Count(depth + 1);
+            }
+            return sum;
+        }
+    }
+
+    public class EventSequence_Events : EventSequence {
+        private LinkedList<GameEvent> Events { get; set; }
+
+        protected override int Count(int depth) {
+            return Events.Count;
+        }
+    }
+
+    public class GameEvent {
+
+    }
+
+    public class UseCase {
+        public void Main(EventSequence sequence) {
+            int count = sequence.Count();
+        }
+    }
+
+
+    public class Problem000_Life : ProblemBase {
+        public override string ProblemName => "Life";
+
+        public override string GetAnswer() {
+            var random = new Random();
+            decimal nums = 0;
+            decimal total = 1000000;
+            for (decimal count = 1; count <= total; count++) {
+                var next = GetCountBase(random); // 24.72
+                //var next = GetCountStops(random); // 27.71
+                nums += next;
+            }
+            return (nums / total).ToString();
+        }
+
+        private decimal GetCountBase(Random random) {
+            return GetCount(random, 132);
+        }
+
+        private decimal GetCountStops(Random random) {
+            return GetCount(random, 11, 11, 11, 39, 60);
+        }
+
+        private decimal GetCount(Random random, params int[] maxes) {
+            decimal count = 0;
+            foreach (var max in maxes) {
+                count += GetCount(random, max);
+            }
+            return count;
+        }
+
+        private decimal GetCount(Random random, int max) {
+            int num = 0;
+            decimal count = 0;
+            do {
+                int next = random.Next(1, 11);
+                num += next;
+                count++;
+            } while (num <= max);
+            return count;
+        }
+    }
+
     public class Problem000_4sum : ProblemBase {
         public override string ProblemName => "";
         public override string GetAnswer() {
