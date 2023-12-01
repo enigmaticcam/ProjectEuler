@@ -1,179 +1,322 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
-namespace Euler_Logic.Problems.AdventOfCode.Y2016 {
-    public class Problem11 : AdventOfCodeBase {
-        private List<Pair> _pairs;
-        private List<Single> _singles;
-        private Dictionary<int, Dictionary<ulong, int>> _hash;
+namespace Euler_Logic.Problems.AdventOfCode.Y2016
+{
+    public class Problem11 : AdventOfCodeBase
+    {
+        private Dictionary<ulong, Item> _items;
+        private int _shift;
+        private ulong _floorMask;
+        private ulong _solved;
+        private int _best;
+        private Dictionary<ulong, HashSet<int>> _hash = new Dictionary<ulong, HashSet<int>>();
+        private StreamWriter _writer;
 
         public override string ProblemName => "Advent of Code 2016: 11";
 
-        public override string GetAnswer() {
+        public override string GetAnswer()
+        {
             return Answer1(Input_Test(1)).ToString();
+            return Answer1(Input()).ToString();
         }
 
-        private int Answer1(List<string> input) {
-            _hash = new Dictionary<int, Dictionary<ulong, int>>();
-            GetPairs(input);
-            //AddPart2();
-            SetPairBits();
-            SetSingles();
-            var key = GetKey();
-            return Recursive(key, 0);
+        public override string GetAnswer2()
+        {
+            return Answer2(Input_Test(1)).ToString();
+            return Answer2(Input()).ToString();
         }
 
-        private int Recursive(ulong key, int elevator) {
-            if (!_hash.ContainsKey(elevator)) {
-                _hash.Add(elevator, new Dictionary<ulong, int>());
-            }
-            if (!_hash[elevator].ContainsKey(key)) {
-                _hash[elevator].Add(key, 0);
-                int best = int.MaxValue;
-                for (int single1Index = 0; single1Index < _singles.Count; single1Index++) {
-                    var single1 = _singles[single1Index];
-                    if (single1.Floor == elevator) {
-                        for (int nextFloor = 3; nextFloor >= 0; nextFloor--) {
-                            if ((nextFloor == elevator - 1 || nextFloor == elevator + 1) && CanMoveToFloor(single1, nextFloor)) {
-                                single1.Floor = nextFloor;
-                                if (IsSolved()) {
-                                    best = 1;
-                                } else {
-                                    var next = Recursive(GetKey(), nextFloor);
-                                    if (next != int.MaxValue && next + 1 < best && next > 0) best = next + 1;
+        private int Answer1(List<string> input)
+        {
+            LoadItems(input);
+            PairItems();
+            SetBad();
+            var key = SetKey();
+            _best = int.MaxValue;
+            return BFS(key, 0, 0);
+        }
+
+        private int Answer2(List<string> input)
+        {
+            LoadItems(input);
+            LoadItemsPart2();
+            PairItems();
+            SetBad();
+            var key = SetKey();
+            _best = int.MaxValue;
+            return BFS(key, 0, 0);
+        }
+        private int BFS(ulong key, int step, int floor)
+        {
+            var tree = new LinkedList<State>();
+            tree.AddFirst(new State()
+            {
+                Floor = floor,
+                Key = key,
+                Step = step
+            });
+            do
+            {
+                var temp = new LinkedList<State>();
+                foreach (var state in tree)
+                {
+                    if (state.Key == _solved)
+                        return state.Step;
+                    if (!_hash.ContainsKey(state.Key))
+                        _hash.Add(state.Key, new HashSet<int>());
+                    _hash[state.Key].Add(floor);
+                    var itemsInFloor = (state.Key >> (state.Floor * _shift)) & _floorMask;
+                    for (ulong item1 = 1; item1 <= _floorMask; item1 *= 2)
+                    {
+                        if ((itemsInFloor & item1) != 0)
+                        {
+                            for (ulong item2 = item1 * 2; item2 <= _floorMask; item2 *= 2)
+                            {
+                                if ((itemsInFloor & item2) != 0)
+                                {
+                                    MoveElevator(state, item1 + item2, temp);
                                 }
-                                for (int single2Index = single1Index + 1; single2Index < _singles.Count; single2Index++) {
-                                    var single2 = _singles[single2Index];
-                                    if (single2.Floor == elevator && (single2.IsChip == single1.IsChip || single2.Pair == single1Index) && CanMoveToFloor(single2, nextFloor)) {
-                                        single2.Floor = nextFloor;
-                                        if (IsSolved()) {
-                                            best = 1;
-                                        } else {
-                                            var next = Recursive(GetKey(), nextFloor);
-                                            if (next != int.MaxValue && next + 1 < best && next > 0) best = next + 1;
-                                        }
-                                        single2.Floor = elevator;
-                                    }
-                                }
-                                single1.Floor = elevator;
                             }
+                            MoveElevator(state, item1, temp);
                         }
                     }
                 }
-                _hash[elevator][key] = best;
-            }
-            return _hash[elevator][key];
+                tree = temp;
+
+            } while (true);
         }
 
-        private bool IsSolved() {
-            foreach (var single in _singles) {
-                if (single.Floor != 3) return false;
+        private void MoveElevator(State state, ulong items, LinkedList<State> tree)
+        {
+            var subKey = state.Key;
+            subKey -= items << (state.Floor * _shift);
+            if (IsValid(subKey, state.Step + 1, state.Floor))
+            {
+                if (state.Floor < 3)
+                {
+                    subKey = state.Key;
+                    subKey -= items << (state.Floor * _shift);
+                    subKey += items << ((state.Floor + 1) * _shift);
+                    if (IsValid(subKey, state.Step + 1, state.Floor + 1))
+                    {
+                        tree.AddLast(new State()
+                        {
+                            Floor = state.Floor + 1,
+                            Key = subKey,
+                            Step = state.Step + 1
+                        });
+                    }
+                }
+                if (state.Floor > 0)
+                {
+                    subKey = state.Key;
+                    subKey -= items << (state.Floor * _shift);
+                    subKey += items << ((state.Floor - 1) * _shift);
+                    if (IsValid(subKey, state.Step + 1, state.Floor - 1))
+                    {
+                        tree.AddLast(new State()
+                        {
+                            Floor = state.Floor - 1,
+                            Key = subKey,
+                            Step = state.Step + 1
+                        });
+                    }
+                }
+            }
+        }
+
+        private bool IsValid(ulong key, int step, int floor)
+        {
+            if (_hash.ContainsKey(key) && _hash[key].Contains(floor))
+                return false;
+            var itemsInFloor = (key >> (floor * _shift)) & _floorMask;
+            for (ulong itemBit1 = 1; itemBit1 <= _floorMask; itemBit1 *= 2)
+            {
+                var item = _items[itemBit1];
+                if ((itemsInFloor & itemBit1) != 0 && (itemsInFloor & item.Pair) == 0)
+                {
+                    if (item.IsChip && ((itemsInFloor & item.Bad) != 0))
+                        return false;
+                }
+
             }
             return true;
         }
 
-        private bool CanMoveToFloor(Single single, int floor) {
-            if (_singles[single.Pair].Floor == floor) return true;
-            foreach (var next in _singles) {
-                //if (next.IsChip)
-            }
-            return true;
-        }
-
-        private ulong GetKey() {
+        private ulong SetKey()
+        {
+            _shift = _items.Count;
+            _floorMask = (ulong)Math.Pow(2, _shift) - 1;
+            _solved = _floorMask << _shift * 3;
             ulong key = 0;
-            foreach (var single in _singles) {
-                key += single.Bit << (_singles.Count * single.Floor);
+            foreach (var item in _items.Values)
+            {
+                key += item.Bit << (_shift * item.StartLevel);
             }
             return key;
         }
 
-        private void SetSingles() {
-            _singles = new List<Single>();
-            foreach (var pair in _pairs) {
-                _singles.Add(new Single() {
-                    Bit = pair.BitChip,
-                    IsChip = true,
-                    Name = pair.NameChip,
-                    Pair = _singles.Count + 2,
-                    Floor = pair.StartFloorChip
-                });
-                _singles.Add(new Single() {
-                    Bit = pair.BitGenerator,
-                    IsChip = false,
-                    Name = pair.NameGenerator,
-                    Pair = _singles.Count + 1,
-                    Floor = pair.StartFloorGenerator
-                });
+        private void SetBad()
+        {
+            ulong bad = 0;
+            foreach (var item in _items.Values.Where(x => !x.IsChip))
+            {
+                bad += item.Bit;
+            }
+            foreach (var item in _items.Values.Where(x => x.IsChip))
+            {
+                item.Bad = bad - item.Pair;
             }
         }
 
-        private void SetPairBits() {
-            ulong bit = 1;
-            foreach (var pair in _pairs) {
-                pair.BitChip = bit;
-                pair.BitGenerator = bit * 2;
-                bit *= 4;
-            }
-        }
-
-        private void GetPairs(List<string> input) {
-            var pairs = new Dictionary<string, Pair>();
-            int floor = 0;
-            input.ForEach(line => {
-                var split = line.Split(' ');
-                for (int index = 0; index < split.Length; index++) {
-                    var word = split[index].Replace(",", "").Replace(".", "");
-                    if (word == "generator" || word == "microchip") {
-                        var name = split[index - 1].Replace(",", "").Replace("-compatible", "");
-                        if (!pairs.ContainsKey(name)) {
-                            pairs.Add(name, new Pair() {
-                                Name = name,
-                                NameChip = name + " chip",
-                                NameGenerator = name + " generator"
-                            });
-                        }
-                        var pair = pairs[name];
-                        if (word == "generator") {
-                            pair.StartFloorGenerator = floor;
-                        } else {
-                            pair.StartFloorChip = floor;
+        private void PairItems()
+        {
+            var items = _items.Values.ToList();
+            for (int index1 = 0; index1 < items.Count; index1++)
+            {
+                var item1 = items[index1];
+                if (item1.Pair == 0)
+                {
+                    for (int index2 = index1 + 1; index2 < items.Count; index2++)
+                    {
+                        var item2 = items[index2];
+                        if (item2.Name == item1.Name)
+                        {
+                            item1.Pair = item2.Bit;
+                            item2.Pair = item1.Bit;
+                            break;
                         }
                     }
                 }
-                floor++;
-            });
-            _pairs = pairs.Values.ToList();
+            }
         }
 
-        private void AddPart2() {
-            _pairs.Add(new Pair() {
+        private void LoadItems(List<string> input)
+        {
+            _items = new Dictionary<ulong, Item>();
+            ulong bit = 1;
+            int startLevel = 0;
+            foreach (var line in input)
+            {
+                var words = line
+                    .Replace(",", "")
+                    .Replace(".", "")
+                    .Replace("-compatible", "")
+                    .Split(' ');
+                for (int index = 0; index < words.Length; index++)
+                {
+                    var word = words[index];
+                    if (word == "generator" || word == "microchip")
+                    {
+                        _items.Add(bit, new Item()
+                        {
+                            Bit = bit,
+                            IsChip = word == "microchip",
+                            Name = words[index - 1],
+                            StartLevel = startLevel,
+                            Short = $"{words[index - 1].Substring(0, 2)}{(word == "microchip" ? "M" : "G")}"
+                        });
+                        bit *= 2;
+                    }
+                }
+                startLevel++;
+            }
+        }
+
+        private void LoadItemsPart2()
+        {
+            ulong bit = _items.Keys.Max() * 2;
+            _items.Add(bit, new Item()
+            {
+                Bit = bit,
+                IsChip = false,
                 Name = "elerium",
-                NameChip = "elerium chip",
-                NameGenerator = "elerium generator",
+                Pair = bit * 2,
+                Short = "Gel",
+                StartLevel = 0
             });
-            _pairs.Add(new Pair() {
+            bit *= 2;
+            _items.Add(bit, new Item()
+            {
+                Bit = bit,
+                IsChip = true,
+                Name = "elerium",
+                Pair = bit / 2,
+                Short = "Mel",
+                StartLevel = 0
+            });
+            bit *= 2;
+            _items.Add(bit, new Item()
+            {
+                Bit = bit,
+                IsChip = false,
                 Name = "dilithium",
-                NameChip = "dilithium chip",
-                NameGenerator = "dilithium generator"
+                Pair = bit * 2,
+                Short = "Gdi",
+                StartLevel = 0
+            });
+            bit *= 2;
+            _items.Add(bit, new Item()
+            {
+                Bit = bit,
+                IsChip = true,
+                Name = "dilithium",
+                Pair = bit / 2,
+                Short = "Mdi",
+                StartLevel = 0
             });
         }
 
-        private class Pair {
-            public string Name { get; set; }
-            public ulong BitGenerator { get; set; }
-            public ulong BitChip { get; set; }
-            public int StartFloorGenerator { get; set; }
-            public int StartFloorChip { get; set; }
-            public string NameGenerator { get; set; }
-            public string NameChip { get; set; }
+        private string Output(ulong key, int floor)
+        {
+            var text = new StringBuilder();
+            for (int subFloor = 3; subFloor >= 0; subFloor--)
+            {
+                text.Append("F");
+                text.Append(subFloor);
+                if (subFloor == floor)
+                {
+                    text.Append(" E");
+                } else
+                {
+                    text.Append(" .");
+                }
+                var itemsInFloor = (key >> (subFloor * _shift)) & _floorMask;
+                for (int itemIndex1 = 0; itemIndex1 < _items.Count; itemIndex1++)
+                {
+                    ulong bit = (ulong)Math.Pow(2, itemIndex1);
+                    if ((itemsInFloor & bit) != 0)
+                    {
+                        text.Append($" {_items[bit].Short}");
+                    } else
+                    {
+                        text.Append(" .  ");
+                    }
+                }
+                text.AppendLine();
+            }
+            return text.ToString();
         }
 
-        private class Single {
-            public string Name { get; set; }
+        private class Item
+        {
             public ulong Bit { get; set; }
+            public ulong Pair { get; set; }
+            public string Name { get; set; }
             public bool IsChip { get; set; }
-            public int Pair { get; set; }
+            public int StartLevel { get; set; }
+            public ulong Bad { get; set; }
+            public string Short { get; set; }
+        }
+
+        private class State
+        {
+            public ulong Key { get; set; }
+            public int Step { get; set; }
             public int Floor { get; set; }
         }
     }
