@@ -5,7 +5,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
 {
     public class Problem02 : AdventOfCodeBase
     {
-        public override string ProblemName => "Advent of Code 2023: 1";
+        public override string ProblemName => "Advent of Code 2023: 2";
 
         public override string GetAnswer()
         {
