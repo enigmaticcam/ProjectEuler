@@ -392,6 +392,7 @@
     <Compile Include="Problems\AdventOfCode\Y2023\Problem09.cs" />
     <Compile Include="Problems\AdventOfCode\Y2023\Problem10.cs" />
     <Compile Include="Problems\AdventOfCode\Y2023\Problem11.cs" />
+    <Compile Include="Problems\AdventOfCode\Y2023\Problem12.cs" />
     <Compile Include="Problems\AquaQ\AquaQBase.cs" />
     <Compile Include="Problems\AquaQ\Problem000.cs" />
     <Compile Include="Problems\AquaQ\Problem001.cs" />
