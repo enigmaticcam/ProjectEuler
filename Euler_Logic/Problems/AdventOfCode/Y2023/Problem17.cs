@@ -21,21 +21,21 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
         private int Answer1(List<string> input)
         {
             var state = GetState(input, 4);
-            return FindPath(state);
+            return FindPath2(state, false);
         }
 
         private int Answer2(List<string> input)
         {
             var state = GetState(input, 10);
-            return FindPath2(state);
+            return FindPath2(state, true);
         }
 
-        private int FindPath2(State state)
+        private int FindPath2(State state, bool isUltra)
         {
             do
             {
                 var current = (Block)state.Heap.Top;
-                if (current.X == state.Blocks.GetUpperBound(0) && current.Y == state.Blocks.GetUpperBound(1) && current.Depth > 2)
+                if (current.X == state.Blocks.GetUpperBound(0) && current.Y == state.Blocks.GetUpperBound(1) && (!isUltra || current.Depth > 2))
                 {
                     return current.Num;
                 }
@@ -45,14 +45,21 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                 if (current.X < state.Blocks.GetUpperBound(0) && direction != enumDirection.Left)
                 {
                     bool canGo = false;
-                    if (direction == enumDirection.Right)
+                    if (isUltra)
                     {
-                        canGo = current.Depth < 9;
+                        if (direction == enumDirection.Right)
+                        {
+                            canGo = current.Depth < 9;
+                        } else
+                        {
+                            canGo = current.Depth > 2;
+                        }
                     }
                     else
                     {
-                        canGo = current.Depth > 2;
+                        canGo = current.Depth != 2 || direction != enumDirection.Right;
                     }
+                    
                     if (canGo || direction == enumDirection.None)
                     {
                         int depth = direction == enumDirection.Right ? current.Depth + 1 : 0;
@@ -71,13 +78,21 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                 if (current.X > 0 && direction != enumDirection.Right)
                 {
                     bool canGo = false;
-                    if (direction == enumDirection.Left)
+                    if (isUltra)
                     {
-                        canGo = current.Depth < 9;
-                    } else
-                    {
-                        canGo = current.Depth > 2;
+                        if (direction == enumDirection.Left)
+                        {
+                            canGo = current.Depth < 9;
+                        } else
+                        {
+                            canGo = current.Depth > 2;
+                        }
                     }
+                    else
+                    {
+                        canGo = current.Depth != 2 || direction != enumDirection.Left;
+                    }
+                    
                     if (canGo || direction == enumDirection.None)
                     {
                         int depth = direction == enumDirection.Left ? current.Depth + 1 : 0;
@@ -96,13 +111,21 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                 if (current.Y > 0 && direction != enumDirection.Down)
                 {
                     bool canGo = false;
-                    if (direction == enumDirection.Up)
+                    if (isUltra)
                     {
-                        canGo = current.Depth < 9;
-                    } else
-                    {
-                        canGo = current.Depth > 2;
+                        if (direction == enumDirection.Up)
+                        {
+                            canGo = current.Depth < 9;
+                        } else
+                        {
+                            canGo = current.Depth > 2;
+                        }
                     }
+                    else
+                    {
+                        canGo = current.Depth != 2 || direction != enumDirection.Up;
+                    }
+                    
                     if (canGo || direction == enumDirection.None)
                     {
                         int depth = direction == enumDirection.Up ? current.Depth + 1 : 0;
@@ -121,13 +144,21 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                 if (current.Y < state.Blocks.GetUpperBound(1) && direction != enumDirection.Up)
                 {
                     bool canGo = false;
-                    if (direction == enumDirection.Down)
+                    if (isUltra)
                     {
-                        canGo = current.Depth < 9;
-                    } else
-                    {
-                        canGo = current.Depth > 2;
+                        if (direction == enumDirection.Down)
+                        {
+                            canGo = current.Depth < 9;
+                        } else
+                        {
+                            canGo = current.Depth > 2;
+                        }
                     }
+                    else
+                    {
+                        canGo = current.Depth != 2 || direction != enumDirection.Down;
+                    }
+                    
                     if (canGo || direction == enumDirection.None)
                     {
                         int depth = direction == enumDirection.Down ? current.Depth + 1 : 0;
@@ -139,77 +170,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                             next.BestFrom = current;
                             state.Heap.Adjust(next);
                         }
-                    }
-                }
-
-                state.Heap.Remove(current);
-            } while (true);
-        }
-
-        private int FindPath(State state)
-        {
-            do
-            {
-                var current = (Block)state.Heap.Top;
-                if (current.X == state.Blocks.GetUpperBound(0) && current.Y == state.Blocks.GetUpperBound(1))
-                {
-                    return current.Num;
-                }
-                var direction = GetDirection(current, current.BestFrom);
-
-                // Right
-                if (current.X < state.Blocks.GetUpperBound(0) && direction != enumDirection.Left && (current.Depth != 2 || direction != enumDirection.Right))
-                {
-                    int depth = direction == enumDirection.Right ? current.Depth + 1 : 0;
-                    var next = state.Blocks[current.X + 1, current.Y, depth, (int)enumDirection.Right];
-                    int calc = current.Num + next.HeatLoss;
-                    if (calc < next.Num)
-                    {
-                        next.Num = calc;
-                        next.BestFrom = current;
-                        state.Heap.Adjust(next);
-                    }
-                }
-
-                // Left
-                if (current.X > 0 && direction != enumDirection.Right && (current.Depth != 2 || direction != enumDirection.Left))
-                {
-                    int depth = direction == enumDirection.Left ? current.Depth + 1 : 0;
-                    var next = state.Blocks[current.X - 1, current.Y, depth, (int)enumDirection.Left];
-                    int calc = current.Num + next.HeatLoss;
-                    if (calc < next.Num)
-                    {
-                        next.Num = calc;
-                        next.BestFrom = current;
-                        state.Heap.Adjust(next);
-                    }
-                }
-
-                // Up
-                if (current.Y > 0 && direction != enumDirection.Down && (current.Depth != 2 || direction != enumDirection.Up))
-                {
-                    int depth = direction == enumDirection.Up ? current.Depth + 1 : 0;
-                    var next = state.Blocks[current.X, current.Y - 1, depth, (int)enumDirection.Up];
-                    int calc = current.Num + next.HeatLoss;
-                    if (calc < next.Num)
-                    {
-                        next.Num = calc;
-                        next.BestFrom = current;
-                        state.Heap.Adjust(next);
-                    }
-                }
-
-                // Down
-                if (current.Y < state.Blocks.GetUpperBound(1) && direction != enumDirection.Up && (current.Depth != 2 || direction != enumDirection.Down))
-                {
-                    int depth = direction == enumDirection.Down ? current.Depth + 1 : 0;
-                    var next = state.Blocks[current.X, current.Y + 1, depth, (int)enumDirection.Down];
-                    int calc = current.Num + next.HeatLoss;
-                    if (calc < next.Num)
-                    {
-                        next.Num = calc;
-                        next.BestFrom = current;
-                        state.Heap.Adjust(next);
                     }
                 }
 
