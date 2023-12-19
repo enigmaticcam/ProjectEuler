@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Euler_Logic.Problems.AdventOfCode.Y2023
 {
@@ -13,13 +10,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
 
         public override string GetAnswer()
         {
-            //return Answer1(Input_Test(1)).ToString();
             return Answer1(Input()).ToString();
         }
 
         public override string GetAnswer2()
         {
-            //return Answer2(Input_Test(1)).ToString();
             return Answer2(Input()).ToString();
         }
 
@@ -32,10 +27,10 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
         private ulong Answer2(List<string> input)
         {
             var state = GetState(input);
-            return BruteForce(state);
+            return ApplyRanges(state);
         }
 
-        private ulong BruteForce(State state)
+        private ulong ApplyRanges(State state)
         {
             var range = new Range()
             {
@@ -44,7 +39,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                 S = new ulong[2] { 1, 4000 },
                 X = new ulong[2] { 1, 4000 }
             };
-            var inEx = Range.Copy(range);
             Recursive(state, state.RuleSets["in"], range);
             return CalcAllRanges();
         }
@@ -61,16 +55,6 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                     * (range.X[1] - range.X[0] + 1);
             }
             return sum;
-        }
-
-        private string Output()
-        {
-            var text = new StringBuilder();
-            foreach (var range in _ranges)
-            {
-                text.AppendLine($"(x){range.X[0]}-{range.X[1]},(m){range.M[0]}-{range.M[1]},(a){range.A[0]}-{range.A[1]},(s){range.S[0]}-{range.S[1]}");
-            }
-            return text.ToString();
         }
 
         private List<Range> _ranges = new List<Range>();
@@ -157,16 +141,16 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
         private ulong ApplyRules(State state)
         {
             ulong sum = 0;
-            var firstFlow = state.RuleSets["in"];
             foreach (var part in state.Parts)
             {
-                var currentFlow = firstFlow;
+                var currentFlow = state.RuleSets["in"];
                 bool keepGoing = true;
                 do
                 {
                     foreach (var rule in currentFlow.Rules)
                     {
-                        var result = rule.RuleFunc(part);
+                        bool isLast = rule == currentFlow.Rules.Last();
+                        var result = ApplyRule(state, rule, part, isLast);
                         if (result.ResultValue == enumResult.Accepted)
                         {
                             sum += part.A + part.M + part.S + part.X;
@@ -187,6 +171,56 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
                 } while (keepGoing);
             }
             return sum;
+        }
+
+        private Result ApplyRule(State state, Rule rule, Part part, bool isLast)
+        {
+            bool condition = true;
+            if (!isLast)
+            {
+                var value = GetValue(rule, part);
+                condition = GetCondition(rule, part, value);
+            }   
+            if (condition)
+            {
+                if (rule.Result == enumResult.Accepted)
+                {
+                    return Result.ToAccepted;
+                }
+                else if (rule.Result == enumResult.Rejected)
+                {
+                    return Result.ToRejected;
+                }
+                else
+                {
+                    return Result.ToWorkFlow(rule.ToWorkFlow);
+                }
+            }
+            return Result.ToPass;
+        }
+
+        private ulong GetValue(Rule rule, Part part)
+        {
+            switch (rule.PropName)
+            {
+                case "a": return part.A;
+                case "m": return part.M;
+                case "s": return part.S;
+                case "x": return part.X;
+                default: throw new Exception();
+            }
+        }
+
+        private bool GetCondition(Rule rule, Part part, ulong value)
+        {
+            if (rule.Comparison == enumComparison.GreaterThan)
+            {
+                return value > rule.Value;
+            }
+            else
+            {
+                return value < rule.Value;
+            }
         }
 
         private State GetState(List<string> input)
@@ -256,7 +290,7 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
             var split = line.Substring(firstBrace + 1, line.Length - firstBrace - 2).Split(',');
             set.Rules = split
                 .Take(split.Length - 1)
-                .Select(x => GetRule(x))
+                .Select(x => GetRule(x, false))
                 .ToList();
             set.Rules.Add(GetLastRule(split.Last(), set));
             return set;
@@ -268,115 +302,59 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
             {
                 return new Rule()
                 {
-                    IsLastRule = true,
-                    Parent = parent,
-                    Result = enumResult.Accepted,
-                    RuleFunc = x => Result.ToAccepted
+                    Result = enumResult.Accepted
                 };
-            }
-            else if (line == "R")
+            } else if (line == "R")
             {
                 return new Rule()
                 {
-                    IsLastRule = true,
-                    IsRejected = true,
-                    Parent = parent,
-                    Result = enumResult.Rejected,
-                    RuleFunc = x => Result.ToRejected
+                    Result = enumResult.Rejected
                 };
-            }
-            else
+            } else
             {
                 return new Rule()
                 {
-                    IsLastRule = true,
-                    Parent = parent,
                     Result = enumResult.SendToWorkflow,
-                    RuleFunc = x => Result.ToWorkFlow(line),
                     ToWorkFlow = line
                 };
             }
         }
 
-        private Rule GetRule(string line)
+        private Rule GetRule(string line, bool isLast)
         {
+            var rule = new Rule();
+
             // get value
-            Func<Part, ulong> getValue;
-            string propName = "";
-            switch (line[0])
-            {
-                case 'x':
-                    getValue = x => x.X;
-                    propName = "x";
-                    break;
-                case 'm':
-                    getValue = x => x.M;
-                    propName = "m";
-                    break;
-                case 'a':
-                    getValue = x => x.A;
-                    propName = "a";
-                    break;
-                case 's':
-                    getValue = x => x.S;
-                    propName = "s";
-                    break;
-                default: throw new Exception();
-            }
+            rule.PropName = line.Substring(0, 1);
 
             // test value
             var colonIndex = line.IndexOf(':');
-            var value = Convert.ToUInt64(line.Substring(2, colonIndex - 2));
-            Func<ulong, bool> testValue;
-            enumComparison comparison;
+            rule.Value = Convert.ToUInt64(line.Substring(2, colonIndex - 2));
             if (line[1] == '<')
             {
-                comparison = enumComparison.LessThan;
-                testValue = x => x < value;
+                rule.Comparison = enumComparison.LessThan;
             }
             else
             {
-                comparison = enumComparison.GreaterThan;
-                testValue = x => x > value;
+                rule.Comparison = enumComparison.GreaterThan;
             }
 
             // result
             var result = line.Substring(colonIndex + 1);
             if (result == "A")
             {
-                return new Rule()
-                {
-                    Comparison = comparison,
-                    PropName = propName,
-                    Result = enumResult.Accepted,
-                    RuleFunc = x => testValue(getValue(x)) ? Result.ToAccepted : Result.ToPass,
-                    Value = value
-                };
+                rule.Result = enumResult.Accepted;
             }
             else if (result == "R")
             {
-                return new Rule()
-                {
-                    Comparison = comparison,
-                    IsRejected = true,
-                    PropName = propName,
-                    Result = enumResult.Rejected,
-                    RuleFunc = x => testValue(getValue(x)) ? Result.ToRejected : Result.ToPass,
-                    Value = value
-                };
+                rule.Result = enumResult.Rejected;
             }
             else
             {
-                return new Rule()
-                {
-                    Comparison = comparison,
-                    PropName = propName,
-                    Result = enumResult.SendToWorkflow,
-                    RuleFunc = x => testValue(getValue(x)) ? Result.ToWorkFlow(result) : Result.ToPass,
-                    Value = value,
-                    ToWorkFlow = result
-                };
+                rule.Result = enumResult.SendToWorkflow;
+                rule.ToWorkFlow = result;
             }
+            return rule;
         }
 
         private class State
@@ -387,15 +365,11 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
 
         private class Rule
         {
-            public Func<Part, Result> RuleFunc { get; set; }
             public string PropName { get; set; }
-            public bool IsRejected { get; set; }
-            public bool IsLastRule { get; set; }
             public enumComparison Comparison { get; set; }
             public enumResult Result { get; set; }
             public string ToWorkFlow { get; set; }
             public ulong Value { get; set; }
-            public RuleSet Parent { get; set; }
         }
 
         private class Result
