@@ -200,16 +200,14 @@ namespace Euler_Logic.Problems.AdventOfCode.Y2023
         }
 
         private ulong GetValue(Rule rule, Part part)
-        {
-            switch (rule.PropName)
+            => rule.PropName switch
             {
-                case "a": return part.A;
-                case "m": return part.M;
-                case "s": return part.S;
-                case "x": return part.X;
-                default: throw new Exception();
-            }
-        }
+                "a" => part.A,
+                "m" => part.M,
+                "s" => part.S,
+                "x" => part.X,
+                _ => throw new Exception()
+            };
 
         private bool GetCondition(Rule rule, Part part, ulong value)
         {

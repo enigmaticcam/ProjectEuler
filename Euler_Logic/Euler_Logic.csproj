@@ -1,520 +1,100 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A6F44BD5-463B-44BF-8F1F-9B0CC0BABBCD}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Euler_Logic</RootNamespace>
-    <AssemblyName>Euler_Logic</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyTitle>Euler_Logic</AssemblyTitle>
+    <Company>Microsoft</Company>
+    <Product>Euler_Logic</Product>
+    <Copyright>Copyright © Microsoft 2015</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Helpers\BigNumber.cs" />
-    <Compile Include="Helpers\BinaryHeap.cs" />
-    <Compile Include="Helpers\ExtendedEuclidean.cs" />
-    <Compile Include="Helpers\Factorial.cs" />
-    <Compile Include="Helpers\Fraction.cs" />
-    <Compile Include="Helpers\GCD.cs" />
-    <Compile Include="Helpers\Power.cs" />
-    <Compile Include="Helpers\PowerAll.cs" />
-    <Compile Include="Helpers\Primality.cs" />
-    <Compile Include="Helpers\PrimeSieve.cs" />
-    <Compile Include="Problems\071-080\Problem80.cs" />
-    <Compile Include="Problems\081-090\Problem84.cs" />
-    <Compile Include="Problems\081-090\Problem86.cs" />
-    <Compile Include="Problems\081-090\Problem87.cs" />
-    <Compile Include="Problems\081-090\Problem88.cs" />
-    <Compile Include="Problems\081-090\Problem90.cs" />
-    <Compile Include="Problems\091-100\Problem100.cs" />
-    <Compile Include="Problems\091-100\Problem91.cs" />
-    <Compile Include="Problems\091-100\Problem93.cs" />
-    <Compile Include="Problems\091-100\Problem94.cs" />
-    <Compile Include="Problems\091-100\Problem95.cs" />
-    <Compile Include="Problems\091-100\Problem98.cs" />
-    <Compile Include="Problems\101-110\Problem101.cs" />
-    <Compile Include="Problems\101-110\Problem102.cs" />
-    <Compile Include="Problems\101-110\Problem103.cs" />
-    <Compile Include="Problems\101-110\Problem104.cs" />
-    <Compile Include="Problems\101-110\Problem105.cs" />
-    <Compile Include="Problems\101-110\Problem106.cs" />
-    <Compile Include="Problems\101-110\Problem107.cs" />
-    <Compile Include="Problems\101-110\Problem108.cs" />
-    <Compile Include="Problems\101-110\Problem109.cs" />
-    <Compile Include="Problems\101-110\Problem110.cs" />
-    <Compile Include="Problems\111-120\Problem111.cs" />
-    <Compile Include="Problems\111-120\Problem112.cs" />
-    <Compile Include="Problems\051-060\Problem53.cs" />
-    <Compile Include="Problems\051-060\Problem57.cs" />
-    <Compile Include="Problems\051-060\Problem59.cs" />
-    <Compile Include="Problems\051-060\Problem60.cs" />
-    <Compile Include="Problems\051-060\Problem56.cs" />
-    <Compile Include="Problems\061-070\Problem64.cs" />
-    <Compile Include="Problems\061-070\Problem65.cs" />
-    <Compile Include="Problems\061-070\Problem66.cs" />
-    <Compile Include="Problems\061-070\Problem68.cs" />
-    <Compile Include="Problems\061-070\Problem69.cs" />
-    <Compile Include="Problems\061-070\Problem70.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Problems\071-080\Problem71.cs" />
-    <Compile Include="Problems\071-080\Problem77.cs" />
-    <Compile Include="Problems\071-080\Problem79.cs" />
-    <Compile Include="Problems\081-090\Problem82.cs" />
-    <Compile Include="Problems\081-090\Problem81.cs" />
-    <Compile Include="Problems\081-090\Problem83.cs" />
-    <Compile Include="Problems\081-090\Problem85.cs" />
-    <Compile Include="Problems\081-090\Problem89.cs" />
-    <Compile Include="Problems\091-100\Problem96.cs" />
-    <Compile Include="Problems\091-100\Problem97.cs" />
-    <Compile Include="Problems\091-100\Problem99.cs" />
-    <Compile Include="Problems\111-120\Problem113.cs" />
-    <Compile Include="Problems\111-120\Problem114.cs" />
-    <Compile Include="Problems\111-120\Problem115.cs" />
-    <Compile Include="Problems\111-120\Problem116.cs" />
-    <Compile Include="Problems\111-120\Problem117.cs" />
-    <Compile Include="Problems\111-120\Problem118.cs" />
-    <Compile Include="Problems\111-120\Problem119.cs" />
-    <Compile Include="Problems\111-120\Problem120.cs" />
-    <Compile Include="Problems\121-130\Problem121.cs" />
-    <Compile Include="Problems\121-130\Problem122.cs" />
-    <Compile Include="Problems\121-130\Problem123.cs" />
-    <Compile Include="Problems\121-130\Problem124.cs" />
-    <Compile Include="Problems\121-130\Problem125.cs" />
-    <Compile Include="Problems\121-130\Problem126.cs" />
-    <Compile Include="Problems\121-130\Problem127.cs" />
-    <Compile Include="Problems\121-130\Problem128.cs" />
-    <Compile Include="Problems\121-130\Problem129.cs" />
-    <Compile Include="Problems\121-130\Problem130.cs" />
-    <Compile Include="Problems\131-140\Problem131.cs" />
-    <Compile Include="Problems\131-140\Problem132.cs" />
-    <Compile Include="Problems\131-140\Problem133.cs" />
-    <Compile Include="Problems\131-140\Problem135.cs" />
-    <Compile Include="Problems\131-140\Problem136.cs" />
-    <Compile Include="Problems\131-140\Problem140.cs" />
-    <Compile Include="Problems\141-150\Problem143.cs" />
-    <Compile Include="Problems\141-150\Problem145.cs" />
-    <Compile Include="Problems\141-150\Problem148.cs" />
-    <Compile Include="Problems\141-150\Problem150.cs" />
-    <Compile Include="Problems\151-160\Problem151.cs" />
-    <Compile Include="Problems\151-160\Problem152.cs" />
-    <Compile Include="Problems\151-160\Problem159.cs" />
-    <Compile Include="Problems\151-160\Problem160.cs" />
-    <Compile Include="Problems\161-170\Problem166.cs" />
-    <Compile Include="Problems\171-180\Problem173.cs" />
-    <Compile Include="Problems\171-180\Problem174.cs" />
-    <Compile Include="Problems\171-180\Problem179.cs" />
-    <Compile Include="Problems\181-190\Problem185.cs" />
-    <Compile Include="Problems\181-190\Problem187.cs" />
-    <Compile Include="Problems\191-200\Problem191.cs" />
-    <Compile Include="Problems\201-210\Problem204.cs" />
-    <Compile Include="Problems\201-210\Problem205.cs" />
-    <Compile Include="Problems\201-210\Problem206.cs" />
-    <Compile Include="Problems\211-220\Problem211.cs" />
-    <Compile Include="Problems\211-220\Problem213.cs" />
-    <Compile Include="Problems\241-250\Problem243.cs" />
-    <Compile Include="Problems\241-250\Problem250.cs" />
-    <Compile Include="Problems\271-280\Problem276.cs" />
-    <Compile Include="Problems\291-300\Problem291.cs" />
-    <Compile Include="Problems\291-300\Problem293.cs" />
-    <Compile Include="Problems\301-310\Problem302.cs" />
-    <Compile Include="Problems\311-320\Problem315.cs" />
-    <Compile Include="Problems\321-329\Problem322.cs" />
-    <Compile Include="Problems\321-329\Problem323.cs" />
-    <Compile Include="Problems\321-329\Problem327.cs" />
-    <Compile Include="Problems\321-329\Problem329.cs" />
-    <Compile Include="Problems\331-340\Problem336.cs" />
-    <Compile Include="Problems\341-350\Problem345.cs" />
-    <Compile Include="Problems\341-350\Problem346.cs" />
-    <Compile Include="Problems\341-350\Problem347.cs" />
-    <Compile Include="Problems\351-360\Problem357.cs" />
-    <Compile Include="Problems\351-360\Problem359.cs" />
-    <Compile Include="Problems\361-370\Problem365.cs" />
-    <Compile Include="Problems\371-380\Problem371.cs" />
-    <Compile Include="Problems\381-390\Problem381.cs" />
-    <Compile Include="Problems\381-390\Problem387.cs" />
-    <Compile Include="Problems\401-410\Problem407.cs" />
-    <Compile Include="Problems\411-420\Problem417.cs" />
-    <Compile Include="Problems\451-460\Problem457.cs" />
-    <Compile Include="Problems\491-500\Problem491.cs" />
-    <Compile Include="Problems\491-500\Problem493.cs" />
-    <Compile Include="Problems\491-500\Problem500.cs" />
-    <Compile Include="Problems\541-550\Problem549.cs" />
-    <Compile Include="Problems\561-570\Problem565.cs" />
-    <Compile Include="Problems\571-580\Problem571.cs" />
-    <Compile Include="Problems\621-630\Problem622.cs" />
-    <Compile Include="Problems\621-630\Problem628.cs" />
-    <Compile Include="Problems\641-650\Problem643.cs" />
-    <Compile Include="Problems\681-690\Problem684.cs" />
-    <Compile Include="Problems\691-700\Problem700.cs" />
-    <Compile Include="Problems\711-720\Problem719.cs" />
-    <Compile Include="Problems\AdventOfCode\AdventOfCodeBase.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2015\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2016\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2017\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2018\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\IntComputer.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2019\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2020\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2021\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem19.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem20.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem21.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem22.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem23.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem24.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2022\Problem25.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem01.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem02.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem03.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem04.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem05.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem06.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem07.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem08.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem09.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem10.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem11.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem12.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem13.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem14.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem15.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem16.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem17.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem18.cs" />
-    <Compile Include="Problems\AdventOfCode\Y2023\Problem19.cs" />
-    <Compile Include="Problems\AquaQ\AquaQBase.cs" />
-    <Compile Include="Problems\AquaQ\Problem000.cs" />
-    <Compile Include="Problems\AquaQ\Problem001.cs" />
-    <Compile Include="Problems\Google\ProblemGoogle1.cs" />
-    <Compile Include="Problems\Google\GoogleBase.cs" />
-    <Compile Include="Problems\Google\ProblemGoogle2.cs" />
-    <Compile Include="Problems\Google\ProblemGoogle3.cs" />
-    <Compile Include="Problems\LeetCode\LeetCodeBase.cs" />
-    <Compile Include="Problems\LeetCode\Problem001.cs" />
-    <Compile Include="Problems\LeetCode\Problem002.cs" />
-    <Compile Include="Problems\LeetCode\Problem003.cs" />
-    <Compile Include="Problems\LeetCode\Problem004.cs" />
-    <Compile Include="Problems\LeetCode\Problem005.cs" />
-    <Compile Include="Problems\LeetCode\Problem006.cs" />
-    <Compile Include="Problems\LeetCode\Problem007.cs" />
-    <Compile Include="Problems\LeetCode\Problem008.cs" />
-    <Compile Include="Problems\LeetCode\Problem009.cs" />
-    <Compile Include="Problems\LeetCode\Problem010.cs" />
-    <Compile Include="Problems\Problem.cs" />
-    <Compile Include="Problems\001-010\Problem1.cs" />
-    <Compile Include="Problems\001-010\Problem10.cs" />
-    <Compile Include="Problems\011-020\Problem11.cs" />
-    <Compile Include="Problems\011-020\Problem12.cs" />
-    <Compile Include="Problems\011-020\Problem13.cs" />
-    <Compile Include="Problems\011-020\Problem14.cs" />
-    <Compile Include="Problems\011-020\Problem15.cs" />
-    <Compile Include="Problems\011-020\Problem16.cs" />
-    <Compile Include="Problems\011-020\Problem17.cs" />
-    <Compile Include="Problems\011-020\Problem18.cs" />
-    <Compile Include="Problems\011-020\Problem19.cs" />
-    <Compile Include="Problems\001-010\Problem2.cs" />
-    <Compile Include="Problems\011-020\Problem20.cs" />
-    <Compile Include="Problems\021-030\Problem21.cs" />
-    <Compile Include="Problems\021-030\Problem22.cs" />
-    <Compile Include="Problems\021-030\Problem23.cs" />
-    <Compile Include="Problems\021-030\Problem24.cs" />
-    <Compile Include="Problems\021-030\Problem25.cs" />
-    <Compile Include="Problems\021-030\Problem26.cs" />
-    <Compile Include="Problems\021-030\Problem27.cs" />
-    <Compile Include="Problems\021-030\Problem28.cs" />
-    <Compile Include="Problems\021-030\Problem29.cs" />
-    <Compile Include="Problems\001-010\Problem3.cs" />
-    <Compile Include="Problems\021-030\Problem30.cs" />
-    <Compile Include="Problems\301-310\Problem301.cs" />
-    <Compile Include="Problems\301-310\Problem306.cs" />
-    <Compile Include="Problems\031-040\Problem31.cs" />
-    <Compile Include="Problems\031-040\Problem32.cs" />
-    <Compile Include="Problems\031-040\Problem33.cs" />
-    <Compile Include="Problems\031-040\Problem34.cs" />
-    <Compile Include="Problems\031-040\Problem35.cs" />
-    <Compile Include="Problems\031-040\Problem36.cs" />
-    <Compile Include="Problems\031-040\Problem37.cs" />
-    <Compile Include="Problems\031-040\Problem38.cs" />
-    <Compile Include="Problems\031-040\Problem39.cs" />
-    <Compile Include="Problems\001-010\Problem4.cs" />
-    <Compile Include="Problems\031-040\Problem40.cs" />
-    <Compile Include="Problems\041-050\Problem41.cs" />
-    <Compile Include="Problems\041-050\Problem42.cs" />
-    <Compile Include="Problems\041-050\Problem43.cs" />
-    <Compile Include="Problems\041-050\Problem44.cs" />
-    <Compile Include="Problems\041-050\Problem45.cs" />
-    <Compile Include="Problems\041-050\Problem46.cs" />
-    <Compile Include="Problems\041-050\Problem47.cs" />
-    <Compile Include="Problems\041-050\Problem48.cs" />
-    <Compile Include="Problems\041-050\Problem49.cs" />
-    <Compile Include="Problems\001-010\Problem5.cs" />
-    <Compile Include="Problems\041-050\Problem50.cs" />
-    <Compile Include="Problems\051-060\Problem51.cs" />
-    <Compile Include="Problems\051-060\Problem52.cs" />
-    <Compile Include="Problems\051-060\Problem54.cs" />
-    <Compile Include="Problems\051-060\Problem55.cs" />
-    <Compile Include="Problems\051-060\Problem58.cs" />
-    <Compile Include="Problems\001-010\Problem6.cs" />
-    <Compile Include="Problems\061-070\Problem61.cs" />
-    <Compile Include="Problems\061-070\Problem62.cs" />
-    <Compile Include="Problems\061-070\Problem63.cs" />
-    <Compile Include="Problems\061-070\Problem67.cs" />
-    <Compile Include="Problems\001-010\Problem7.cs" />
-    <Compile Include="Problems\071-080\Problem74.cs" />
-    <Compile Include="Problems\071-080\Problem75.cs" />
-    <Compile Include="Problems\071-080\Problem76.cs" />
-    <Compile Include="Problems\071-080\Problem78.cs" />
-    <Compile Include="Problems\001-010\Problem8.cs" />
-    <Compile Include="Problems\001-010\Problem9.cs" />
-    <Compile Include="Problems\091-100\Problem92.cs" />
-    <Compile Include="Problems\071-080\Problem72.cs" />
-    <Compile Include="Problems\071-080\Problem73.cs" />
-    <Compile Include="Problems\Problem000.cs" />
-    <Compile Include="Problems\ProblemAny.cs" />
-    <Compile Include="Problems\Rosalind\CONS.cs" />
-    <Compile Include="Problems\Rosalind\DNA.cs" />
-    <Compile Include="Problems\Rosalind\FIB.cs" />
-    <Compile Include="Problems\Rosalind\FIBD.cs" />
-    <Compile Include="Problems\Rosalind\GC.cs" />
-    <Compile Include="Problems\Rosalind\GRPH.cs" />
-    <Compile Include="Problems\Rosalind\HAMM.cs" />
-    <Compile Include="Problems\Rosalind\IEV.cs" />
-    <Compile Include="Problems\Rosalind\IPRB.cs" />
-    <Compile Include="Problems\Rosalind\LCSM.cs" />
-    <Compile Include="Problems\Rosalind\PROT.cs" />
-    <Compile Include="Problems\Rosalind\REVC.cs" />
-    <Compile Include="Problems\Rosalind\RNA.cs" />
-    <Compile Include="Problems\Rosalind\RosalindBase.cs" />
-    <Compile Include="Problems\Rosalind\SUBS.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Helpers\PrimeCount.cs" />
+    <Compile Remove="Problems\131-140\Problem134.cs" />
+    <Compile Remove="Problems\131-140\Problem137.cs" />
+    <Compile Remove="Problems\131-140\Problem138.cs" />
+    <Compile Remove="Problems\131-140\Problem139.cs" />
+    <Compile Remove="Problems\141-150\Problem141.cs" />
+    <Compile Remove="Problems\141-150\Problem142.cs" />
+    <Compile Remove="Problems\141-150\Problem144.cs" />
+    <Compile Remove="Problems\141-150\Problem146.cs" />
+    <Compile Remove="Problems\141-150\Problem147.cs" />
+    <Compile Remove="Problems\141-150\Problem149.cs" />
+    <Compile Remove="Problems\151-160\Problem154.cs" />
+    <Compile Remove="Problems\151-160\Problem155.cs" />
+    <Compile Remove="Problems\151-160\Problem156.cs" />
+    <Compile Remove="Problems\151-160\Problem157.cs" />
+    <Compile Remove="Problems\151-160\Problem158.cs" />
+    <Compile Remove="Problems\161-170\Problem164.cs" />
+    <Compile Remove="Problems\161-170\Problem165.cs" />
+    <Compile Remove="Problems\161-170\Problem168.cs" />
+    <Compile Remove="Problems\161-170\Problem169.cs" />
+    <Compile Remove="Problems\161-170\Problem170.cs" />
+    <Compile Remove="Problems\171-180\Problem171.cs" />
+    <Compile Remove="Problems\171-180\Problem172.cs" />
+    <Compile Remove="Problems\171-180\Problem175.cs" />
+    <Compile Remove="Problems\171-180\Problem176.cs" />
+    <Compile Remove="Problems\171-180\Problem178.cs" />
+    <Compile Remove="Problems\171-180\Problem180.cs" />
+    <Compile Remove="Problems\181-190\Problem183.cs" />
+    <Compile Remove="Problems\181-190\Problem186.cs" />
+    <Compile Remove="Problems\181-190\Problem188.cs" />
+    <Compile Remove="Problems\191-200\Problem193.cs" />
+    <Compile Remove="Problems\191-200\Problem196.cs" />
+    <Compile Remove="Problems\191-200\Problem200.cs" />
+    <Compile Remove="Problems\201-210\Problem201.cs" />
+    <Compile Remove="Problems\201-210\Problem203.cs" />
+    <Compile Remove="Problems\201-210\Problem209.cs" />
+    <Compile Remove="Problems\211-220\Problem215.cs" />
+    <Compile Remove="Problems\211-220\Problem216.cs" />
+    <Compile Remove="Problems\221-230\Problem221.cs" />
+    <Compile Remove="Problems\221-230\Problem223.cs" />
+    <Compile Remove="Problems\221-230\Problem224.cs" />
+    <Compile Remove="Problems\221-230\Problem225.cs" />
+    <Compile Remove="Problems\231-240\Problem231.cs" />
+    <Compile Remove="Problems\231-240\Problem233.cs" />
+    <Compile Remove="Problems\241-250\Problem248.cs" />
+    <Compile Remove="Problems\241-250\Problem249.cs" />
+    <Compile Remove="Problems\251-260\Problem253.cs" />
+    <Compile Remove="Problems\261-270\Problem265.cs" />
+    <Compile Remove="Problems\261-270\Problem266.cs" />
+    <Compile Remove="Problems\261-270\Problem268.cs" />
+    <Compile Remove="Problems\271-280\Problem277.cs" />
+    <Compile Remove="Problems\281-290\Problem284.cs" />
+    <Compile Remove="Problems\281-290\Problem287.cs" />
+    <Compile Remove="Problems\291-300\Problem294.cs" />
+    <Compile Remove="Problems\301-310\Problem303.cs" />
+    <Compile Remove="Problems\301-310\Problem304.cs" />
+    <Compile Remove="Problems\321-329\Problem325.cs" />
+    <Compile Remove="Problems\341-350\Problem348.cs" />
+    <Compile Remove="Problems\341-350\Problem349.cs" />
+    <Compile Remove="Problems\341-350\Problem350.cs" />
+    <Compile Remove="Problems\351-360\Problem355.cs" />
+    <Compile Remove="Problems\361-370\Problem370.cs" />
+    <Compile Remove="Problems\371-380\Problem377.cs" />
+    <Compile Remove="Problems\391-400\Problem396.cs" />
+    <Compile Remove="Problems\401-410\Problem401.cs" />
+    <Compile Remove="Problems\411-420\Problem418.cs" />
+    <Compile Remove="Problems\421-430\Problem429.cs" />
+    <Compile Remove="Problems\441-450\Problem443.cs" />
+    <Compile Remove="Problems\481-490\Problem487.cs" />
+    <Compile Remove="Problems\501-510\Problem501.cs" />
+    <Compile Remove="Problems\511-520\Problem518.cs" />
+    <Compile Remove="Problems\521-530\Problem521.cs" />
+    <Compile Remove="Problems\601-610\Problem601.cs" />
+    <Compile Remove="Problems\641-650\Problem650.cs" />
+    <Compile Remove="Problems\651-660\Problem655.cs" />
+    <Compile Remove="Problems\651-660\Problem659.cs" />
+    <Compile Remove="Problems\661-670\Problem668.cs" />
+    <Compile Remove="Problems\681-690\Problem686.cs" />
+  </ItemGroup>
 </Project>
