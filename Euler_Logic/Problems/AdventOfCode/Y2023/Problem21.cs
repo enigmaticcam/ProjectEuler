@@ -5,7 +5,6 @@ using System.Collections.Generic;
 namespace Euler_Logic.Problems.AdventOfCode.Y2023;
 
 public class Problem21 : AdventOfCodeBase {
-    private Dictionary<int, Dictionary<int, HashSet<int>>> _hash = new();
 
     public override string ProblemName => "Advent of Code 2023: 21";
 
@@ -29,66 +28,71 @@ public class Problem21 : AdventOfCodeBase {
 
     private ulong Answer1(int steps, List<string> input)
     {
-        return BruteForce(steps, input);
-        
+        var state = new State1() {
+            Input = input,
+            MaxSteps = steps
+        };
+        return BruteForce(state);
     }
 
-    private ulong Answer2(int steps, List<string> input)
-    {
-        return BruteForce(steps, input);
+    private ulong Answer2(int steps, List<string> input) {
+        var state = new State1() {
+            Input = input,
+            MaxSteps = steps
+        };
+        return BruteForce(state);
     }
 
-    private ulong BruteForce(int steps, List<string> input) {
+    private ulong BruteForce(State1 state) {
         ulong count = 0;
-        var start = FindS(input);
-        var list = new LinkedList<Step>();
-        list.AddFirst(new Step() {
+        var start = FindS(state.Input);
+        state.Steps.AddFirst(new Step() {
             StepNum = 0,
             X = start.X,
             Y = start.Y
         });
         var mod = (start.X + start.Y) % 2;
         do {
-            var current = list.First.Value;
-            if (current.StepNum == steps)
+            var current = state.Steps.First.Value;
+            if (current.StepNum == state.MaxSteps)
                 count++;
-            if (current.StepNum < steps) {
-                AddToStep(current, 1, 0, list, input);
-                AddToStep(current, -1, 0, list, input);
-                AddToStep(current, 0, 1, list, input);
-                AddToStep(current, 0, -1, list, input);
+            if (current.StepNum < state.MaxSteps) {
+                AddToStep(current, 1, 0, state);
+                AddToStep(current, -1, 0, state);
+                AddToStep(current, 0, 1, state);
+                AddToStep(current, 0, -1, state);
             }
-            list.RemoveFirst();
-        } while (list.Count > 0);
+            state.Steps.RemoveFirst();
+        } while (state.Steps.Count > 0);
         return count;
     }
 
-    private void AddToStep(Step current, int xOffset, int yOffset, LinkedList<Step> list, List<string> input) {
+    private void AddToStep(Step current, int xOffset, int yOffset, State1 state) {
         int x = current.X + xOffset;
         int y = current.Y + yOffset;
-        int modX = Mod.NegativeMod(x, input[0].Length);
-        int modY = Mod.NegativeMod(y, input.Count);
-        bool isOpen = input[modY][modX] != '#';
-        if (isOpen && !DoesExistInHash(x, y, current.StepNum, input)) {
-            list.AddLast(new Step() {
+        int modX = Mod.NegativeMod(x, state.Input[0].Length);
+        int modY = Mod.NegativeMod(y, state.Input.Count);
+        bool isOpen = state.Input[modY][modX] != '#';
+        if (isOpen && !DoesExistInHash(x, y, current.StepNum, state)) {
+            state.Steps.AddLast(new Step() {
                 StepNum = current.StepNum + 1,
                 X = x,
                 Y = y
             });
-            AddToHash(x, y, current.StepNum);
+            AddToHash(x, y, current.StepNum, state);
         }
     }
 
-    private bool DoesExistInHash(int x, int y, int steps, List<string> input) {
-        return _hash.ContainsKey(x) && _hash[x].ContainsKey(y) && _hash[x][y].Contains(steps);
+    private bool DoesExistInHash(int x, int y, int steps, State1 state) {
+        return state.Hash.ContainsKey(x) && state.Hash[x].ContainsKey(y) && state.Hash[x][y].Contains(steps);
     }
 
-    private void AddToHash(int x, int y, int steps) {
-        if (!_hash.ContainsKey(x))
-            _hash.Add(x, new Dictionary<int, HashSet<int>>());
-        if (!_hash[x].ContainsKey(y))
-            _hash[x].Add(y, new HashSet<int>());
-        _hash[x][y].Add(steps);
+    private void AddToHash(int x, int y, int steps, State1 state) {
+        if (!state.Hash.ContainsKey(x))
+            state.Hash.Add(x, new Dictionary<int, HashSet<int>>());
+        if (!state.Hash[x].ContainsKey(y))
+            state.Hash[x].Add(y, new HashSet<int>());
+        state.Hash[x][y].Add(steps);
     }
 
     private (int X, int Y) FindS(List<string> input) {
@@ -110,5 +114,12 @@ public class Problem21 : AdventOfCodeBase {
         public int X { get; set; }
         public int Y { get; set; }
         public int StepNum { get; set; }
+    }
+
+    private class State1 {
+        public List<string> Input { get; set; }
+        public Dictionary<int, Dictionary<int, HashSet<int>>> Hash { get; set; } = new();
+        public int MaxSteps { get; set; }
+        public LinkedList<Step> Steps { get; set; } = new();
     }
 }
